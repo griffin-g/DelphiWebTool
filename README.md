@@ -4,7 +4,7 @@
 
 ### One-sentence description of the project
 
-TODO: A 20-second elevator pitch of your project - its core idea summarized in one sentence.
+A web application designed to administer Delphi studies to collect expert inputs on cybersecurity education.
 
 ### Additional information about the project
 
