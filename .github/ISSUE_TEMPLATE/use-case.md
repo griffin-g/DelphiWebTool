@@ -5,9 +5,19 @@ title: ''
 labels: ''
 assignees: ''
 ---
-Use Case: [title]
-**Pre-condition:** [where is user in application]
-**Post-condition:** [where is user after action]
-**Basic Path:** [how does user navigate]
-**Alternative Path:** [Is there another way for user to navigete]
-**Related Requirements:** [does this use case rely on others]
+### Use Case: [title]
+
+### Pre-condition
+* [where is user in applicatipn]
+
+### Post-condition
+* [where is user after action]
+
+### Basic Path
+* [how does user navigate to use case]
+
+  ### Alternative Path
+* [is there another way for user to navigate]
+
+  ### Related Requirements
+* [does this use case rely on others]
