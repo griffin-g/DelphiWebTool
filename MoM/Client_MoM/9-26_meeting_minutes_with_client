@@ -1,0 +1,37 @@
+Cyber3 Delphi Web Tool Meeting Minutes
+
+Project Name: Cyber3 Delphi Web Tool
+Client Name: James Crabb
+Date: 26/9/2024
+Time: 5:00pm-5:30pm
+Location: Teams Meeting
+Attendees:
+•	James Crabb
+•	William Heinecke
+
+Discussion Topics:
+-	Updating on what we have done since last meeting
+o	Functional Requirements
+o	Non-Functional Requirements
+	Discussed potential additional non-functional requirements
+•	Speed if survey size is large
+o	Use Cases
+-	Clarification on profile creation / and how the user should be able to access the surveys
+-	Confirmed that result analysis would be a stretch goal / extra feature
+-	Showed the tool like what we are trying to build (Welphi)
+o	Differences could be that our product will be free to use and open source
+-	Discussed research papers found during research for project background
+o	One used Welphi for a survey process
+o	Noted that there is more theoretical papers than practical papers published
+-	Talked about a new potential replacement for Node.js (Deno 2).
+o	Node might be a more secure framework than deno since it has been around longer
+o	Advantage for deno 2 is native typescript support
+-	Talked about testing in the future after the prototype is made
+o	Small group testing to get feedback on design
+Next Steps:
+•	Finish the project requirements and specification documentation
+
+Next Meeting
+•	Date: 3/10/2024
+•	Time: 5pm
+•	Location: Teams Meeting
