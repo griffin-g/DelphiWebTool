@@ -1,0 +1,70 @@
+Minutes of Meeting
+Project Name: Delphi Web Tool
+Client Name: James Crabb
+Date: 03/10/2024
+Time: 1700-
+Location: Microsoft Teams
+Attendees:
+James Crabb
+Griffin Gerry
+William Heinecke
+
+1. Agenda
+Covering the Project Requirements and Specifications page
+
+Introduction to Sprint 2
+
+2. Meeting Summary
+
+Detailed explanation of the client's requirements.
+Discussion on specific features and functionalities expected by the client.
+Clarifications on any ambiguities in the project scope.
+
+Key Discussion Points:
+
+Discussion Point 1: Placing Survey Participation behind login vs using a link/token system. 
+Make links to surveys double-blind. Survey administrators will not know who the participant is - privacy protection.
+
+Discussion Point 2: Requirements are broad at this point. 
+Use Cases/Stories will require more in-depth steps as we proceed. 
+
+Discussion Point 3: Specifying the participants as part of the survey creation. 
+Invite participants is a separate use case from Survey Creation. 
+Invite participants will send generate links and send them to the participants. 
+
+Potentially adding a new use case for the User that clicks on the participant link which leads to the Participate in Survey use case. 
+
+One page to manage surveys, active or inactive. Filters on the page.
+
+Discussion Point: 
+Generating the next round of results as a use case and inviting participants once again -> creating the iterative loop of the Delphi Method. 
+
+Discussion Point:
+Keeping survey responses secure and anonymous for survey participants and creators. PII kept anonymous from every user, not just other participants.  
+
+Decisions Made:
+
+Decided on changes to the Survey Creation and Invite Participants Use Cases. 
+
+Updating the survey participation use case. 
+
+Action Items:
+
+Project team to revise Requirements document and diagrams based on client feedback.
+
+3. Project Milestones Discussed
+
+Prototype Goals - One browser and one device type working is the goal. Additional browsers and device types as a stretch goal. 
+
+4. Next Steps
+
+Next meeting has been scheduled. 
+
+5. Next Meeting
+
+Date: October 10th, 2024
+Time: 1700-1730
+Location: Microsoft Teams
+
+Meeting Notes Prepared By: Griffin Gerry
+Date: 03/10/2024
