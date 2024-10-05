@@ -8,7 +8,8 @@ A web application designed to administer Delphi studies to collect expert inputs
 
 ### Additional information about the project
 
-Uur team plans on developing a web application aimed at facilitating research utilizing the Delphi method. The Delphi method is utilized to gather consensus from subject matter experts while keeping identities anonymous and maintaining quality control on the results, a scientific method for consulting a group of experts. Utilizing multiple rounds of activities, the administrators can refine results until a reasonable consensus is reached by administrators. With the development of our platform, we aim to provide a tool for cybersecurity educators and professionals with integrated tools, user protection, and a clean user experience for both administrators and survey takers.  
+Our team plans on developing a web application aimed at facilitating research utilizing the Delphi method. The Delphi method is utilized to gather consensus from subject matter experts while keeping identities anonymous and maintaining quality control on the results, a scientific method for consulting a group of experts. Utilizing multiple rounds of activities, the administrators can refine results until a reasonable consensus is reached by administrators. With the development of our platform, we aim to provide a tool for cybersecurity educators and professionals with integrated tools, user protection, and a clean user experience for both administrators and survey takers.  
+
 ## Installation
 
 ### Prerequisites
@@ -52,8 +53,3 @@ TODO: Leave the steps below if you want others to contribute to your project.
 TODO: Provide links to additional documentation that may exist in the repo, e.g.,
   * Sprint reports
   * User links
-
-## License
-
-If you haven't already, add a file called `LICENSE.txt` with the text of the appropriate license.
-We recommend using the MIT license: <https://choosealicense.com/licenses/mit/>
