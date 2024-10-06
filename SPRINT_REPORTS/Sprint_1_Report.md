@@ -30,7 +30,7 @@ Here are links to the issues that we completed in this sprint:
  ## Incomplete Issues/User Stories
  Here are links to issues we worked on but did not complete in this sprint:
  
- * https://github.com/griffin-g/DelphiWebTool/issues/33 <<Client provided feedback after our meeting for changes to our Requirements and Specifications Document>>
+ * https://github.com/griffin-g/DelphiWebTool/issues/33, Client provided feedback after our meeting for changes to our Requirements and Specifications Document
  
 ## Retrospective Summary
 Here's what went well:
