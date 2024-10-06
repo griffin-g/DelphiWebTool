@@ -51,5 +51,6 @@ TODO: Leave the steps below if you want others to contribute to your project.
 ## Additional Documentation
 
 TODO: Provide links to additional documentation that may exist in the repo, e.g.,
-  * Sprint reports
+  * Sprint 1: https://github.com/griffin-g/DelphiWebTool/blob/main/SPRINT_REPORTS/Sprint_1_Report.md
+  * 
   * User links
