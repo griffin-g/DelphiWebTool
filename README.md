@@ -52,5 +52,6 @@ TODO: Leave the steps below if you want others to contribute to your project.
 
 TODO: Provide links to additional documentation that may exist in the repo, e.g.,
   * Sprint 1: https://github.com/griffin-g/DelphiWebTool/blob/main/SPRINT_REPORTS/Sprint_1_Report.md
-  * 
-  * User links
+  * Project Description: https://github.com/griffin-g/DelphiWebTool/blob/main/Project_Documentation/Cyber3_ProjectDescription.pdf
+  * Project Requirements and Specifications: https://github.com/griffin-g/DelphiWebTool/blob/main/Project_Documentation/requirements_and_specification.pdf
+
