@@ -10,7 +10,7 @@
 In our first sprint for the Delphi Web Tool, we began by tackling the planning stages of our project. Our first meeting with our client laid the foundations for our work on the Project Description section of our report. In our Project Description, we began researching the project, investigating background information and relevant topics. Springboarding off of the Project Description section and relying on input from our client, we also developed the Project Requirements and Specifications report. In the meantime, team members also engaged in independent learning of necessary skills so that development in future sprints will be smooth. 
 
 ## Unfinished Work
-If applicable, explain the work you did not finish in this sprint. For issues/user stories in the current sprint that have not been closed, (a) any progress toward completion of the issues has been clearly tracked (by checking the checkboxes of  acceptance criteria), (b) a comment has been added to the issue to explain why the issue could not be completed (e.g., "we ran out of time" or "we did not anticipate it would be so much work"), and (c) the issue is added to a subsequent sprint, so that it can be addressed later.
+We received comments from our client for revision of our Project Requirements and Specifications document. Due to the timing of the meeting (at the end of the sprint), we did not have the time to review and implement all the requested changes. These changes must be completed at the beginning of the next sprint, as they will inform our steps moving forward. 
 
 ## Completed Issues/User Stories
 Here are links to the issues that we completed in this sprint:
