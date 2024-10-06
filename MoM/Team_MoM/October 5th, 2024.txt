@@ -1,0 +1,42 @@
+Minutes of Meeting
+Project Name: Delphi Web Tool
+Date: 05/10/2024
+Time: 1800-2100
+Location: Discord
+Attendees:
+Griffin Gerry
+William Heinecke
+
+1. Agenda
+Finalizing details of Sprint 1 and the report.
+
+2. Meeting Summary
+
+Finalizing details of Sprint 1 and the report.
+
+Discussion of key points from Sprint 1.
+
+Creation of Sprint 1 presentation PowerPoint. 
+
+Creation of diagrams for Sprint 1.
+
+Key Discussion Points:
+
+Refining our existing Kanban board and adding missing items.
+
+Decisions Made:
+
+Updating our repository with required documents and diagrams. 
+
+Action Items:
+
+Upload Sprint 1 presentation to GitHub repository by midnight. 
+
+3. Project Milestones Discussed
+
+Steps and objectives to pursue in Sprint 2.
+
+4. Next Steps
+
+Next meeting has been scheduled. 
+
