@@ -15,9 +15,22 @@ If applicable, explain the work you did not finish in this sprint. For issues/us
 ## Completed Issues/User Stories
 Here are links to the issues that we completed in this sprint:
 
- * URL of issue 1
- * URL of issue 2
- * URL of issue n
+ * https://github.com/griffin-g/DelphiWebTool/issues/13
+ * https://github.com/griffin-g/DelphiWebTool/issues/24
+ * https://github.com/griffin-g/DelphiWebTool/issues/14
+ * https://github.com/griffin-g/DelphiWebTool/issues/12
+ * https://github.com/griffin-g/DelphiWebTool/issues/1
+ * https://github.com/griffin-g/DelphiWebTool/issues/2
+ * https://github.com/griffin-g/DelphiWebTool/issues/7
+ * https://github.com/griffin-g/DelphiWebTool/issues/6
+ * https://github.com/griffin-g/DelphiWebTool/issues/29
+ * https://github.com/griffin-g/DelphiWebTool/issues/10
+ * https://github.com/griffin-g/DelphiWebTool/issues/11
+ * https://github.com/griffin-g/DelphiWebTool/issues/8
+ * https://github.com/griffin-g/DelphiWebTool/issues/15
+ * https://github.com/griffin-g/DelphiWebTool/issues/16
+ * https://github.com/griffin-g/DelphiWebTool/issues/9
+ * https://github.com/griffin-g/DelphiWebTool/issues/32
 
  Reminders (Remove this section when you save the file):
   * Each issue should be assigned to a milestone
