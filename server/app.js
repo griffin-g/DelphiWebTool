@@ -8,6 +8,7 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/userRouter");
 var surveysRouter = require("./routes/surveysRouter");
 var questionsRouter = require("./routes/questionsRouter");
+var participantsRouter = require("./routes/participantsRouter");
 
 const cors = require("cors");
 var app = express();
@@ -26,6 +27,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/surveys", surveysRouter);
 app.use("/questions", questionsRouter);
+app.use("/participants", participantsRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
@@ -43,7 +45,7 @@ app.use(function (err, req, res, next) {
   //res.send(error);
 });
 
-db.sequelize.sync().then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   app.listen(3001, () => {
     console.log("Server running on port 3001.");
   });
