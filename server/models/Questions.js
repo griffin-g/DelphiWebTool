@@ -1,31 +1,31 @@
 module.exports = (sequelize, DataTypes) => {
-  const Surveys = sequelize.define("Surveys", {
-    survey_id: {
+  const Questions = sequelize.define("Questions", {
+    question_id: {
       primaryKey: true,
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    user_id: {
+    survey_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Users",
-        key: "user_id",
+        model: "Surveys",
+        key: "survey_id",
       },
     },
-    title: {
-      type: DataTypes.STRING,
+    prompt: {
+      type: DataTypes.TEXT,
       allowNull: false,
     },
-    is_active: {
+    type: {
+      type: DataTypes.ENUM("Short Response", "Multiple Choice", "Ranking"),
+      allowNull: false,
+    },
+    required: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
-    delphi_round: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
   });
-  return Surveys;
+  return Questions;
 };
