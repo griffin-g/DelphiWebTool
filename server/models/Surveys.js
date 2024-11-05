@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     is_active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
+      unique: false,
     },
     delphi_round: {
       type: DataTypes.INTEGER,
