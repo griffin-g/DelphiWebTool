@@ -1,35 +1,93 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { useCallback } from 'react';
+import { Model } from 'survey-core';
+import { Survey } from 'survey-react-ui';
+import 'survey-core/defaultV2.min.css';
+import './survey-creator.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [questions, setQuestions] = useState([]);
+  const [survey, setSurvey] = useState(new Model({ elements: [] }));
+  const [questionTitle, setQuestionTitle] = useState("");
+  const [questionDescription, setQuestionDescription] = useState("");
+  const [questionType, setQuestionType] = useState("text");
+  const [choices, setChoices] = useState([]);  // State for ranking choices
+  const [newChoice, setNewChoice] = useState("");
+
+  const addQuestion = () => {
+    const newQuestion = {
+      name: `question${questions.length + 1}`,
+      type: questionType,
+      title: questionTitle,
+      description: questionDescription,
+      ...((questionType === "ranking" || questionType === "checkbox") && { choices })  // Add choices if type is ranking
+    };
+    const updatedQuestions = [...questions, newQuestion];
+    setQuestions(updatedQuestions);
+    setSurvey(new Model({ elements: updatedQuestions }));
+
+    // Reset fields
+    setQuestionTitle("");
+    setQuestionDescription("");
+    setChoices([]);
+  };
+
+  const addChoice = () => {
+    if (newChoice.trim()) {
+      setChoices([...choices, newChoice.trim()]);
+      setNewChoice("");
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div>
+      <div className="survey-builder">
+        <select value={questionType} onChange={(e) => setQuestionType(e.target.value)}>
+          <option value="text">Text</option>
+          <option value="ranking">Ranking</option>
+          <option value="checkbox">Checkbox</option>
+          {/* Add other question types as needed */}
+        </select>
+
+        <input
+          type="text"
+          placeholder="Enter question title"
+          value={questionTitle}
+          required
+          onChange={(e) => setQuestionTitle(e.target.value)}
+        />
+
+        <input
+          type="text"
+          placeholder="Enter question description"
+          value={questionDescription}
+          onChange={(e) => setQuestionDescription(e.target.value)}
+        />
+
+        {(questionType === "ranking" || questionType === "checkbox") && (
+          <div>
+            <input
+              type="text"
+              placeholder="Enter choice"
+              value={newChoice}
+              onChange={(e) => setNewChoice(e.target.value)}
+            />
+            <button onClick={addChoice}>Add Choice</button>
+            <ul>
+              {choices.map((choice, index) => (
+                <li key={index}>{choice}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <button onClick={addQuestion}>Add Question</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+      <Survey model={survey} />
+    </div>
+  );
 }
 
-export default App
+export default App;
