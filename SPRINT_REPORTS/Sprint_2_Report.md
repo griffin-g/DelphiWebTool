@@ -2,7 +2,7 @@
 
 ## YouTube link of Sprint 2 Video (Make this video unlisted) 
 
- 
+ https://github.com/griffin-g/DelphiWebTool/blob/main/SPRINT_REPORTS/sprint_2_recording.mp4
 ## What's New (User Facing) 
  * Started Front End set up and development. 
  * API for the backend.  
