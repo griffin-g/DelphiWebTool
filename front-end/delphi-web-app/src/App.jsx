@@ -1,35 +1,17 @@
-import { useState } from 'react';
-import './App.css';
-import SurveyBuilder from './Survey-Builder';
-import QuestionList from './Question-List';
-import { useSurvey } from './UseSurvey';
+import "./App.css";
+import "survey-core/defaultV2.min.css";
+import "./survey-creator.css";
+import { Routes, Route } from "react-router-dom";
+import CreateSurvey from "./pages/CreateSurvey";
+import AboutUs from "./pages/AboutUs";
 
 function App() {
-  const {
-    questions,
-    surveyData,
-    showPreview,
-    handleAddQuestion,
-    handleEditQuestion,
-    handleDeleteQuestion,
-    handleSaveSurvey,
-    handlePreviewSurvey
-  } = useSurvey();  // Destructure the state and functions from the hook
-
   return (
     <div>
-      <SurveyBuilder onAddQuestion={handleAddQuestion} />
-      <QuestionList 
-        questions={questions} 
-        onEditQuestion={handleEditQuestion}
-        onDeleteQuestion={handleDeleteQuestion}
-      />
-      <button onClick={handleSaveSurvey}>Save Survey</button>
-      <button onClick={handlePreviewSurvey}>Preview Survey</button>
-
-      {showPreview && surveyData && (
-        <SurveyPreview surveyData={surveyData} />
-      )}
+      <Routes>
+        <Route path="/create-survey" element={<CreateSurvey></CreateSurvey>} />
+        <Route path="/about-us" element={<AboutUs />} />
+      </Routes>
     </div>
   );
 }

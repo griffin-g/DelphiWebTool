@@ -1,8 +1,8 @@
-import './App.css';
-import SurveyBuilder from './SurveyBuilder';
-import QuestionList from './QuestionList';
-import SurveyPreview from './SurveyPreview';
-import { useSurvey } from './useSurvey';
+import '../App.css';
+import SurveyBuilder from './survey-components/Survey-Builder';
+import QuestionList from './survey-components/Question-List';
+import SurveyDisplay from './survey-components/Survey-Display';
+import { useSurvey } from './survey-components/UseSurvey';
 
 function CreateSurvey() {
   const {
@@ -28,7 +28,7 @@ function CreateSurvey() {
       <button onClick={handlePreviewSurvey}>Preview Survey</button>
 
       {showPreview && surveyData && (
-        <SurveyPreview surveyData={surveyData} />
+        <SurveyDisplay surveyData={surveyData} />
       )}
     </div>
   );
