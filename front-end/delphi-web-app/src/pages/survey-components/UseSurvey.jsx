@@ -25,9 +25,25 @@ export const useSurvey = () => {
     setQuestions(updatedQuestions);
   };
 
-  // Function to convert questions to SurveyJS format and save
-  const handleSaveSurvey = () => {
-    const data = {
+  const saveSurveyToDatabase = async ({ surveyID, surveyJSON }) => {
+    const response = await fetch('/api/save-survey', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        surveyID,
+        surveyJSON,
+      }),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Failed to save survey');
+    }
+  };
+  
+  const handleSaveSurvey = async () => {
+    const surveyData = {
       elements: questions.map((question) => ({
         type: question.type,
         name: question.name,
@@ -36,12 +52,22 @@ export const useSurvey = () => {
         ...((question.type === "ranking" || question.type === "checkbox") && { choices: question.choices }),
       })),
     };
-    
-    // Store the survey data for previewing
-    setSurveyData(data);
-    console.log("SurveyJS Format:", JSON.stringify(data, null, 2));
-  };
 
+    setSurveyData(surveyData);
+    console.log("SurveyJS Format:", JSON.stringify(surveyData, null, 2));
+
+    try {
+      await saveSurveyToDatabase({
+        surveyID: 0,
+        surveyJSON: surveyData,
+      });
+      console.log('Survey saved successfully!');
+    } catch (error) {
+      console.error('Error saving survey:', error);
+    }
+  };
+  
+  
   // Toggle preview mode
   const handlePreviewSurvey = () => {
     if (surveyData) {
