@@ -16,7 +16,6 @@ function LoginComponent() {
         boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
       }}
     >
-      {/* Email Field */}
       <Typography variant="body1" sx={{ mb: 1 }}>
         Email
       </Typography>
@@ -28,7 +27,6 @@ function LoginComponent() {
         sx={{ mb: 2 }}
       />
 
-      {/* Password Field */}
       <Typography variant="body1" sx={{ mb: 1 }}>
         Password
       </Typography>
@@ -41,7 +39,6 @@ function LoginComponent() {
         sx={{ mb: 3 }}
       />
 
-      {/* Sign In Button */}
       <Button
         variant="contained"
         fullWidth
@@ -56,7 +53,6 @@ function LoginComponent() {
         Sign In
       </Button>
 
-      {/* Forgot Password Link */}
       <Link
         href="#"
         variant="body2"
