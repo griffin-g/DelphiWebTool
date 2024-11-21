@@ -44,7 +44,6 @@ function ResponsiveAppBar() {
     <AppBar position="static" color = "primary" enableColorOnDark>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -59,7 +58,7 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            Cyber3
           </Typography>
 
           {/* Mobile Menu Icon */}
@@ -72,7 +71,7 @@ function ResponsiveAppBar() {
               onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <MenuIcon />
+            <MenuIcon />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -106,7 +105,7 @@ function ResponsiveAppBar() {
               <Button
                 key={page.name}
                 component={Link}
-                to={page.path} // Use Link component to navigate
+                to={page.path}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
