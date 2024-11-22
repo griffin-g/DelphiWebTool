@@ -7,10 +7,33 @@ router.get("/", async (req, res, next) => {
   res.json(allUsers);
 });
 
-router.get("/:id", async (req, res, next) => {
+router.get("/user-id/:id", async (req, res, next) => {
   console.log(req.params);
   const user = await Users.findByPk(req.params.id);
   res.json(user);
+});
+
+router.post("/email", async (req, res, next) => {
+  console.log(req.body);
+  email = req.body.email;
+  password = req.body.password;
+  try {
+    const user = await Users.findOne({
+      where: { email: email, password_hash: password }, // Condition to match email
+    });
+
+    if (user) {
+      console.log("User found:", user.toJSON());
+      res.json(user);
+      return user;
+    } else {
+      console.log("No user found with this email.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error finding user:", error);
+    throw error;
+  }
 });
 
 router.post("/", async (req, res) => {
