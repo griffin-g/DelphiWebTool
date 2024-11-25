@@ -4,6 +4,9 @@ import CreateSurvey from "./pages/CreateSurvey";
 import AboutUs from "./pages/AboutUs";
 import LoginPage from "./pages/LoginPage";
 import AuthProvider from "./AuthProvider";
+import SurveyForm from "./pages/AnswerSurvey";
+import ResponsiveAppBar from "./pages/page-components/app-bar";
+
 function App() {
   return (
     <AuthProvider>
