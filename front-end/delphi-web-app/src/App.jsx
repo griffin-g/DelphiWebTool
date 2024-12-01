@@ -5,6 +5,7 @@ import AboutUs from "./pages/AboutUs";
 import LoginPage from "./pages/LoginPage";
 import AuthProvider from "./AuthProvider";
 import SignUpPage from "./pages/SignUpPage";
+import InviteModalExample from "./pages/InviteModalExample";
 function App() {
   return (
     <AuthProvider>
@@ -17,6 +18,7 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/invite-example" element={<InviteModalExample />} />
         </Routes>
       </div>
     </AuthProvider>
