@@ -1,6 +1,10 @@
 var express = require("express");
 var router = express.Router();
 const { Users } = require("../models");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+
+const JWT_SECRET = "your-secret-key"; // Replace with a secure secret key
 /* GET users listing. */
 router.get("/", async (req, res, next) => {
   const allUsers = await Users.findAll();
@@ -36,6 +40,52 @@ router.post("/email", async (req, res, next) => {
   }
 });
 
+router.post("/login", async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    const user = await Users.findOne({ where: { email } });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Compare the provided password with the hashed password
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    if (!isPasswordValid)
+      return res.status(401).json({ message: "Invalid credentials" });
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user.user_id, email: user.email, first_name: user.first_name },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    res.json({ message: "Login successful", token });
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+/* Register a new user (hashing password). */
+router.post("/register", async (req, res) => {
+  const { email, password_hash, first_name, last_name } = req.body;
+  password = password_hash;
+  try {
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user with hashed password
+    const newUser = await Users.create({
+      email,
+      password_hash: hashedPassword,
+      first_name,
+      last_name,
+    });
+    res
+      .status(201)
+      .json({ message: "User registered successfully", user: newUser });
+  } catch (error) {
+    console.error("Error during registration:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 router.post("/", async (req, res) => {
   const newUser = req.body;
   console.log("user", newUser);

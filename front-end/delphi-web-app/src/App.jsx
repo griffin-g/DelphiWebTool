@@ -4,6 +4,7 @@ import CreateSurvey from "./pages/CreateSurvey";
 import AboutUs from "./pages/AboutUs";
 import LoginPage from "./pages/LoginPage";
 import AuthProvider from "./AuthProvider";
+import SignUpPage from "./pages/SignUpPage";
 function App() {
   return (
     <AuthProvider>
@@ -15,6 +16,7 @@ function App() {
           />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/sign-up" element={<SignUpPage />} />
         </Routes>
       </div>
     </AuthProvider>
