@@ -65,6 +65,7 @@ function Header() {
           container
           sx={{
             width: "100%",
+            minWidth: "790px",
             justifyContent: "space-between",
             paddingX: "20%",
             alignContent: "center",
