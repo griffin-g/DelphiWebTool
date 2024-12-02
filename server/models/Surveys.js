@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    elements: {
+      type: DataTypes.JSON,
+      allowNull: false,
+    },
     is_active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

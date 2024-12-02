@@ -14,14 +14,6 @@ module.exports = (sequelize, DataTypes) => {
         key: "response_id",
       },
     },
-    question_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Questions",
-        key: "question_id",
-      },
-    },
     answer: {
       unique: false,
       type: DataTypes.STRING,

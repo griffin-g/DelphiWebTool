@@ -1,36 +1,47 @@
-import { useState } from "react";
+import React from "react";
 
 function QuestionList({ questions, onEditQuestion, onDeleteQuestion }) {
-  // react states
-  const [isEditing, setIsEditing] = useState(null); // tracks question being edited
-  const [editTitle, setEditTitle] = useState(""); // title
-  const [editDescription, setEditDescription] = useState(""); // question description
-  const [editChoices, setEditChoices] = useState([]); // question choices -> ranking, multiple choice, checkboxes 
-
-  // Start editing a question
-  const handleEditClick = (index) => {
-    setIsEditing(index);
-    const question = questions[index];
-    setEditTitle(question.title);
-    setEditDescription(question.description);
-    setEditChoices(question.choices || []);
-  };
-
-  // Save the edited question
-  const handleSaveClick = (index) => {
+  // Update question details
+  const handleEditChange = (index, field, value) => {
     const updatedQuestion = {
       ...questions[index],
-      title: editTitle,
-      description: editDescription,
-      choices: editChoices,
+      [field]: value,
     };
     onEditQuestion(index, updatedQuestion);
-    setIsEditing(null);
   };
 
-  // Delete a question
-  const handleDeleteClick = (index) => {
-    onDeleteQuestion(index);
+  // Update choices
+  const handleEditChoice = (questionIndex, choiceIndex, value) => {
+    const updatedChoices = [...(questions[questionIndex].choices || [])];
+    updatedChoices[choiceIndex] = value;
+
+    const updatedQuestion = {
+      ...questions[questionIndex],
+      choices: updatedChoices,
+    };
+    onEditQuestion(questionIndex, updatedQuestion);
+  };
+
+  // Add a new choice
+  const handleAddChoice = (index) => {
+    const updatedQuestion = {
+      ...questions[index],
+      choices: [...(questions[index].choices || []), ""],
+    };
+    onEditQuestion(index, updatedQuestion);
+  };
+
+  // Delete a choice
+  const handleDeleteChoice = (questionIndex, choiceIndex) => {
+    const updatedChoices = (questions[questionIndex].choices || []).filter(
+      (_, idx) => idx !== choiceIndex
+    );
+
+    const updatedQuestion = {
+      ...questions[questionIndex],
+      choices: updatedChoices,
+    };
+    onEditQuestion(questionIndex, updatedQuestion);
   };
 
   return (
@@ -40,50 +51,52 @@ function QuestionList({ questions, onEditQuestion, onDeleteQuestion }) {
       <ul>
         {questions.map((question, index) => (
           <li key={index}>
-            {isEditing === index ? (
-              <div>
+            <div>
+              <label>
+                Title:
                 <input
                   type="text"
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                  placeholder="Edit question title"
+                  value={question.title}
+                  onChange={(e) => handleEditChange(index, "title", e.target.value)}
                 />
+              </label>
+
+              <label>
+                Description:
                 <input
                   type="text"
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                  placeholder="Edit question description"
+                  value={question.description}
+                  onChange={(e) =>
+                    handleEditChange(index, "description", e.target.value)
+                  }
                 />
-                {question.type === "ranking" || question.type === "checkbox" ? (
-                  <div>
-                    {editChoices.map((choice, idx) => (
-                      <div key={idx}>
+              </label>
+
+              {["ranking", "checkbox"].includes(question.type) && (
+                <div>
+                  <label>Choices:</label>
+                  <ul>
+                    {question.choices?.map((choice, choiceIndex) => (
+                      <li key={choiceIndex}>
                         <input
                           type="text"
                           value={choice}
                           onChange={(e) =>
-                            setEditChoices(
-                              editChoices.map((c, i) =>
-                                i === idx ? e.target.value : c
-                              )
-                            )
+                            handleEditChoice(index, choiceIndex, e.target.value)
                           }
                         />
-                      </div>
+                        <button onClick={() => handleDeleteChoice(index, choiceIndex)}>
+                          Delete
+                        </button>
+                      </li>
                     ))}
-                  </div>
-                ) : null}
-                <button onClick={() => handleSaveClick(index)}>Save</button>
-                <button onClick={() => setIsEditing(null)}>Cancel</button>
-              </div>
-            ) : (
-              <div>
-                <h3>{question.title}</h3>
-                <p>{question.description}</p>
-                <button onClick={() => handleEditClick(index)}>Edit</button>
-                <button onClick={() => handleDeleteClick(index)}>Delete</button>
-              </div>
-            )}
+                  </ul>
+                  <button onClick={() => handleAddChoice(index)}>Add Choice</button>
+                </div>
+              )}
+
+              <button onClick={() => onDeleteQuestion(index)}>Delete Question</button>
+            </div>
           </li>
         ))}
       </ul>

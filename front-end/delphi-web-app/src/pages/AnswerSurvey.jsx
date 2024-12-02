@@ -4,7 +4,7 @@ import { Model } from "survey-core"; // SurveyJS core functionality
 import "survey-core/defaultV2.min.css"; // SurveyJS default styling
 
 const SurveyForm = ({ surveyId }) => {
-  const [surveyModelg, setSurveyModel] = useState(null);
+  const [surveyModel, setSurveyModel] = useState(null);
 
   // Mock data for survey and questions (for testing without backend)
   const mockSurvey = {

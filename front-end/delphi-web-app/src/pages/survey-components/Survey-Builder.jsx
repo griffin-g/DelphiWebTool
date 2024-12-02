@@ -19,7 +19,6 @@ function SurveyBuilder({ onAddQuestion }) {
 
     onAddQuestion(newQuestion);
 
-    // Reset fields
     setQuestionTitle("");
     setQuestionDescription("");
     setChoices([]);
