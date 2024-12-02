@@ -5,7 +5,16 @@ import Button from "@mui/material/Button";
 import LoginIcon from "@mui/icons-material/Login";
 import { Link } from "react-router-dom";
 import { Typography } from "@mui/material";
+import { useAuth } from "../AuthProvider";
 function Header() {
+  const auth = useAuth();
+  console.log("Current user data: ", auth.user);
+
+  const handleLogout = () => {
+    if (auth.logOut) {
+      auth.logOut(); // Call the logout function from AuthProvider
+    }
+  };
   return (
     <Box>
       <Grid
@@ -35,30 +44,56 @@ function Header() {
             </Typography>
           </Grid>
           <Grid container sx={{ height: "68px", alignItems: "center" }}>
-            <Link
-              to="/login"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <LoginIcon
-                sx={{ width: "48px", height: "48px", marginRight: "10px" }}
-              />
-            </Link>
-            <Button
-              variant="contained"
-              component={Link}
-              to="/sign-up"
-              sx={{
-                width: "166px",
-                height: "68px",
-                backgroundColor: "#A58686",
-                padding: "0px",
-                "&:hover": {
-                  backgroundColor: "#A58686", // Hover color
-                },
-              }}
-            >
-              Sign Up
-            </Button>
+            {auth.user ? (
+              // If user data exists, show Logout button
+              <Button
+                variant="contained"
+                onClick={handleLogout}
+                sx={{
+                  width: "166px",
+                  height: "68px",
+                  backgroundColor: "#A58686",
+                  padding: "0px",
+                  "&:hover": {
+                    backgroundColor: "#A58686", // Hover color
+                  },
+                }}
+              >
+                Logout
+              </Button>
+            ) : (
+              // If no user data, show Login and Sign Up buttons
+              <>
+                <Link
+                  to="/login"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <LoginIcon
+                    sx={{
+                      width: "48px",
+                      height: "48px",
+                      marginRight: "10px",
+                    }}
+                  />
+                </Link>
+                <Button
+                  variant="contained"
+                  component={Link}
+                  to="/sign-up"
+                  sx={{
+                    width: "166px",
+                    height: "68px",
+                    backgroundColor: "#A58686",
+                    padding: "0px",
+                    "&:hover": {
+                      backgroundColor: "#A58686", // Hover color
+                    },
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
           </Grid>
         </Grid>
         <Grid
