@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSurvey } from "./survey-components/UseSurvey";
 import QuestionList from "./survey-components/Question-List";
 import QuestionForm from "./survey-components/Question-Form";
+import Header from "../Components/Header";
 
 const EditSurvey = () => {
   const { surveyID } = useParams(); // Get surveyID from the URL params
@@ -47,6 +48,7 @@ const EditSurvey = () => {
 
   return (
     <div>
+      <Header />
       <h1>Edit Survey: {title || "Untitled Survey"}</h1>
 
       <QuestionForm

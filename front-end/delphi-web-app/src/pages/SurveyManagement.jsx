@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../Components/Header";
 
 const SurveyManagement = ({ userID }) => {
   const [surveys, setSurveys] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -12,6 +12,7 @@ const SurveyManagement = ({ userID }) => {
       const response = await fetch(`http://localhost:3001/surveys/user-surveys/${userID}`);
       if (!response.ok) throw new Error("Failed to fetch surveys");
       const data = await response.json();
+      
       setSurveys(data);
     } catch (error) {
       setError(error.message);
@@ -24,12 +25,14 @@ const SurveyManagement = ({ userID }) => {
     fetchSurveys();
   }, [userID]);
 
-  if (loading) return <p>Loading surveys...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div>
+      <Header />
       <h1>Survey Management</h1>
+      <button onClick={() => navigate(`/create-survey`)}>Create New Survey</button>
+      
       {surveys.length === 0 ? (
         <p>No surveys available.</p>
       ) : (

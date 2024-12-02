@@ -120,7 +120,7 @@ function Header() {
           <Typography
             variant="h6"
             component="a"
-            href="/about-us"
+            href="/manage-survey"
             sx={{
               color: "inherit", // Default color
               textDecoration: "none", // No underline
