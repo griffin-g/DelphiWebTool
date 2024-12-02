@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const loginAction = async (email, password) => {
     try {
-      const response = await axios.post("http://localhost:3001/users/email/", {
+      const response = await axios.post("http://localhost:3001/users/login/", {
         email,
         password,
       });
@@ -20,9 +20,9 @@ const AuthProvider = ({ children }) => {
       console.log("res", res);
       if (res.data) {
         setUser(res.data);
-        //setToken(res.token);
-        //localStorage.setItem("site", res.token);
-        localStorage.setItem("user", res.data);
+        setToken(res.token);
+        localStorage.setItem("site", res.token);
+        //localStorage.setItem("user", res.data);
         navigate("/about-us");
         return;
       }
@@ -31,7 +31,35 @@ const AuthProvider = ({ children }) => {
       console.error(err);
     }
   };
+  const signUpAction = async (first_name, last_name, email, password_hash) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/users/register/",
+        {
+          first_name,
+          last_name,
+          email,
+          password_hash,
+          //formData,
+        }
+      );
 
+      //const res = await response.json();
+      const res = response;
+      console.log("res", res);
+      if (res.data) {
+        //setUser(res.data);
+        //setToken(res.token);
+        //localStorage.setItem("site", res.token);
+        //localStorage.setItem("user", res.data);
+        navigate("/login");
+        return;
+      }
+      throw new Error(res.message);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   const logOut = () => {
     setUser(null);
     setToken("");
@@ -40,7 +68,9 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, loginAction, logOut }}>
+    <AuthContext.Provider
+      value={{ token, user, loginAction, logOut, signUpAction }}
+    >
       {children}
     </AuthContext.Provider>
   );

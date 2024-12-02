@@ -3,8 +3,6 @@ import { Box, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 
 function LoginComponent() {
@@ -12,6 +10,7 @@ function LoginComponent() {
     email: "",
     password: "",
   });
+
   const auth = useAuth();
   const handleSubmitEvent = (e) => {
     e.preventDefault();

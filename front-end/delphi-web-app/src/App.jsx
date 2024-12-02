@@ -8,6 +8,8 @@ import SurveyForm from "./pages/AnswerSurvey";
 import SurveyManagement from "./pages/SurveyManagement";
 import EditSurvey from "./pages/EditSurvey";
 import ResponsiveAppBar from "./pages/page-components/app-bar";
+import SignUpPage from "./pages/SignUpPage";
+import InviteModalExample from "./pages/InviteModalExample";
 
 function App() {
   const userID = 1;
@@ -26,6 +28,8 @@ function App() {
           <Route path="/edit-survey/:surveyID" element={<EditSurvey />}/>
           {/* <Route path="/view-survey/:surveyID" element={<ViewSurvey />}/> */}
 
+          <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/invite-example" element={<InviteModalExample />} />
         </Routes>
       </div>
     </AuthProvider>

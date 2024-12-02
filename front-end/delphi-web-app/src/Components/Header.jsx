@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid2";
 import Button from "@mui/material/Button";
 import LoginIcon from "@mui/icons-material/Login";
 import { Link } from "react-router-dom";
-
+import { Typography } from "@mui/material";
 function Header() {
   return (
     <Box>
@@ -19,13 +19,20 @@ function Header() {
             paddingX: "20px",
             justifyContent: "space-between",
             width: "100%",
+            height: "auto",
+            alignContent: "center",
           }}
         >
-          <Grid
-            item
-            sx={{ height: "40px", backgroundColor: "grey", width: "auto" }}
-          >
-            Delphi Web App
+          <Grid item sx={{ height: "40px", width: "auto" }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                color: "black",
+              }}
+            >
+              Delphi Web App
+            </Typography>
           </Grid>
           <Grid container sx={{ height: "68px", alignItems: "center" }}>
             <Link
@@ -53,6 +60,100 @@ function Header() {
               Sign Up
             </Button>
           </Grid>
+        </Grid>
+        <Grid
+          container
+          sx={{
+            width: "100%",
+            minWidth: "790px",
+            justifyContent: "space-between",
+            paddingX: "20%",
+            alignContent: "center",
+          }}
+        >
+          <Typography
+            variant="h6"
+            component="a"
+            href="/about-us"
+            sx={{
+              color: "inherit", // Default color
+              textDecoration: "none", // No underline
+              "&:hover": {
+                color: "white", // Hover color
+              },
+            }}
+          >
+            About Us
+          </Typography>
+          <Box
+            sx={{
+              width: "1px",
+              height: "20px",
+              backgroundColor: "black",
+              margin: "0 10px",
+              paddingTop: "10px",
+            }}
+          />
+          <Typography
+            variant="h6"
+            component="a"
+            href="/about-us"
+            sx={{
+              color: "inherit", // Default color
+              textDecoration: "none", // No underline
+              "&:hover": {
+                color: "white", // Hover color
+              },
+            }}
+          >
+            Investigate The Delphi Method
+          </Typography>
+          <Box
+            sx={{
+              width: "1px",
+              height: "20px",
+              backgroundColor: "black",
+              margin: "0 10px",
+              paddingTop: "10px",
+            }}
+          />
+          <Typography
+            variant="h6"
+            component="a"
+            href="/about-us"
+            sx={{
+              color: "inherit", // Default color
+              textDecoration: "none", // No underline
+              "&:hover": {
+                color: "white", // Hover color
+              },
+            }}
+          >
+            Manage Surveys
+          </Typography>
+          <Box
+            sx={{
+              width: "1px",
+              height: "20px",
+              backgroundColor: "black",
+              margin: "0 10px",
+              paddingTop: "10px",
+            }}
+          />
+          <Typography
+            variant="h6"
+            component="a"
+            href="/about-us"
+            sx={{
+              color: "inherit", // Default color
+              textDecoration: "none", // No underline
+              "&:hover": {
+                color: "white", // Hover color
+              },
+            }}
+          >
+            Participating Surveys
+          </Typography>
         </Grid>
       </Grid>
     </Box>
