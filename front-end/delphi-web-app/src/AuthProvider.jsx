@@ -1,7 +1,7 @@
 import { useContext, createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { jwtDecode } from "jwt-decode";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -19,8 +19,8 @@ const AuthProvider = ({ children }) => {
       const res = response;
       console.log("res", res);
       if (res.data) {
-        setUser(res.data);
-        setToken(res.token);
+        setUser(jwtDecode(res.data.token));
+        setToken(res.data.token);
         localStorage.setItem("site", res.token);
         //localStorage.setItem("user", res.data);
         navigate("/about-us");
@@ -64,7 +64,7 @@ const AuthProvider = ({ children }) => {
     setUser(null);
     setToken("");
     localStorage.removeItem("site");
-    navigate("/login");
+    navigate("/about-us");
   };
 
   return (
