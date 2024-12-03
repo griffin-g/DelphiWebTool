@@ -10,9 +10,7 @@ import EditSurvey from "./pages/EditSurvey";
 import ResponsiveAppBar from "./pages/page-components/app-bar";
 import SignUpPage from "./pages/SignUpPage";
 import InviteModalExample from "./pages/InviteModalExample";
-
 function App() {
-  const userID = 1;
   return (
     <AuthProvider>
       <div>
@@ -23,9 +21,9 @@ function App() {
           />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path='/answer-survey' element={<SurveyForm/>}/>
-          <Route path='/manage-survey'  element={<SurveyManagement userID={userID}/>}/>
-          <Route path="/edit-survey/:surveyID" element={<EditSurvey />}/>
+          <Route path="/answer-survey" element={<SurveyForm />} />
+          <Route path="/manage-survey" element={<SurveyManagement />} />
+          <Route path="/edit-survey/:surveyID" element={<EditSurvey />} />
           {/* <Route path="/view-survey/:surveyID" element={<ViewSurvey />}/> */}
 
           <Route path="/sign-up" element={<SignUpPage />} />

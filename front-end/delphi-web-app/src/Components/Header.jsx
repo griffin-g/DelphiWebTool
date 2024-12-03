@@ -6,6 +6,8 @@ import LoginIcon from "@mui/icons-material/Login";
 import { Link } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { useAuth } from "../AuthProvider";
+import { useNavigate } from "react-router-dom";
+
 function Header() {
   const auth = useAuth();
   console.log("Current user data: ", auth.user);
@@ -15,6 +17,7 @@ function Header() {
       auth.logOut(); // Call the logout function from AuthProvider
     }
   };
+  const navigate = useNavigate();
   return (
     <Box>
       <Grid
@@ -109,9 +112,12 @@ function Header() {
           <Typography
             variant="h6"
             component="a"
-            href="/about-us"
+            onClick={() => {
+              navigate("/about-us");
+            }}
             sx={{
               color: "inherit", // Default color
+              cursor: "pointer",
               textDecoration: "none", // No underline
               "&:hover": {
                 color: "white", // Hover color
@@ -132,7 +138,7 @@ function Header() {
           <Typography
             variant="h6"
             component="a"
-            href="/about-us"
+            //onClick={navigate("/about-us")}
             sx={{
               color: "inherit", // Default color
               textDecoration: "none", // No underline
@@ -155,9 +161,13 @@ function Header() {
           <Typography
             variant="h6"
             component="a"
-            href="/manage-survey"
+            onClick={() => {
+              navigate("/manage-survey");
+              //console.log("in on click");
+            }}
             sx={{
               color: "inherit", // Default color
+              cursor: "pointer",
               textDecoration: "none", // No underline
               "&:hover": {
                 color: "white", // Hover color

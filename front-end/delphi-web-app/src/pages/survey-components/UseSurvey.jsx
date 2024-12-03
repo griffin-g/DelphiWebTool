@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "../../AuthProvider";
 
 export const useSurvey = (surveyID) => {
   const [title, setTitle] = useState(""); // Title state
@@ -7,7 +8,7 @@ export const useSurvey = (surveyID) => {
   const [showPreview, setShowPreview] = useState(false);
 
   const fetchedSurveyRef = useRef(false); // To track if survey has been fetched already
-
+  const auth = useAuth();
   // Function to fetch survey data based on surveyID
   const fetchSurvey = async () => {
     if (fetchedSurveyRef.current) return;
@@ -37,12 +38,16 @@ export const useSurvey = (surveyID) => {
 
   const handleEditQuestion = (index, updatedQuestion) => {
     setQuestions((prevQuestions) =>
-      prevQuestions.map((question, i) => (i === index ? updatedQuestion : question))
+      prevQuestions.map((question, i) =>
+        i === index ? updatedQuestion : question
+      )
     );
   };
 
   const handleDeleteQuestion = (index) => {
-    setQuestions((prevQuestions) => prevQuestions.filter((_, i) => i !== index));
+    setQuestions((prevQuestions) =>
+      prevQuestions.filter((_, i) => i !== index)
+    );
   };
 
   const handleSaveSurvey = async () => {
@@ -58,23 +63,26 @@ export const useSurvey = (surveyID) => {
       })),
     };
 
-    const userID = 1;
-
+    // const userID = 1;
+    const userID = auth.user.id;
     setSurveyData(surveyData);
     console.log("SurveyJS Format:", JSON.stringify(surveyData, null, 2));
 
     try {
-      const response = await fetch("http://localhost:3001/surveys/save-survey", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          surveyJSON: surveyData,
-          title,
-          userID,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:3001/surveys/save-survey",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            surveyJSON: surveyData,
+            title,
+            userID,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to save survey");

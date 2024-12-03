@@ -1,4 +1,4 @@
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -8,6 +8,10 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("site") || "");
   const navigate = useNavigate();
+  useEffect(() => {
+    if (localStorage.getItem("site"))
+      setUser(jwtDecode(localStorage.getItem("site")));
+  }, []);
   const loginAction = async (email, password) => {
     try {
       const response = await axios.post("http://localhost:3001/users/login/", {
@@ -21,8 +25,8 @@ const AuthProvider = ({ children }) => {
       if (res.data) {
         setUser(jwtDecode(res.data.token));
         setToken(res.data.token);
-        localStorage.setItem("site", res.token);
-        //localStorage.setItem("user", res.data);
+        localStorage.setItem("site", res.data.token);
+        localStorage.setItem("user", jwtDecode(res.data.token));
         navigate("/about-us");
         return;
       }
