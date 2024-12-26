@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import { useAuth } from "../../AuthProvider";
 
 export const useSurvey = (surveyID) => {
@@ -13,12 +14,9 @@ export const useSurvey = (surveyID) => {
   const fetchSurvey = async () => {
     if (fetchedSurveyRef.current) return;
     try {
-      const response = await fetch(`http://localhost:3001/surveys/${surveyID}`);
-      if (!response.ok) throw new Error("Failed to fetch survey");
-
-      const data = await response.json();
-      setTitle(data.title);
-      setQuestions(data.elements);
+      const response = await axios.get(`http://localhost:3001/surveys/${surveyID}`);
+      setTitle(response.data.title);
+      setQuestions(response.data.elements);
       // Mark as fetched
       fetchedSurveyRef.current = true;
     } catch (error) {
@@ -69,28 +67,21 @@ export const useSurvey = (surveyID) => {
     console.log("SurveyJS Format:", JSON.stringify(surveyData, null, 2));
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "http://localhost:3001/surveys/save-survey",
         {
-          method: "POST",
+          surveyJSON: surveyData,
+          title,
+          userID,
+        },
+        {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            surveyJSON: surveyData,
-            title,
-            userID,
-          }),
         }
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to save survey");
-      }
-
-      const data = await response.json();
-      console.log("Survey saved successfully:", data);
-      return data;
+      console.log("Survey saved successfully:", response.data);
+      return response.data;
     } catch (error) {
       console.error("Error saving survey:", error);
       throw error;
