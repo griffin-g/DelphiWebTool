@@ -1,3 +1,20 @@
+import React from "react";
+import {
+  Container,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Stack,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 function QuestionForm({
   questionType,
   setQuestionType,
@@ -6,77 +23,83 @@ function QuestionForm({
   questionDescription,
   setQuestionDescription,
   choices,
-  setChoices,
   newChoice,
   setNewChoice,
   addChoice,
   deleteChoice,
 }) {
   return (
-    <div>
-      {/* Select question type */}
-      <label>
-        Question Type:
-        <select
-          value={questionType}
-          onChange={(e) => setQuestionType(e.target.value)}
-        >
-          <option value="text">Text</option>
-          <option value="ranking">Ranking</option>
-          <option value="checkbox">Checkbox</option>
-          {/* Add other question types as needed */}
-        </select>
-      </label>
+    <Container maxWidth="md" sx={{ mt: 4, mb: 4, p: 3, boxShadow: 3, borderRadius: 2 }}> 
+      <Stack spacing={3}>
+        <FormControl fullWidth>
+        <InputLabel id="question-type-label">Question Type</InputLabel>
+        <Select
+            labelId="question-type-label"
+            value= {questionType}
+            onChange={(e) => setQuestionType(e.target.value)}
+          >
+            <MenuItem value="text">Text</MenuItem>
+            <MenuItem value="ranking">Ranking</MenuItem>
+            <MenuItem value="checkbox">Checkbox</MenuItem>
+          </Select>
+        </FormControl>
 
-      {/* Input for question title */}
-      <label>
-        Title:
-        <input
-          type="text"
+        <TextField
+          label="Title"
           placeholder="Enter question title"
-          value={questionTitle}
+          variant="outlined"
+          fullWidth
           required
+          value={questionTitle}
           onChange={(e) => setQuestionTitle(e.target.value)}
         />
-      </label>
 
-      {/* Input for question description */}
-      <label>
-        Description:
-        <input
-          type="text"
+        <TextField
+          label="Description"
           placeholder="Enter question description"
+          variant="outlined"
+          fullWidth
           value={questionDescription}
           onChange={(e) => setQuestionDescription(e.target.value)}
         />
-      </label>
 
-      {/* Choices input for specific question types */}
-      {(questionType === "ranking" || questionType === "checkbox") && (
-        <div>
-          <label>Choices:</label>
+        {(questionType === "ranking" || questionType === "checkbox") && (
           <div>
-            <input
-              type="text"
-              placeholder="Enter a choice"
-              value={newChoice}
-              onChange={(e) => setNewChoice(e.target.value)}
-            />
-            <button onClick={addChoice} disabled={!newChoice.trim()}>
+            <FormControl fullWidth>
+              <TextField
+                label="Choices"
+                placeholder="Enter a choice"
+                variant="outlined"
+                value={newChoice}
+                onChange={(e) => setNewChoice(e.target.value)}
+              />
+            </FormControl>
+            <Button
+              variant="contained"
+              onClick={addChoice}
+              disabled={!newChoice.trim()}
+              sx={{ mt: 2 }}
+            >
               Add Choice
-            </button>
+            </Button>
+            <List>
+              {choices.map((choice, index) => (
+                <ListItem
+                  key={index}
+                  secondaryAction={
+                    <IconButton edge="end" onClick={() => deleteChoice(index)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  }
+                >
+                  <ListItemText primary={choice} />
+                </ListItem>
+              ))}
+            </List>
           </div>
-          <ul>
-            {choices.map((choice, index) => (
-              <li key={index}>
-                {choice}
-                <button onClick={() => deleteChoice(index)}>Delete</button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+        )}
+      </Stack>
+    </Container>
   );
 }
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Box, Button, Container, TextField, Typography, Divider } from "@mui/material";
 import { useSurvey } from "./survey-components/UseSurvey";
 import QuestionList from "./survey-components/Question-List";
 import QuestionForm from "./survey-components/Question-Form";
@@ -13,16 +14,22 @@ const EditSurvey = () => {
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,
-    handleSaveSurvey,
+    handleEditSurvey
   } = useSurvey(surveyID); 
 
   const [questionType, setQuestionType] = useState(""); 
-  const [questionTitle, setQuestionTitleState] = useState("");
+  const [questionTitle, setQuestionTitle] = useState("");
   const [questionDescription, setQuestionDescription] = useState(""); 
-  const [choices, setChoices] = useState([]); 
+  const [choices, setChoices] = useState([]);
   const [newChoice, setNewChoice] = useState("");
 
-  // add a new question with type, title, description, and if mc or ranking, choices
+  const addChoice = () => {
+    if (newChoice.trim()) {
+      setChoices([...choices, newChoice]);
+      setNewChoice(""); // Clear the input field after adding a choice
+    }
+  };
+
   const handleNewQuestion = () => {
     const newQuestion = {
       type: questionType,
@@ -31,7 +38,6 @@ const EditSurvey = () => {
       choices,
     };
 
-    // Check if the new question already exists before adding
     const existingQuestion = questions.find(
       (q) => q.title === newQuestion.title && q.description === newQuestion.description
     );
@@ -39,47 +45,50 @@ const EditSurvey = () => {
       handleAddQuestion(newQuestion);
     }
 
-    // Clear form
-    setQuestionTitleState("");
+    setQuestionTitle("");
     setQuestionDescription("");
     setChoices([]);
     setNewChoice("");
   };
 
   return (
-    <div>
+    <Box>
       <Header />
-      <h1>Edit Survey: {title || "Untitled Survey"}</h1>
+      <Container maxWidth="md" sx={{ mt: 4, p: 2, bgcolor: "#f5f5f5", borderRadius: 2 }}>
+        <Typography variant="h4" gutterBottom>
+          Edit Survey: {title || "Untitled Survey"}
+        </Typography>
 
-      <QuestionForm
-        questionType={questionType}
-        setQuestionType={setQuestionType}
-        questionTitle={questionTitle}
-        setQuestionTitle={setQuestionTitleState}
-        questionDescription={questionDescription}
-        setQuestionDescription={setQuestionDescription}
-        choices={choices}
-        newChoice={newChoice}
-        setNewChoice={setNewChoice}
-        addChoice={() => {
-          if (newChoice) {
-            setChoices([...choices, newChoice]);
-            setNewChoice(""); // Clear the input field after adding a choice
-          }
-        }}
-      />
+        <QuestionForm
+          questionType={questionType}
+          setQuestionType={setQuestionType}
+          questionTitle={questionTitle}
+          setQuestionTitle={setQuestionTitle}
+          questionDescription={questionDescription}
+          setQuestionDescription={setQuestionDescription}
+          choices={choices}
+          newChoice={newChoice}
+          setNewChoice={setNewChoice}
+          addChoice={addChoice}
+        />
 
-      {/* Button to add a new question */}
-      <button onClick={handleNewQuestion}>Add Question</button>
+        <Box sx={{ mt: 2, textAlign: "right" }}>
+          <Button variant="contained" onClick={handleNewQuestion}>Add Question</Button>
+        </Box>
 
-      <QuestionList
-        questions={questions}
-        onEditQuestion={handleEditQuestion}
-        onDeleteQuestion={handleDeleteQuestion}
-      />
+        <Divider sx={{ my: 3 }} />
 
-      <button onClick={handleSaveSurvey}>Save Survey</button>
-    </div>
+        <QuestionList
+          questions={questions}
+          onEditQuestion={handleEditQuestion}
+          onDeleteQuestion={handleDeleteQuestion}
+        />
+
+        <Box sx={{ textAlign: "right", mt: 3 }}>
+          <Button variant="contained" onClick={handleEditSurvey}>Save Survey</Button>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

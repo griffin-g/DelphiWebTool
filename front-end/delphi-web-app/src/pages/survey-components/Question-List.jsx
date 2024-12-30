@@ -1,4 +1,17 @@
 import React from "react";
+import {
+  TextField,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Container,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 
 function QuestionList({ questions, onEditQuestion, onDeleteQuestion }) {
   // Update question details
@@ -45,62 +58,76 @@ function QuestionList({ questions, onEditQuestion, onDeleteQuestion }) {
   };
 
   return (
+    <Container maxWidth="md" sx={{ mt: 4, mb: 4, p: 3, boxShadow: 3, borderRadius: 2 }}> 
     <div>
-      <h2>Questions</h2>
-      {questions.length === 0 && <p>No questions added yet.</p>}
-      <ul>
+      <Typography variant="h4" gutterBottom>
+        Questions
+      </Typography>
+      {questions.length === 0 && (
+        <Typography variant="body1">No questions added yet.</Typography>
+      )}
+      <List>
         {questions.map((question, index) => (
-          <li key={index}>
-            <div>
-              <label>
-                Title:
-                <input
-                  type="text"
-                  value={question.title}
-                  onChange={(e) => handleEditChange(index, "title", e.target.value)}
-                />
-              </label>
-
-              <label>
-                Description:
-                <input
-                  type="text"
-                  value={question.description}
-                  onChange={(e) =>
-                    handleEditChange(index, "description", e.target.value)
-                  }
-                />
-              </label>
-
+          <ListItem key={index} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
+            <Stack spacing={2} sx={{ width: "100%" }}>
+              <TextField
+                label="Title"
+                variant="outlined"
+                fullWidth
+                value={question.title}
+                onChange={(e) => handleEditChange(index, "title", e.target.value)}
+              />
+              <TextField
+                label="Description"
+                variant="outlined"
+                fullWidth
+                value={question.description}
+                onChange={(e) => handleEditChange(index, "description", e.target.value)}
+              />
               {["ranking", "checkbox"].includes(question.type) && (
                 <div>
-                  <label>Choices:</label>
-                  <ul>
+                  <Typography variant="subtitle1">Choices:</Typography>
+                  <List>
                     {question.choices?.map((choice, choiceIndex) => (
-                      <li key={choiceIndex}>
-                        <input
-                          type="text"
+                      <ListItem key={choiceIndex} sx={{ display: "flex", alignItems: "center" }}>
+                        <TextField
+                          variant="outlined"
+                          fullWidth
                           value={choice}
                           onChange={(e) =>
                             handleEditChoice(index, choiceIndex, e.target.value)
                           }
                         />
-                        <button onClick={() => handleDeleteChoice(index, choiceIndex)}>
-                          Delete
-                        </button>
-                      </li>
+                        <IconButton onClick={() => handleDeleteChoice(index, choiceIndex)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </ListItem>
                     ))}
-                  </ul>
-                  <button onClick={() => handleAddChoice(index)}>Add Choice</button>
+                  </List>
+                  <Button
+                    startIcon={<AddIcon />}
+                    variant="contained"
+                    onClick={() => handleAddChoice(index)}
+                    sx={{ mt: 1 }}
+                  >
+                    Add Choice
+                  </Button>
                 </div>
               )}
-
-              <button onClick={() => onDeleteQuestion(index)}>Delete Question</button>
-            </div>
-          </li>
+              <Button
+                startIcon={<DeleteIcon />}
+                variant="outlined"
+                color="error"
+                onClick={() => onDeleteQuestion(index)}
+              >
+                Delete Question
+              </Button>
+            </Stack>
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </div>
+    </Container>
   );
 }
 
