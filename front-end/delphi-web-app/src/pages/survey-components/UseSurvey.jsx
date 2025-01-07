@@ -50,7 +50,7 @@ export const useSurvey = (surveyID) => {
     );
   };
 
-  const handleSaveSurvey = async () => {
+  const handleSaveSurvey = async (isEdit = false) => {
     const surveyData = {
       elements: questions.map((question) => ({
         type: question.type,
@@ -62,32 +62,23 @@ export const useSurvey = (surveyID) => {
         }),
       })),
     };
-
-    // const userID = 1;
+  
     const userID = auth.user.id;
-    setSurveyData(surveyData);
-    console.log("SurveyJS Format:", JSON.stringify(surveyData, null, 2));
-
+  
     try {
-      const response = await fetch(
-        "http://localhost:3001/surveys/save-survey",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            surveyJSON: surveyData,
-            title,
-            userID,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to save survey");
-      }
-
+      const method = isEdit ? "PUT" : "POST";
+      const url = isEdit
+        ? `http://localhost:3001/surveys/${surveyID}`
+        : "http://localhost:3001/surveys/save-survey";
+  
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ surveyJSON: surveyData, title, userID }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to save survey");
+  
       const data = await response.json();
       console.log("Survey saved successfully:", data);
       return data;
@@ -96,6 +87,7 @@ export const useSurvey = (surveyID) => {
       throw error;
     }
   };
+
 
   const handlePreviewSurvey = () => {
     const surveyData = {

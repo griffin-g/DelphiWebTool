@@ -2,48 +2,69 @@ import { useState } from 'react';
 import QuestionForm from './Question-Form';
 
 function SurveyBuilder({ onAddQuestion }) {
-  const [questionTitle, setQuestionTitle] = useState("");
-  const [questionDescription, setQuestionDescription] = useState("");
-  const [questionType, setQuestionType] = useState("text");
-  const [choices, setChoices] = useState([]);
-  const [newChoice, setNewChoice] = useState("");
+  const [questionData, setQuestionData] = useState({
+    title: '',
+    description: '',
+    type: 'text',
+    choices: [],
+    newChoice: '',
+  });
 
-  const addQuestion = () => {
-    const newQuestion = {
-      name: `question${Date.now()}`,
-      type: questionType,
-      title: questionTitle,
-      description: questionDescription,
-      ...((questionType === "ranking" || questionType === "checkbox") && { choices })
-    };
-
-    onAddQuestion(newQuestion);
-
-    setQuestionTitle("");
-    setQuestionDescription("");
-    setChoices([]);
+  const handleFieldChange = (field, value) => {
+    setQuestionData((prev) => ({ ...prev, [field]: value }));
   };
 
   const addChoice = () => {
+    const { newChoice, choices } = questionData;
     if (newChoice.trim()) {
-      setChoices([...choices, newChoice.trim()]);
-      setNewChoice("");
+      setQuestionData({
+        ...questionData,
+        choices: [...choices, newChoice.trim()],
+        newChoice: '',
+      });
     }
+  };
+
+  const deleteChoice = (index) => {
+    setQuestionData((prev) => ({
+      ...prev,
+      choices: prev.choices.filter((_, i) => i !== index),
+    }));
+  };
+
+  const addQuestion = () => {
+    const { type, title, description, choices } = questionData;
+    const newQuestion = {
+      name: `question${Date.now()}`,
+      type,
+      title,
+      description,
+      ...(type === 'ranking' || type === 'checkbox' ? { choices } : {}),
+    };
+    onAddQuestion(newQuestion);
+    setQuestionData({
+      title: '',
+      description: '',
+      type: 'text',
+      choices: [],
+      newChoice: '',
+    });
   };
 
   return (
     <div className="survey-builder">
       <QuestionForm
-        questionType={questionType}
-        setQuestionType={setQuestionType}
-        questionTitle={questionTitle}
-        setQuestionTitle={setQuestionTitle}
-        questionDescription={questionDescription}
-        setQuestionDescription={setQuestionDescription}
-        choices={choices}
-        newChoice={newChoice}
-        setNewChoice={setNewChoice}
+        questionType={questionData.type}
+        setQuestionType={(type) => handleFieldChange('type', type)}
+        questionTitle={questionData.title}
+        setQuestionTitle={(title) => handleFieldChange('title', title)}
+        questionDescription={questionData.description}
+        setQuestionDescription={(desc) => handleFieldChange('description', desc)}
+        choices={questionData.choices}
+        newChoice={questionData.newChoice}
+        setNewChoice={(choice) => handleFieldChange('newChoice', choice)}
         addChoice={addChoice}
+        deleteChoice={deleteChoice}
       />
       <button onClick={addQuestion}>Add Question</button>
     </div>

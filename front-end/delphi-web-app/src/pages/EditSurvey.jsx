@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSurvey } from "./survey-components/UseSurvey";
 import QuestionList from "./survey-components/Question-List";
@@ -14,36 +14,62 @@ const EditSurvey = () => {
     handleEditQuestion,
     handleDeleteQuestion,
     handleSaveSurvey,
-  } = useSurvey(surveyID); 
+  } = useSurvey(surveyID);
 
-  const [questionType, setQuestionType] = useState(""); 
-  const [questionTitle, setQuestionTitleState] = useState("");
-  const [questionDescription, setQuestionDescription] = useState(""); 
-  const [choices, setChoices] = useState([]); 
-  const [newChoice, setNewChoice] = useState("");
+  const [questionData, setQuestionData] = useState({
+    title: "",
+    description: "",
+    type: "text",
+    choices: [],
+    newChoice: "",
+  });
 
-  // add a new question with type, title, description, and if mc or ranking, choices
-  const handleNewQuestion = () => {
-    const newQuestion = {
-      type: questionType,
-      title: questionTitle,
-      description: questionDescription,
-      choices,
-    };
+  const handleFieldChange = (field, value) => {
+    setQuestionData((prev) => ({ ...prev, [field]: value }));
+  };
 
-    // Check if the new question already exists before adding
-    const existingQuestion = questions.find(
-      (q) => q.title === newQuestion.title && q.description === newQuestion.description
-    );
-    if (!existingQuestion) {
-      handleAddQuestion(newQuestion);
+  const addChoice = () => {
+    const { newChoice, choices } = questionData;
+    if (newChoice.trim()) {
+      setQuestionData({
+        ...questionData,
+        choices: [...choices, newChoice.trim()],
+        newChoice: "",
+      });
     }
+  };
 
-    // Clear form
-    setQuestionTitleState("");
-    setQuestionDescription("");
-    setChoices([]);
-    setNewChoice("");
+  const deleteChoice = (index) => {
+    setQuestionData((prev) => ({
+      ...prev,
+      choices: prev.choices.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleNewQuestion = () => {
+    if (
+      questionData.title.trim() &&
+      !questions.some((q) => q.title === questionData.title)
+    ) {
+      const newQuestion = {
+        name: `question${Date.now()}`,
+        type: questionData.type,
+        title: questionData.title,
+        description: questionData.description,
+        ...(questionData.type === "ranking" ||
+        questionData.type === "checkbox"
+          ? { choices: questionData.choices }
+          : {}),
+      };
+      handleAddQuestion(newQuestion);
+      setQuestionData({
+        title: "",
+        description: "",
+        type: "text",
+        choices: [],
+        newChoice: "",
+      });
+    }
   };
 
   return (
@@ -52,25 +78,25 @@ const EditSurvey = () => {
       <h1>Edit Survey: {title || "Untitled Survey"}</h1>
 
       <QuestionForm
-        questionType={questionType}
-        setQuestionType={setQuestionType}
-        questionTitle={questionTitle}
-        setQuestionTitle={setQuestionTitleState}
-        questionDescription={questionDescription}
-        setQuestionDescription={setQuestionDescription}
-        choices={choices}
-        newChoice={newChoice}
-        setNewChoice={setNewChoice}
-        addChoice={() => {
-          if (newChoice) {
-            setChoices([...choices, newChoice]);
-            setNewChoice(""); // Clear the input field after adding a choice
-          }
-        }}
+        questionType={questionData.type}
+        setQuestionType={(type) => handleFieldChange("type", type)}
+        questionTitle={questionData.title}
+        setQuestionTitle={(title) => handleFieldChange("title", title)}
+        questionDescription={questionData.description}
+        setQuestionDescription={(desc) =>
+          handleFieldChange("description", desc)
+        }
+        choices={questionData.choices}
+        newChoice={questionData.newChoice}
+        setNewChoice={(choice) => handleFieldChange("newChoice", choice)}
+        addChoice={addChoice}
+        deleteChoice={deleteChoice}
       />
 
       {/* Button to add a new question */}
-      <button onClick={handleNewQuestion}>Add Question</button>
+      <button onClick={handleNewQuestion} disabled={!questionData.title.trim()}>
+        Add Question
+      </button>
 
       <QuestionList
         questions={questions}
@@ -78,7 +104,8 @@ const EditSurvey = () => {
         onDeleteQuestion={handleDeleteQuestion}
       />
 
-      <button onClick={handleSaveSurvey}>Save Survey</button>
+      {/* Button to save survey */}
+      <button onClick={() => handleSaveSurvey(true)}>Save Survey</button>
     </div>
   );
 };

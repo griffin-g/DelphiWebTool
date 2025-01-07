@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 function QuestionForm({
   questionType,
   setQuestionType,
@@ -6,56 +8,56 @@ function QuestionForm({
   questionDescription,
   setQuestionDescription,
   choices,
-  setChoices,
   newChoice,
   setNewChoice,
   addChoice,
   deleteChoice,
 }) {
   return (
-    <div>
-      {/* Select question type */}
-      <label>
-        Question Type:
-        <select
-          value={questionType}
-          onChange={(e) => setQuestionType(e.target.value)}
-        >
-          <option value="text">Text</option>
-          <option value="ranking">Ranking</option>
-          <option value="checkbox">Checkbox</option>
-          {/* Add other question types as needed */}
-        </select>
-      </label>
+    <div className="question-form">
+      <div className="form-group">
+        <label>
+          Question Type:
+          <select
+            value={questionType}
+            onChange={(e) => setQuestionType(e.target.value)}
+          >
+            <option value="text">Text</option>
+            <option value="ranking">Ranking</option>
+            <option value="checkbox">Checkbox</option>
+          </select>
+        </label>
+      </div>
 
-      {/* Input for question title */}
-      <label>
-        Title:
-        <input
-          type="text"
-          placeholder="Enter question title"
-          value={questionTitle}
-          required
-          onChange={(e) => setQuestionTitle(e.target.value)}
-        />
-      </label>
+      <div className="form-group">
+        <label>
+          Title:
+          <input
+            type="text"
+            placeholder="Enter question title"
+            value={questionTitle}
+            required
+            onChange={(e) => setQuestionTitle(e.target.value)}
+          />
+        </label>
+      </div>
 
-      {/* Input for question description */}
-      <label>
-        Description:
-        <input
-          type="text"
-          placeholder="Enter question description"
-          value={questionDescription}
-          onChange={(e) => setQuestionDescription(e.target.value)}
-        />
-      </label>
+      <div className="form-group">
+        <label>
+          Description:
+          <input
+            type="text"
+            placeholder="Enter question description"
+            value={questionDescription}
+            onChange={(e) => setQuestionDescription(e.target.value)}
+          />
+        </label>
+      </div>
 
-      {/* Choices input for specific question types */}
       {(questionType === "ranking" || questionType === "checkbox") && (
-        <div>
+        <div className="form-group">
           <label>Choices:</label>
-          <div>
+          <div className="choices-input">
             <input
               type="text"
               placeholder="Enter a choice"
@@ -66,9 +68,9 @@ function QuestionForm({
               Add Choice
             </button>
           </div>
-          <ul>
+          <ul className="choices-list">
             {choices.map((choice, index) => (
-              <li key={index}>
+              <li key={index} className="choice-item">
                 {choice}
                 <button onClick={() => deleteChoice(index)}>Delete</button>
               </li>
@@ -79,5 +81,19 @@ function QuestionForm({
     </div>
   );
 }
+
+QuestionForm.propTypes = {
+  questionType: PropTypes.string.isRequired,
+  setQuestionType: PropTypes.func.isRequired,
+  questionTitle: PropTypes.string.isRequired,
+  setQuestionTitle: PropTypes.func.isRequired,
+  questionDescription: PropTypes.string.isRequired,
+  setQuestionDescription: PropTypes.func.isRequired,
+  choices: PropTypes.array.isRequired,
+  newChoice: PropTypes.string.isRequired,
+  setNewChoice: PropTypes.func.isRequired,
+  addChoice: PropTypes.func.isRequired,
+  deleteChoice: PropTypes.func.isRequired,
+};
 
 export default QuestionForm;
