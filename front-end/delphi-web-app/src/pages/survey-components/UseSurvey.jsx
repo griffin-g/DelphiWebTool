@@ -140,7 +140,8 @@ export const useSurvey = (surveyID) => {
         }),
       })),
     };
-
+    console.log("hello");
+    console.log(surveyData);
     setSurveyData(surveyData);
 
     if (surveyData) {

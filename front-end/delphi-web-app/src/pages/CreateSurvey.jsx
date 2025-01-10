@@ -20,6 +20,10 @@ function CreateSurvey() {
   const [questionType, setQuestionType] = useState("text");
   const [choices, setChoices] = useState([]);
   const [newChoice, setNewChoice] = useState("");
+  const [rows, setRows] = useState([]);
+  const [newRow, setNewRow] = useState("");
+  const [columns, setColumns] = useState([]);
+  const [newColumn, setNewColumn] = useState("");
 
   const {
     title,
@@ -52,6 +56,7 @@ function CreateSurvey() {
       title: questionTitle,
       description: questionDescription,
       ...((questionType === "ranking" || questionType === "checkbox") && { choices }),
+      ...(questionType === "matrix" && { rows, columns }),
     };
     handleAddQuestion(newQuestion);
     resetQuestionInputs();
@@ -62,6 +67,10 @@ function CreateSurvey() {
     setQuestionDescription("");
     setChoices([]);
     setNewChoice("");
+    setRows([]);
+    setNewRow("");
+    setColumns([]);
+    setNewColumn("");
   };
 
   const addChoice = () => {
@@ -69,6 +78,32 @@ function CreateSurvey() {
       setChoices([...choices, newChoice.trim()]);
       setNewChoice("");
     }
+  };
+
+  const deleteChoice = (index) => {
+    setChoices(choices.filter((_, i) => i !== index));
+  };
+
+  const addRow = () => {
+    if (newRow.trim()) {
+      setRows([...rows, newRow.trim()]);
+      setNewRow("");
+    }
+  };
+
+  const deleteRow = (index) => {
+    setRows(rows.filter((_, i) => i !== index));
+  };
+
+  const addColumn = () => {
+    if (newColumn.trim()) {
+      setColumns([...columns, newColumn.trim()]);
+      setNewColumn("");
+    }
+  };
+
+  const deleteColumn = (index) => {
+    setColumns(columns.filter((_, i) => i !== index));
   };
 
   const saveSurvey = async () => {
@@ -86,7 +121,7 @@ function CreateSurvey() {
         <Typography variant="h4" gutterBottom>
           Create Survey
         </Typography>
-        
+
         <Box sx={{ mb: 3 }}>
           <TextField
             label="Survey Title"
@@ -121,6 +156,17 @@ function CreateSurvey() {
           newChoice={newChoice}
           setNewChoice={setNewChoice}
           addChoice={addChoice}
+          deleteChoice={deleteChoice}
+          rows={rows}
+          newRow={newRow}
+          setNewRow={setNewRow}
+          addRow={addRow}
+          deleteRow={deleteRow}
+          columns={columns}
+          newColumn={newColumn}
+          setNewColumn={setNewColumn}
+          addColumn={addColumn}
+          deleteColumn={deleteColumn}
         />
         <Box sx={{ textAlign: "right", mt: 2 }}>
           <Button variant="contained" onClick={addQuestion}>

@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.JSON,
       allowNull: false,
     },
+    url: {
+      type: DataTypes.STRING,
+      unique: true
+    },
     is_active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
