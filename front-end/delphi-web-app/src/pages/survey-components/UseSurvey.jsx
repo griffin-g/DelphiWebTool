@@ -7,14 +7,16 @@ export const useSurvey = (surveyID) => {
   const [questions, setQuestions] = useState([]);
   const [surveyData, setSurveyData] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
-
+  const [inviteList, setInviteList] = useState([]);
   const fetchedSurveyRef = useRef(false);
   const auth = useAuth();
   // Function to fetch survey data based on surveyID
   const fetchSurvey = async () => {
     if (fetchedSurveyRef.current) return;
     try {
-      const response = await axios.get(`http://localhost:3001/surveys/${surveyID}`);
+      const response = await axios.get(
+        `http://localhost:3001/surveys/${surveyID}`
+      );
       setTitle(response.data.title);
       setQuestions(response.data.elements);
       // Mark as fetched
@@ -28,7 +30,7 @@ export const useSurvey = (surveyID) => {
     if (surveyID) {
       fetchSurvey();
     }
-  }, [surveyID]); 
+  }, [surveyID]);
 
   const handleAddQuestion = (newQuestion) => {
     setQuestions((prevQuestions) => [...prevQuestions, newQuestion]);
@@ -48,9 +50,37 @@ export const useSurvey = (surveyID) => {
     );
   };
 
+  const saveParticipants = async (inviteList, surveyId) => {
+    try {
+      for (const participant of inviteList) {
+        try {
+          const response = await axios.post(
+            "http://localhost:3001/participants/",
+            {
+              participant_email: participant,
+              survey_id: surveyId,
+            }
+          );
+
+          if (response.status === 200) {
+            console.log(`Participant ${participant} invited successfully`);
+          } else {
+            alert(`Failed to invite participant: ${participant}`);
+          }
+        } catch (error) {
+          console.error(`Error inviting participant ${participant}:`, error);
+          alert(`Error inviting participant: ${participant}`);
+        }
+      }
+    } catch (error) {
+      console.error("Error processing invite list:", error);
+      alert("Error processing invite list");
+    }
+  };
+
   const handleSaveSurvey = async () => {
-    const url = "http://localhost:3001/surveys/save-survey"; 
-  
+    const url = "http://localhost:3001/surveys/save-survey";
+
     const surveyData = {
       elements: questions.map((question) => ({
         type: question.type,
@@ -62,10 +92,10 @@ export const useSurvey = (surveyID) => {
         }),
       })),
     };
-  
+
     const userID = auth.user.id;
     setSurveyData(surveyData);
-  
+
     try {
       const response = await axios.post(
         "http://localhost:3001/surveys/save-survey",
@@ -80,14 +110,17 @@ export const useSurvey = (surveyID) => {
           },
         }
       );
+      //map through participants here
+      console.log("save survey responst", response);
+      saveParticipants(inviteList, response.data.survey_id);
     } catch (error) {
       console.error("Error saving survey:", error);
       throw error;
     }
   };
-  
+
   const handleEditSurvey = async () => {
-    const url = "http://localhost:3001/surveys/edit-survey"; 
+    const url = "http://localhost:3001/surveys/edit-survey";
     const surveyData = {
       elements: questions.map((question) => ({
         type: question.type,
@@ -99,7 +132,7 @@ export const useSurvey = (surveyID) => {
         }),
       })),
     };
-  
+
     const userID = auth.user.id;
     setSurveyData(surveyData);
     try {
@@ -117,12 +150,12 @@ export const useSurvey = (surveyID) => {
           },
         }
       );
-    }  catch (error) {
+    } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error("Axios error response:", error.response); 
+        console.error("Axios error response:", error.response);
         if (error.response) {
           console.error("Axios error status:", error.response.status);
-          console.error("Axios error data:", error.response.data); 
+          console.error("Axios error data:", error.response.data);
         }
       }
     }
@@ -151,17 +184,22 @@ export const useSurvey = (surveyID) => {
     }
   };
 
+  const handleAddInviteList = (newParticipant) => {
+    setInviteList((prevInvites) => [...prevInvites, newParticipant]);
+  };
   return {
     title,
     setSurveyTitle: setTitle,
     questions,
     surveyData,
     showPreview,
+    inviteList,
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,
     handleSaveSurvey,
     handleEditSurvey,
     handlePreviewSurvey,
+    handleAddInviteList,
   };
 };

@@ -11,7 +11,13 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const InviteModal = ({ surveyId, open, onClose }) => {
+const InviteModal = ({
+  surveyId,
+  open,
+  addInviteList,
+  onClose,
+  inviteList,
+}) => {
   const [email, setEmail] = useState("");
   const [participants, setParticipants] = useState([]);
 
@@ -27,6 +33,7 @@ const InviteModal = ({ surveyId, open, onClose }) => {
     }
   };
 
+  console.log("invite list in modal", inviteList);
   // Handle email input change
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -40,18 +47,20 @@ const InviteModal = ({ surveyId, open, onClose }) => {
     }
 
     try {
+      addInviteList(email);
+      setEmail("");
       // Send the invite to the backend
-      const response = await axios.post("http://localhost:3001/participants/", {
-        participant_email: email,
-        survey_id: surveyId,
-      });
+      // const response = await axios.post("http://localhost:3001/participants/", {
+      //   participant_email: email,
+      //   survey_id: surveyId,
+      // });
 
-      if (response.status === 200) {
-        setEmail(""); // Clear input field
-        fetchParticipants(); // Re-fetch the participants list after inviting
-      } else {
-        alert("Failed to invite participant");
-      }
+      // if (response.status === 200) {
+      //   //setEmail(""); // Clear input field
+      //   //fetchParticipants(); // Re-fetch the participants list after inviting
+      // } else {
+      //   alert("Failed to invite participant");
+      // }
     } catch (error) {
       console.error("Error inviting participant:", error);
       alert("Error inviting participant");
@@ -61,7 +70,7 @@ const InviteModal = ({ surveyId, open, onClose }) => {
   // Fetch participants when the modal is opened
   useEffect(() => {
     if (open) {
-      fetchParticipants();
+      //fetchParticipants();
     }
   }, [open]);
 
@@ -90,9 +99,9 @@ const InviteModal = ({ surveyId, open, onClose }) => {
           Invited Participants
         </Typography>
         <List>
-          {participants.map((participant, index) => (
+          {inviteList.map((participant, index) => (
             <ListItem key={index}>
-              <ListItemText primary={participant.participant_email} />
+              <ListItemText primary={participant} />
             </ListItem>
           ))}
         </List>

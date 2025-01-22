@@ -12,6 +12,7 @@ import QuestionForm from "./survey-components/Question-Form";
 import QuestionList from "./survey-components/Question-List";
 import SurveyDisplay from "./survey-components/Survey-Display";
 import { useSurvey } from "./survey-components/UseSurvey";
+import InviteModal from "../Components/InviteModal";
 
 function CreateSurvey() {
   const [tempTitle, setTempTitle] = useState(""); // Temporary state for title input
@@ -24,6 +25,10 @@ function CreateSurvey() {
   const [newRow, setNewRow] = useState("");
   const [columns, setColumns] = useState([]);
   const [newColumn, setNewColumn] = useState("");
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+
+  const handleInviteOpen = () => setIsInviteModalOpen(true);
+  const handleInviteClose = () => setIsInviteModalOpen(false);
 
   const {
     title,
@@ -31,11 +36,13 @@ function CreateSurvey() {
     questions,
     surveyData,
     showPreview,
+    inviteList,
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,
     handleSaveSurvey,
     handlePreviewSurvey,
+    handleAddInviteList,
   } = useSurvey();
 
   // Handlers for title input
@@ -55,7 +62,9 @@ function CreateSurvey() {
       type: questionType,
       title: questionTitle,
       description: questionDescription,
-      ...((questionType === "ranking" || questionType === "checkbox") && { choices }),
+      ...((questionType === "ranking" || questionType === "checkbox") && {
+        choices,
+      }),
       ...(questionType === "matrix" && { rows, columns }),
     };
     handleAddQuestion(newQuestion);
@@ -117,7 +126,10 @@ function CreateSurvey() {
   return (
     <Box>
       <Header />
-      <Container maxWidth="md" sx={{ mt: 4, p: 2, bgcolor: "#f5f5f5", borderRadius: 2 }}>
+      <Container
+        maxWidth="md"
+        sx={{ mt: 4, p: 2, bgcolor: "#f5f5f5", borderRadius: 2 }}
+      >
         <Typography variant="h4" gutterBottom>
           Create Survey
         </Typography>
@@ -184,6 +196,16 @@ function CreateSurvey() {
         />
 
         <Box sx={{ textAlign: "right", mt: 3 }}>
+          <Button variant="contained" onClick={handleInviteOpen} sx={{ mr: 2 }}>
+            Create Invite List
+          </Button>
+          <InviteModal
+            surveyId="1"
+            open={isInviteModalOpen}
+            addInviteList={handleAddInviteList}
+            onClose={handleInviteClose}
+            inviteList={inviteList}
+          />
           <Button variant="contained" onClick={saveSurvey} sx={{ mr: 2 }}>
             Save Survey
           </Button>
