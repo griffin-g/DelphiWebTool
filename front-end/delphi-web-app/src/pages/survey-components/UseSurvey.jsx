@@ -26,9 +26,21 @@ export const useSurvey = (surveyID) => {
     }
   };
 
+  const fetchParticipants = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/participants/survey-id/${surveyId}`
+      );
+      setInviteList(response.data);
+    } catch (error) {
+      console.error("Error fetching participants:", error);
+    }
+  };
+
   useEffect(() => {
     if (surveyID) {
       fetchSurvey();
+      fetchParticipants();
     }
   }, [surveyID]);
 
