@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const crypto = require("crypto");
 const { Surveys } = require("../models");
+const { v4: uuidv4 } = require("uuid"); 
 
 function generateSurveyHash(surveyID, salt) {
   const hash = crypto.createHmac("sha256", salt).update(surveyID.toString()).digest("hex");
@@ -146,21 +147,46 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// publish hashed survey with salt
+// Utility function to hash the token
+function hashToken(token) {
+  const salt = "default_salt"; // Use a salt for extra security
+  return crypto
+    .createHmac("sha256", salt)
+    .update(token)
+    .digest("hex");
+}
+
 router.post("/publish/:id", async (req, res) => {
+  const { accessToken } = req.body;
+  const surveyId = req.params.id;
+
+  if (!accessToken) {
+    return res.status(400).json({ message: "Access token is required" });
+  }
+
   try {
-    const surveyId = req.params.id;
-    const salt = "default_salt"; // TODO: Change at a later date or randomize
-    const hash = generateSurveyHash(surveyId, salt);
+    const uuid = uuidv4(); // Generate a unique UUID
+    const hashedToken = hashToken(accessToken); // Hash the access token
 
     await Surveys.update(
-      { is_published: true, hash },
+      { 
+        is_active: true, 
+        uuid,
+        access_token_hash: hashedToken, 
+      },
       { where: { survey_id: surveyId } }
     );
 
-    res.status(200).json({ message: "Survey published successfully", url: `/surveys/published/${hash}` });
+    res.status(200).json({
+      message: "Survey published successfully",
+      url: `/surveys/published/${uuid}`,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error publishing survey", error });
+    console.error("Error:", error);
+    res.status(500).json({
+      message: "Error publishing survey",
+      error: process.env.NODE_ENV === "production" ? "Internal Server Error" : error.message,
+    });
   }
 });
 

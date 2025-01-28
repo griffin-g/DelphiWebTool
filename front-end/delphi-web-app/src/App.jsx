@@ -10,6 +10,9 @@ import EditSurvey from "./pages/EditSurvey";
 import ResponsiveAppBar from "./pages/page-components/app-bar";
 import SignUpPage from "./pages/SignUpPage";
 import InviteModalExample from "./pages/InviteModalExample";
+import AccessPage from "./pages/AccessPage";
+import PublishPage from "./pages/PublishSurvey";
+
 function App() {
   return (
     <AuthProvider>
@@ -23,7 +26,10 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/answer-survey" element={<SurveyForm />} />
           <Route path="/manage-survey" element={<SurveyManagement />} />
+          <Route path="/access-survey" element={<AccessPage />} />
           <Route path="/edit-survey/:surveyID" element={<EditSurvey />} />
+          <Route path="/publish-survey/:surveyID" element={<PublishPage />} />
+
           {/* <Route path="/view-survey/:surveyID" element={<ViewSurvey />}/> */}
 
           <Route path="/sign-up" element={<SignUpPage />} />
