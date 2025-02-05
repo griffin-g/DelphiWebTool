@@ -1,25 +1,69 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Button, Container, TextField, Typography, Divider } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Grid2,
+  Divider,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { useSurvey } from "./survey-components/UseSurvey";
 import QuestionList from "./survey-components/Question-List";
 import QuestionForm from "./survey-components/Question-Form";
 import Header from "../Components/Header";
+import { useNavigate } from "react-router-dom";
 
 const EditSurvey = () => {
-  const { surveyID } = useParams(); // Get surveyID from the URL params
-  const {
+  const { surveyID, delphiRound } = useParams(); // Get surveyID from the URL params
+  const navigate = useNavigate();
+  const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
+  var {
     title,
     questions,
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,
-    handleEditSurvey
-  } = useSurvey(surveyID); 
+    handleEditSurvey,
+    handleAddRound,
+  } = useSurvey(surveyID, selectedDelphiRound);
 
-  const [questionType, setQuestionType] = useState(""); 
+  // const [loading, setLoading] = useState(true);
+  // const [surveyData, setSurveyData] = useState({
+  //   title: "",
+  //   questions: [],
+  //   handleAddQuestion: () => {},
+  //   handleEditQuestion: () => {},
+  //   handleDeleteQuestion: () => {},
+  //   handleEditSurvey: () => {},
+  // });
+
+  // // const fetchSurveyData = async () => {
+  // //   try {
+  // //     const newSurveyData = await useSurvey(surveyID, selectedDelphiRound); // Ensure useSurvey is async
+  // //     setSurveyData(newSurveyData);
+  // //   } catch (error) {
+  // //     console.error("Error fetching survey data:", error);
+  // //   }
+  // // };
+  // const fetchSurveyData = async () => {
+  //   setLoading(true);
+  //   const newSurveyData = useSurvey(surveyID, selectedDelphiRound);
+  //   setSurveyData(newSurveyData);
+  //   setLoading(false);
+  // };
+
+  // useEffect(() => {
+  //   fetchSurveyData();
+  // }, [surveyID, selectedDelphiRound]);
+
+  const [questionType, setQuestionType] = useState("");
   const [questionTitle, setQuestionTitle] = useState("");
-  const [questionDescription, setQuestionDescription] = useState(""); 
+  const [questionDescription, setQuestionDescription] = useState("");
   const [choices, setChoices] = useState([]);
   const [newChoice, setNewChoice] = useState("");
 
@@ -39,7 +83,9 @@ const EditSurvey = () => {
     };
 
     const existingQuestion = questions.find(
-      (q) => q.title === newQuestion.title && q.description === newQuestion.description
+      (q) =>
+        q.title === newQuestion.title &&
+        q.description === newQuestion.description
     );
     if (!existingQuestion) {
       handleAddQuestion(newQuestion);
@@ -51,13 +97,50 @@ const EditSurvey = () => {
     setNewChoice("");
   };
 
+  const handleDelphiSelect = (event) => {
+    setSelectedDelphiRound(event.target.value);
+    navigate(`/edit-survey/${surveyID}/${event.target.value}`);
+  };
+
   return (
     <Box>
       <Header />
-      <Container maxWidth="md" sx={{ mt: 4, p: 2, bgcolor: "#f5f5f5", borderRadius: 2 }}>
-        <Typography variant="h4" gutterBottom>
-          Edit Survey: {title || "Untitled Survey"}
-        </Typography>
+      <Container
+        maxWidth="md"
+        sx={{ mt: 4, p: 2, bgcolor: "#f5f5f5", borderRadius: 2 }}
+      >
+        <Grid2
+          container
+          direction="row"
+          sx={{ justifyContent: "space-between" }}
+        >
+          <Grid2 container direction="column" sx={{ width: "50%" }}>
+            <Typography variant="h4" gutterBottom>
+              Edit Survey: {title || "Untitled Survey"}
+            </Typography>
+          </Grid2>
+          <Grid2 width="auto">
+            <InputLabel id="delphi-round-label">Delphi Round</InputLabel>
+            <Select
+              labelId="delphi-round-label"
+              id="demo-simple-select"
+              value={selectedDelphiRound}
+              label="selectedDelphiRound"
+              onChange={handleDelphiSelect}
+            >
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+            </Select>
+            <Button
+              variant="contained"
+              sx={{ height: "56px", marginLeft: "10px" }}
+              onClick={handleAddRound}
+            >
+              +
+            </Button>
+          </Grid2>
+        </Grid2>
 
         <QuestionForm
           questionType={questionType}
@@ -73,7 +156,9 @@ const EditSurvey = () => {
         />
 
         <Box sx={{ mt: 2, textAlign: "right" }}>
-          <Button variant="contained" onClick={handleNewQuestion}>Add Question</Button>
+          <Button variant="contained" onClick={handleNewQuestion}>
+            Add Question
+          </Button>
         </Box>
 
         <Divider sx={{ my: 3 }} />
@@ -85,7 +170,9 @@ const EditSurvey = () => {
         />
 
         <Box sx={{ textAlign: "right", mt: 3 }}>
-          <Button variant="contained" onClick={handleEditSurvey}>Save Survey</Button>
+          <Button variant="contained" onClick={handleEditSurvey}>
+            Save Survey
+          </Button>
         </Box>
       </Container>
     </Box>

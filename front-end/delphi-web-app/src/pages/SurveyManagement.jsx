@@ -35,19 +35,28 @@ const SurveyManagement = () => {
       <Typography variant="h4" align="center" sx={{ mt: 4 }}>
         Survey Management
       </Typography>
-      
-      
-      <Grid2 container direction="row" alignItems="center"  sx={{ justifyContent: "space-around", mt: 3 }}>
-      
+
+      <Grid2
+        container
+        direction="row"
+        alignItems="center"
+        sx={{ justifyContent: "center", mt: 3 }}
+      >
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: "#A09260",
+            width: "200px",
+            height: "50px",
+            marginRight: "100px",
+          }}
+          onClick={() => navigate(`/create-survey`)}
+        >
+          Create New Survey
+        </Button>
+
+        <br />
         <Grid2 container direction="column" sx={{ width: "600px", mt: 2 }}>
-          <Button
-            variant="contained"
-            sx={{ backgroundColor: "#A09260", width: "200px", height: "50px" }}
-            onClick={() => navigate(`/create-survey`)}
-          >
-            Create New Survey
-          </Button>
-          <br />
           {surveys.length === 0 ? (
             <Typography align="center">No surveys available.</Typography>
           ) : (
@@ -76,14 +85,20 @@ const SurveyManagement = () => {
                     variant="outlined"
                     color="primary"
                     sx={{ mr: 1 }}
-                    onClick={() => navigate(`/edit-survey/${survey.survey_id}`)}
+                    onClick={() =>
+                      navigate(
+                        `/edit-survey/${survey.survey_id}/${survey.delphi_round}`
+                      )
+                    }
                   >
                     Edit
                   </Button>
                   <Button
                     variant="contained"
                     color="secondary"
-                    onClick={() => navigate(`/publish-survey/${survey.survey_id}`)}
+                    onClick={() =>
+                      navigate(`/publish-survey/${survey.survey_id}`)
+                    }
                   >
                     Publish
                   </Button>

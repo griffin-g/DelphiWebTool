@@ -51,7 +51,7 @@ app.use(function (err, req, res, next) {
   //res.send(error);
 });
 
-db.sequelize.sync(/*{ force: true }*/).then(() => {
+db.sequelize.sync().then(() => {
   app.listen(3001, () => {
     console.log("Server running on port 3001.");
   });

@@ -27,7 +27,10 @@ function App() {
           <Route path="/answer-survey" element={<SurveyForm />} />
           <Route path="/manage-survey" element={<SurveyManagement />} />
           <Route path="/access-survey" element={<AccessPage />} />
-          <Route path="/edit-survey/:surveyID" element={<EditSurvey />} />
+          <Route
+            path="/edit-survey/:surveyID/:delphiRound"
+            element={<EditSurvey />}
+          />
           <Route path="/publish-survey/:surveyID" element={<PublishPage />} />
 
           {/* <Route path="/view-survey/:surveyID" element={<ViewSurvey />}/> */}

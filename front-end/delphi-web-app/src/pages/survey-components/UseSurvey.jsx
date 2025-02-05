@@ -2,23 +2,26 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useAuth } from "../../AuthProvider";
 
-export const useSurvey = (surveyID) => {
+export const useSurvey = (surveyID, delphiRound) => {
   const [title, setTitle] = useState("");
   const [questions, setQuestions] = useState([]);
   const [surveyData, setSurveyData] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [inviteList, setInviteList] = useState([]);
+  const [allQuestions, setAllQuestions] = useState([]);
   const fetchedSurveyRef = useRef(false);
   const auth = useAuth();
   // Function to fetch survey data based on surveyID
   const fetchSurvey = async () => {
-    if (fetchedSurveyRef.current) return;
+    //if (fetchedSurveyRef.current) return;
     try {
       const response = await axios.get(
-        `http://localhost:3001/surveys/${surveyID}`
+        `http://localhost:3001/surveys/${surveyID}/round/${delphiRound}`
       );
       setTitle(response.data.title);
       setQuestions(response.data.elements);
+      setAllQuestions(response.data.elements);
+      console.log("all questions:", response.data.elements);
       // Mark as fetched
       fetchedSurveyRef.current = true;
     } catch (error) {
@@ -40,9 +43,10 @@ export const useSurvey = (surveyID) => {
   useEffect(() => {
     if (surveyID) {
       fetchSurvey();
+      console.log("delphi round", delphiRound);
       fetchParticipants();
     }
-  }, [surveyID]);
+  }, [surveyID, delphiRound]);
 
   const handleAddQuestion = (newQuestion) => {
     setQuestions((prevQuestions) => [...prevQuestions, newQuestion]);
@@ -131,6 +135,45 @@ export const useSurvey = (surveyID) => {
     }
   };
 
+  const handleFindMaxRound = async () => {
+    const url = `http://localhost:3001/surveys/${surveyID}/max-round`;
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching max round:", error);
+      throw error;
+    }
+  };
+
+  const handleAddRound = async () => {
+    const maxRound = await handleFindMaxRound();
+    const newRound = maxRound + 1;
+    console.log("new round", newRound);
+    const userID = auth.user.id;
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/surveys/save-survey/add-round",
+        {
+          surveyID,
+          surveyID,
+          surveyJSON: {},
+          title,
+          userID,
+          delphi_round: newRound,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error saving survey:", error);
+      throw error;
+    }
+  };
+
   const handleEditSurvey = async () => {
     const url = "http://localhost:3001/surveys/edit-survey";
     const surveyData = {
@@ -155,6 +198,7 @@ export const useSurvey = (surveyID) => {
           surveyJSON: surveyData,
           title,
           userID,
+          delphi_round: delphiRound,
         },
         {
           headers: {
@@ -213,5 +257,6 @@ export const useSurvey = (surveyID) => {
     handleEditSurvey,
     handlePreviewSurvey,
     handleAddInviteList,
+    handleAddRound,
   };
 };

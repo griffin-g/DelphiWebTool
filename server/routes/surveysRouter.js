@@ -2,10 +2,13 @@ var express = require("express");
 var router = express.Router();
 const crypto = require("crypto");
 const { Surveys } = require("../models");
-const { v4: uuidv4 } = require("uuid"); 
+const { v4: uuidv4 } = require("uuid");
 
 function generateSurveyHash(surveyID, salt) {
-  const hash = crypto.createHmac("sha256", salt).update(surveyID.toString()).digest("hex");
+  const hash = crypto
+    .createHmac("sha256", salt)
+    .update(surveyID.toString())
+    .digest("hex");
   return hash;
 }
 
@@ -19,6 +22,28 @@ router.get("/:id", async (req, res, next) => {
   console.log(req.params);
   const survey = await Surveys.findByPk(req.params.id);
   res.json(survey);
+});
+
+router.get("/:id/round/:delphi_round", async (req, res, next) => {
+  try {
+    console.log("get with delphi round", req.params);
+
+    const { id, delphi_round } = req.params;
+    console.log("1");
+    const survey = await Surveys.findOne({
+      where: {
+        survey_id: id,
+        delphi_round: delphi_round,
+      },
+    });
+    if (!survey) {
+      console.log("no survey found");
+      return res.status(404).json({ message: "Survey not found" });
+    }
+    res.json(survey);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/user-surveys/:userID", async (req, res, next) => {
@@ -64,12 +89,13 @@ router.post("/", async (req, res) => {
 
 router.post("/save-survey", async (req, res) => {
   const { surveyID, surveyJSON, title, userID } = req.body;
+  console.log("survey json", surveyJSON);
   try {
     const newSurvey = await Surveys.create({
       survey_id: surveyID,
       elements: surveyJSON.elements,
       is_active: true,
-      delphi_round: 0,
+      delphi_round: 1,
       title: title || "Untitled Survey",
       user_id: userID,
     });
@@ -81,12 +107,49 @@ router.post("/save-survey", async (req, res) => {
   }
 });
 
+router.post("/save-survey/add-round", async (req, res) => {
+  const { surveyID, surveyJSON, title, userID, delphi_round } = req.body;
+  try {
+    const newSurvey = await Surveys.create({
+      survey_id: surveyID,
+      elements: [],
+      is_active: true,
+      delphi_round: delphi_round,
+      title: title || "Untitled Survey",
+      user_id: userID,
+    });
+
+    res.status(201).json(newSurvey);
+  } catch (err) {
+    console.error("Error saving survey:", err);
+    res.status(500).send("Failed to save survey");
+  }
+});
+
+router.get("/:id/max-round", async (req, res) => {
+  const survey_id = req.params.id;
+  try {
+    const maxRound = await Surveys.max("delphi_round", {
+      where: { survey_id },
+    });
+    res.status(200).json(maxRound);
+  } catch (error) {
+    console.error("Error fetching max round:", error);
+    res.status(500).json({ error: "Failed to fetch max round" });
+  }
+});
+
 router.put("/edit-survey", async (req, res) => {
-  const { surveyID, surveyJSON, title, userID } = req.body;
+  const { surveyID, surveyJSON, title, userID, delphi_round } = req.body;
 
   try {
-
-    let survey = await Surveys.findByPk(surveyID);
+    //let survey = await Surveys.findByPk(surveyID);
+    const survey = await Surveys.findOne({
+      where: {
+        survey_id: surveyID,
+        delphi_round: delphi_round,
+      },
+    });
     if (!survey) {
       survey = await Surveys.create({
         survey_id: surveyID,
@@ -94,7 +157,7 @@ router.put("/edit-survey", async (req, res) => {
         title: title || "Untitled Survey",
         user_id: userID,
         is_active: true,
-        delphi_round: 0,
+        delphi_round: delphi_round,
       });
     } else {
       survey.elements = surveyJSON.elements;
@@ -108,9 +171,6 @@ router.put("/edit-survey", async (req, res) => {
     res.status(500).send("Failed to save survey");
   }
 });
-
-
-
 
 router.delete("/:id", async (req, res) => {
   const survey_id = req.params.id;
@@ -142,7 +202,7 @@ router.put("/:id", async (req, res) => {
 
     res.status(200).json({ message: "Survey updated successfully" });
   } catch (error) {
-    console.error("Error updating survey:",);
+    console.error("Error updating survey:");
     res.status(500).json({ error: "Failed to update survey" });
   }
 });
@@ -150,10 +210,7 @@ router.put("/:id", async (req, res) => {
 // Utility function to hash the token
 function hashToken(token) {
   const salt = "default_salt"; // Use a salt for extra security
-  return crypto
-    .createHmac("sha256", salt)
-    .update(token)
-    .digest("hex");
+  return crypto.createHmac("sha256", salt).update(token).digest("hex");
 }
 
 router.post("/publish/:id", async (req, res) => {
@@ -169,10 +226,10 @@ router.post("/publish/:id", async (req, res) => {
     const hashedToken = hashToken(accessToken); // Hash the access token
 
     await Surveys.update(
-      { 
-        is_active: true, 
+      {
+        is_active: true,
         uuid,
-        access_token_hash: hashedToken, 
+        access_token_hash: hashedToken,
       },
       { where: { survey_id: surveyId } }
     );
@@ -185,7 +242,10 @@ router.post("/publish/:id", async (req, res) => {
     console.error("Error:", error);
     res.status(500).json({
       message: "Error publishing survey",
-      error: process.env.NODE_ENV === "production" ? "Internal Server Error" : error.message,
+      error:
+        process.env.NODE_ENV === "production"
+          ? "Internal Server Error"
+          : error.message,
     });
   }
 });

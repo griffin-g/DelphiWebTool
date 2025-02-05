@@ -1,5 +1,5 @@
-const { v4: uuidv4 } = require('uuid');
-const crypto = require('crypto');
+const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto");
 
 module.exports = (sequelize, DataTypes) => {
   const Surveys = sequelize.define("Surveys", {
@@ -35,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: false,
     },
     delphi_round: {
+      primaryKey: true,
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -58,10 +59,7 @@ module.exports = (sequelize, DataTypes) => {
 
   function hashToken(token) {
     const salt = "salty_pirate";
-    return crypto
-      .createHmac("sha256", salt)
-      .update(token)
-      .digest("hex");
+    return crypto.createHmac("sha256", salt).update(token).digest("hex");
   }
 
   return Surveys;
