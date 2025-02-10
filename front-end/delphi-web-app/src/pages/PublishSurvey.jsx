@@ -7,24 +7,28 @@ import {
   Typography,
   CircularProgress,
   Alert,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import SurveyDisplay from "./survey-components/Survey-Display";
 import Header from "../Components/Header";
 
 const PublishPage = () => {
-  const { surveyID } = useParams();
+  const { surveyID, delphiRound } = useParams();
   const [tempToken, setTempToken] = useState(""); // Temporary token for input
   const [accessToken, setAccessToken] = useState(""); // Token used for publishing
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [surveyData, setSurveyData] = useState(null);
-
+  const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
   useEffect(() => {
     const fetchSurveyData = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/surveys/${surveyID}`);
+        const response = await fetch(
+          `http://localhost:3001/surveys/${surveyID}`
+        );
         if (!response.ok) throw new Error("Failed to load survey data.");
         const data = await response.json();
         setSurveyData(data);
@@ -47,13 +51,16 @@ const PublishPage = () => {
     setError("");
 
     try {
-      const response = await fetch(`http://localhost:3001/surveys/publish/${surveyID}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ accessToken }),
-      });
+      const response = await fetch(
+        `http://localhost:3001/surveys/publish/${surveyID}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ accessToken }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to publish survey. Please try again.");
@@ -77,15 +84,35 @@ const PublishPage = () => {
   return (
     <>
       <Header />
-      <Container maxWidth="sm" sx={{ mt: 4, bgcolor: "#f5f5f5", p: 4, borderRadius: 2 }}>
+      <Container
+        maxWidth="sm"
+        sx={{ mt: 4, bgcolor: "#f5f5f5", p: 4, borderRadius: 2 }}
+      >
         <Typography variant="h4" gutterBottom>
           Publish Survey
         </Typography>
         <Typography variant="body1" sx={{ mb: 3 }}>
-          To publish your survey, please enter an access token that participants will use to access it.
+          First select the Delphi Round to publish:
+        </Typography>
+        <Select
+          labelId="delphi-round-label"
+          id="demo-simple-select"
+          //value={selectedDelphiRound}
+          label="selectedDelphiRound"
+          //onChange={handleDelphiSelect}
+        >
+          <MenuItem value={1}>1</MenuItem>
+          <MenuItem value={2}>2</MenuItem>
+          <MenuItem value={3}>3</MenuItem>
+        </Select>
+        <Typography variant="body1" sx={{ mb: 3 }}>
+          To publish your survey, please enter an access token that participants
+          will use to access it.
         </Typography>
 
-        {success && <Alert severity="success">Survey published successfully!</Alert>}
+        {success && (
+          <Alert severity="success">Survey published successfully!</Alert>
+        )}
         {error && <Alert severity="error">{error}</Alert>}
 
         <Box sx={{ mb: 3 }}>
@@ -98,7 +125,7 @@ const PublishPage = () => {
             sx={{ mb: 2 }}
             placeholder="Enter a unique access token"
           />
-          
+
           <Button
             variant="outlined"
             color="secondary"
@@ -107,16 +134,19 @@ const PublishPage = () => {
           >
             Submit Token
           </Button>
-          
+
           <Button
             variant="contained"
             color="primary"
             onClick={handlePublish}
             disabled={loading || !accessToken.trim()}
           >
-            {loading ? <CircularProgress size={24} color="secondary" /> : "Publish Survey"}
+            {loading ? (
+              <CircularProgress size={24} color="secondary" />
+            ) : (
+              "Publish Survey"
+            )}
           </Button>
-        
         </Box>
 
         {surveyData ? (
@@ -126,7 +156,6 @@ const PublishPage = () => {
         ) : (
           !error && <CircularProgress />
         )}
-
       </Container>
     </>
   );

@@ -97,7 +97,9 @@ const SurveyManagement = () => {
                     variant="contained"
                     color="secondary"
                     onClick={() =>
-                      navigate(`/publish-survey/${survey.survey_id}`)
+                      navigate(
+                        `/publish-survey/${survey.survey_id}/${survey.delphi_round}`
+                      )
                     }
                   >
                     Publish
