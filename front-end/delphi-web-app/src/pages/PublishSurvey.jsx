@@ -13,6 +13,9 @@ import {
 import { useParams } from "react-router-dom";
 import SurveyDisplay from "./survey-components/Survey-Display";
 import Header from "../Components/Header";
+import { useNavigate } from "react-router-dom";
+import RoundSelect from "../Components/RoundSelect";
+import { useSurvey } from "./survey-components/UseSurvey";
 
 const PublishPage = () => {
   const { surveyID, delphiRound } = useParams();
@@ -23,11 +26,15 @@ const PublishPage = () => {
   const [error, setError] = useState("");
   const [surveyData, setSurveyData] = useState(null);
   const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
+  const navigate = useNavigate();
+
+  const { maxRound } = useSurvey(surveyID, selectedDelphiRound);
+
   useEffect(() => {
     const fetchSurveyData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/surveys/${surveyID}`
+          `http://localhost:3001/surveys/${surveyID}/round/${selectedDelphiRound}`
         );
         if (!response.ok) throw new Error("Failed to load survey data.");
         const data = await response.json();
@@ -38,7 +45,7 @@ const PublishPage = () => {
     };
 
     fetchSurveyData();
-  }, [surveyID]);
+  }, [surveyID, selectedDelphiRound]);
 
   const handlePublish = async () => {
     if (!accessToken.trim()) {
@@ -81,6 +88,12 @@ const PublishPage = () => {
     setError(""); // Clear any previous error
   };
 
+  const handleDelphiSelect = (event) => {
+    setSelectedDelphiRound(event.target.value);
+    console.log("selected round", event.target.value);
+    navigate(`/publish-survey/${surveyID}/${event.target.value}`);
+  };
+
   return (
     <>
       <Header />
@@ -94,17 +107,11 @@ const PublishPage = () => {
         <Typography variant="body1" sx={{ mb: 3 }}>
           First select the Delphi Round to publish:
         </Typography>
-        <Select
-          labelId="delphi-round-label"
-          id="demo-simple-select"
-          //value={selectedDelphiRound}
-          label="selectedDelphiRound"
-          //onChange={handleDelphiSelect}
-        >
-          <MenuItem value={1}>1</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
-          <MenuItem value={3}>3</MenuItem>
-        </Select>
+        <RoundSelect
+          maxRound={maxRound}
+          value={selectedDelphiRound}
+          handleDelphiSelect={handleDelphiSelect}
+        />
         <Typography variant="body1" sx={{ mb: 3 }}>
           To publish your survey, please enter an access token that participants
           will use to access it.

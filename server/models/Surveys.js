@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     uuid: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: uuidv4(), // Generate UUID for each survey
+      defaultValue: () => uuidv4(), // Generate UUID for each survey
       unique: true,
     },
     access_token_hash: {

@@ -9,6 +9,7 @@ export const useSurvey = (surveyID, delphiRound) => {
   const [showPreview, setShowPreview] = useState(false);
   const [inviteList, setInviteList] = useState([]);
   const [allQuestions, setAllQuestions] = useState([]);
+  const [maxRound, setMaxRound] = useState(1);
   const fetchedSurveyRef = useRef(false);
   const auth = useAuth();
   // Function to fetch survey data based on surveyID
@@ -40,11 +41,24 @@ export const useSurvey = (surveyID, delphiRound) => {
     }
   };
 
+  const handleFindMaxRound = async () => {
+    const url = `http://localhost:3001/surveys/${surveyID}/max-round`;
+    try {
+      const response = await axios.get(url);
+      setMaxRound(response.data);
+      //return response.data;
+    } catch (error) {
+      console.error("Error fetching max round:", error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (surveyID) {
       fetchSurvey();
       console.log("delphi round", delphiRound);
       fetchParticipants();
+      handleFindMaxRound();
     }
   }, [surveyID, delphiRound]);
 
@@ -135,19 +149,7 @@ export const useSurvey = (surveyID, delphiRound) => {
     }
   };
 
-  const handleFindMaxRound = async () => {
-    const url = `http://localhost:3001/surveys/${surveyID}/max-round`;
-    try {
-      const response = await axios.get(url);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching max round:", error);
-      throw error;
-    }
-  };
-
   const handleAddRound = async () => {
-    const maxRound = await handleFindMaxRound();
     const newRound = maxRound + 1;
     console.log("new round", newRound);
     const userID = auth.user.id;
@@ -155,7 +157,6 @@ export const useSurvey = (surveyID, delphiRound) => {
       const response = await axios.post(
         "http://localhost:3001/surveys/save-survey/add-round",
         {
-          surveyID,
           surveyID,
           surveyJSON: {},
           title,
@@ -250,6 +251,7 @@ export const useSurvey = (surveyID, delphiRound) => {
     surveyData,
     showPreview,
     inviteList,
+    maxRound,
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,
@@ -258,5 +260,6 @@ export const useSurvey = (surveyID, delphiRound) => {
     handlePreviewSurvey,
     handleAddInviteList,
     handleAddRound,
+    handleFindMaxRound,
   };
 };

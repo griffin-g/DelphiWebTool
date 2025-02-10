@@ -17,7 +17,15 @@ const SurveyManagement = () => {
       );
       if (!response.ok) throw new Error("Failed to fetch surveys");
       const data = await response.json();
-      setSurveys(data);
+      const uniqueSurveys = Object.values(
+        data.reduce((acc, survey) => {
+          if (!acc[survey.survey_id]) {
+            acc[survey.survey_id] = survey;
+          }
+          return acc;
+        }, {})
+      );
+      setSurveys(uniqueSurveys);
     } catch (error) {
       setError(error.message);
     }
@@ -39,7 +47,7 @@ const SurveyManagement = () => {
       <Grid2
         container
         direction="row"
-        alignItems="center"
+        alignItems="start"
         sx={{ justifyContent: "center", mt: 3 }}
       >
         <Button
@@ -76,9 +84,7 @@ const SurveyManagement = () => {
               >
                 <Box>
                   <Typography variant="h6">{survey.title}</Typography>
-                  <Typography variant="body2">
-                    Delphi Round: {survey.delphi_round}
-                  </Typography>
+                  <Typography variant="body2">Delphi Round: {1}</Typography>
                 </Box>
                 <Box>
                   <Button

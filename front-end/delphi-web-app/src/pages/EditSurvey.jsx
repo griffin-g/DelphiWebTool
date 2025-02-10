@@ -17,14 +17,17 @@ import QuestionList from "./survey-components/Question-List";
 import QuestionForm from "./survey-components/Question-Form";
 import Header from "../Components/Header";
 import { useNavigate } from "react-router-dom";
+import { use } from "react";
+import RoundSelect from "../Components/RoundSelect";
 
 const EditSurvey = () => {
   const { surveyID, delphiRound } = useParams(); // Get surveyID from the URL params
   const navigate = useNavigate();
   const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
-  var {
+  const {
     title,
     questions,
+    maxRound,
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,
@@ -99,8 +102,10 @@ const EditSurvey = () => {
 
   const handleDelphiSelect = (event) => {
     setSelectedDelphiRound(event.target.value);
+    console.log("selected round", event.target.value);
     navigate(`/edit-survey/${surveyID}/${event.target.value}`);
   };
+  console.log("max round", maxRound);
 
   return (
     <Box>
@@ -120,22 +125,18 @@ const EditSurvey = () => {
             </Typography>
           </Grid2>
           <Grid2 width="auto">
-            <InputLabel id="delphi-round-label">Delphi Round</InputLabel>
-            <Select
-              labelId="delphi-round-label"
-              id="demo-simple-select"
-              value={selectedDelphiRound}
-              label="selectedDelphiRound"
-              onChange={handleDelphiSelect}
-            >
-              <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={2}>2</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-            </Select>
+            <RoundSelect
+              maxRound={maxRound}
+              selectedDelphiRound={selectedDelphiRound}
+              handleDelphiSelect={handleDelphiSelect}
+            />
             <Button
               variant="contained"
               sx={{ height: "56px", marginLeft: "10px" }}
-              onClick={handleAddRound}
+              onClick={() => {
+                handleAddRound();
+                navigate(`/edit-survey/${surveyID}/${maxRound + 1}`);
+              }}
             >
               +
             </Button>
