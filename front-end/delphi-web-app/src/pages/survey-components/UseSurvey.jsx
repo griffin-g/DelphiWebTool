@@ -156,7 +156,6 @@ export const useSurvey = (surveyID, delphiRound) => {
         "http://localhost:3001/surveys/save-survey/add-round",
         {
           surveyID,
-          surveyID,
           surveyJSON: {},
           title,
           userID,

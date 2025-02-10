@@ -1,27 +1,28 @@
 module.exports = (sequelize, DataTypes) => {
   const Responses = sequelize.define("Responses", {
     response_id: {
+      type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    survey_uuid: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      references: {
+        model: 'Surveys',
+        key: 'uuid',
+      },
+      onDelete: 'CASCADE',
+    },
+    delphi_round: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    survey_id: {
-      type: DataTypes.INTEGER,
+    response_data: {
+      type: DataTypes.JSON,
       allowNull: false,
-      references: {
-        model: "Surveys",
-        key: "survey_id",
-      },
-    },
-    participant_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Participants",
-        key: "participant_id",
-      },
     },
   });
+
   return Responses;
 };

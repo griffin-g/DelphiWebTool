@@ -1,49 +1,71 @@
 var express = require("express");
 var router = express.Router();
 const { Responses } = require("../models");
-/* GET users listing. */
+
 router.get("/", async (req, res, next) => {
-  const allResponses = await Responses.findAll();
-  res.json(allResponses);
+  try {
+    const allResponses = await Responses.findAll();
+    res.json(allResponses);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/:id", async (req, res, next) => {
-  console.log(req.params);
-  const response = await Responses.findByPk(req.params.id);
-  res.json(response);
+  try {
+    const response = await Responses.findByPk(req.params.id);
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post("/", async (req, res) => {
-  const newResponse = req.body;
-  console.log("user", newResponse);
-  await Responses.create(newResponse);
-  res.json(newResponse);
+  try {
+    const { survey_uuid, delphi_round, response_data } = req.body;
+
+    console.log("Received payload:", { survey_uuid, delphi_round, response_data });
+
+    const newResponse = await Responses.create({
+      survey_uuid,
+      delphi_round,
+      response_data,
+    });
+
+    res.json(newResponse);
+  } catch (error) {
+    console.error("Error creating response:", error);
+    next(error);
+  }
 });
 
-router.delete("/:id", async (req, res) => {
-  const response_id = req.params.id;
+
+router.delete("/:id", async (req, res, next) => {
   try {
+    const response_id = req.params.id;
     await Responses.destroy({
       where: {
         response_id: response_id,
       },
     });
+    res.json({ message: "Response deleted successfully" });
   } catch (error) {
-    console.log("Could not delete question with id:", response_id, error);
+    next(error);
   }
 });
 
-router.put("/:id", async (req, res) => {
-  const response_id = req.params.id;
-  const updatedResponse = req.body;
+router.put("/:id", async (req, res, next) => {
   try {
+    const response_id = req.params.id;
+    const updatedResponse = req.body;
     await Responses.update(updatedResponse, {
       where: {
         response_id: response_id,
       },
     });
+    res.json({ message: "Response updated successfully" });
   } catch (error) {
-    console.log("Could not update question with id:", response_id, error);
+    next(error);
   }
 });
 

@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
   Container,
-  TextField,
   Typography,
-  Grid2,
   Divider,
+  Grid2,
   InputLabel,
   Select,
   MenuItem,
@@ -16,50 +15,24 @@ import { useSurvey } from "./survey-components/UseSurvey";
 import QuestionList from "./survey-components/Question-List";
 import QuestionForm from "./survey-components/Question-Form";
 import Header from "../Components/Header";
-import { useNavigate } from "react-router-dom";
-
+import SurveyDisplay from "./survey-components/Survey-Display"; 
+                                                            
 const EditSurvey = () => {
-  const { surveyID, delphiRound } = useParams(); // Get surveyID from the URL params
+  const { surveyID, delphiRound } = useParams(); 
   const navigate = useNavigate();
   const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
-  var {
+  const {
     title,
     questions,
+    surveyData,
+    showPreview,
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,
     handleEditSurvey,
     handleAddRound,
+    handlePreviewSurvey,
   } = useSurvey(surveyID, selectedDelphiRound);
-
-  // const [loading, setLoading] = useState(true);
-  // const [surveyData, setSurveyData] = useState({
-  //   title: "",
-  //   questions: [],
-  //   handleAddQuestion: () => {},
-  //   handleEditQuestion: () => {},
-  //   handleDeleteQuestion: () => {},
-  //   handleEditSurvey: () => {},
-  // });
-
-  // // const fetchSurveyData = async () => {
-  // //   try {
-  // //     const newSurveyData = await useSurvey(surveyID, selectedDelphiRound); // Ensure useSurvey is async
-  // //     setSurveyData(newSurveyData);
-  // //   } catch (error) {
-  // //     console.error("Error fetching survey data:", error);
-  // //   }
-  // // };
-  // const fetchSurveyData = async () => {
-  //   setLoading(true);
-  //   const newSurveyData = useSurvey(surveyID, selectedDelphiRound);
-  //   setSurveyData(newSurveyData);
-  //   setLoading(false);
-  // };
-
-  // useEffect(() => {
-  //   fetchSurveyData();
-  // }, [surveyID, selectedDelphiRound]);
 
   const [questionType, setQuestionType] = useState("");
   const [questionTitle, setQuestionTitle] = useState("");
@@ -70,7 +43,7 @@ const EditSurvey = () => {
   const addChoice = () => {
     if (newChoice.trim()) {
       setChoices([...choices, newChoice]);
-      setNewChoice(""); // Clear the input field after adding a choice
+      setNewChoice("");
     }
   };
 
@@ -109,11 +82,7 @@ const EditSurvey = () => {
         maxWidth="md"
         sx={{ mt: 4, p: 2, bgcolor: "#f5f5f5", borderRadius: 2 }}
       >
-        <Grid2
-          container
-          direction="row"
-          sx={{ justifyContent: "space-between" }}
-        >
+        <Grid2 container direction="row" sx={{ justifyContent: "space-between" }}>
           <Grid2 container direction="column" sx={{ width: "50%" }}>
             <Typography variant="h4" gutterBottom>
               Edit Survey: {title || "Untitled Survey"}
@@ -123,11 +92,12 @@ const EditSurvey = () => {
             <InputLabel id="delphi-round-label">Delphi Round</InputLabel>
             <Select
               labelId="delphi-round-label"
-              id="demo-simple-select"
+              id="delphi-select"
               value={selectedDelphiRound}
-              label="selectedDelphiRound"
+              label="Delphi Round"
               onChange={handleDelphiSelect}
             >
+              <MenuItem value={0}>0</MenuItem>
               <MenuItem value={1}>1</MenuItem>
               <MenuItem value={2}>2</MenuItem>
               <MenuItem value={3}>3</MenuItem>
@@ -170,10 +140,19 @@ const EditSurvey = () => {
         />
 
         <Box sx={{ textAlign: "right", mt: 3 }}>
-          <Button variant="contained" onClick={handleEditSurvey}>
+          <Button variant="contained" onClick={handleEditSurvey} sx={{ mr: 2 }}>
             Save Survey
           </Button>
+          <Button variant="outlined" onClick={handlePreviewSurvey}>
+            Preview Survey
+          </Button>
         </Box>
+
+        {showPreview && surveyData && (
+          <Box sx={{ mt: 4 }}>
+            <SurveyDisplay surveyData={surveyData} />
+          </Box>
+        )}
       </Container>
     </Box>
   );
