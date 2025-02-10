@@ -46,6 +46,25 @@ router.get("/:id/round/:delphi_round", async (req, res, next) => {
   }
 });
 
+router.get("/uuid/:uuid", async (req, res, next) => {
+  const {uuid} = req.params;
+  try {
+    console.log("Get with UUID", req.params);
+    const survey = await Surveys.findOne({
+      where: {
+        uuid: uuid,
+      },
+    });
+    if (!survey) {
+      console.log("no survey found");
+      return res.status(404).json({ message: "Survey not found" });
+    }
+    res.json(survey);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/user-surveys/:userID", async (req, res, next) => {
   const { userID } = req.params;
   try {
@@ -222,7 +241,7 @@ router.post("/publish/:id", async (req, res) => {
   }
 
   try {
-    const uuid = uuidv4(); // Generate a unique UUID
+    const uuid = uuidv4();
     const hashedToken = hashToken(accessToken); // Hash the access token
 
     await Surveys.update(
@@ -249,5 +268,42 @@ router.post("/publish/:id", async (req, res) => {
     });
   }
 });
+
+// validate user ID token 
+router.post("/validate-token", async (req, res) => {
+  const { uuid, accessToken } = req.body;
+  if (!uuid || !accessToken) {
+    return res
+      .status(400)
+      .json({ message: "Survey UUID and access token are required" });
+  }
+
+  try {
+    const survey = await Surveys.findOne({
+      where: { uuid },
+    });
+    if (!survey) {
+      return res
+        .status(404)
+        .json({ message: "Survey not found or not published" });
+    }
+
+    const hashedToken = hashToken(accessToken);
+    if (hashedToken !== survey.access_token_hash) {
+      return res.status(401).json({ message: "Invalid access token" });
+    }
+
+    // TODO: Authent token
+
+    res.status(200).json({ publishedURL: survey.url });
+  } catch (error) {
+    console.error("Error validating token:", error);
+    res.status(500).json({
+      message: "Error validating token",
+      error: error.message,
+    });
+  }
+});
+
 
 module.exports = router;

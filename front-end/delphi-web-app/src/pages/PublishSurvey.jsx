@@ -85,7 +85,7 @@ const PublishPage = () => {
 
   const handleSubmitToken = () => {
     setAccessToken(tempToken.trim());
-    setError(""); // Clear any previous error
+    setError("");
   };
 
   const handleDelphiSelect = (event) => {

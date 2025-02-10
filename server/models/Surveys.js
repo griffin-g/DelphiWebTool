@@ -1,5 +1,4 @@
 const { v4: uuidv4 } = require("uuid");
-const crypto = require("crypto");
 
 module.exports = (sequelize, DataTypes) => {
   const Surveys = sequelize.define("Surveys", {
@@ -25,10 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.JSON,
       allowNull: false,
     },
-    url: {
-      type: DataTypes.STRING,
-      unique: true,
-    },
     is_active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -50,6 +45,14 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
   });
+
+  Surveys.associate = function (models) {
+    Surveys.hasMany(models.Responses, {
+      foreignKey: "survey_uuid",
+      sourceKey: "uuid",
+      as: "responses", // Optional alias for the association
+    });
+  };
 
   Surveys.beforeCreate((survey, options) => {
     if (survey.access_token) {
