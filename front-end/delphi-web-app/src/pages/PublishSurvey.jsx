@@ -83,6 +83,7 @@ const PublishPage = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({ accessToken }),
         }
       );
       console.log(result.message);
