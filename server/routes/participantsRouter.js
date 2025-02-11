@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var nodemailer = require("nodemailer");
-const { Participants } = require("../models");
+const { Participants, Surveys } = require("../models");
 const { where } = require("sequelize");
 /* GET users listing. */
 router.get("/", async (req, res, next) => {
@@ -65,17 +65,38 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-router.post("/send-invites/:id", async (req, res) => {
+router.post("/send-invites/:id/:round", async (req, res) => {
   const survey_id = req.params.id;
+  const delphi_round = req.params.round;
   const participants = await Participants.findAll({ where: { survey_id } });
   var mailData = {};
+  console.log("Participants:", participants);
+  const survey = await Surveys.findOne({
+    where: {
+      survey_id: survey_id,
+      delphi_round: delphi_round,
+    },
+  });
+  const surveyLink = `http://localhost:5173/participate/${survey.uuid}`;
+  console.log("Survey link:", surveyLink);
   for (const participant of participants) {
     mailData = {
       from: "delphiwebapptest@gmail.com",
       to: participant.participant_email,
-      subject: "Invite to Delphi Web App Survey",
+      subject: "You're invited to a Delphi survey!",
       text: "some text",
-      html: "<b>Hello!<b>",
+      html: `
+      <p>Dear Participant,</p>
+      <p>We hope you're doing well! 🎉</p>
+      <p>We’re excited to invite you to participate in an exclusive survey.</b>. Your insights are valuable, and we'd love to hear your thoughts.</p>
+      <p><strong>The survey will only take a few minutes, and your responses will make a big impact!</strong></p>
+      <p>📝 <a href="${surveyLink}">Click here to take the survey</a></p>
+      <p>If you have any questions, feel free to reach out.</p>
+      <p>Thank you in advance for your time and feedback!</p>
+      <br>
+      <p>Best regards,</p>
+      <p>Delphi Web Surveys</p>
+    `,
     };
 
     transporter.sendMail(mailData, (error, info) => {

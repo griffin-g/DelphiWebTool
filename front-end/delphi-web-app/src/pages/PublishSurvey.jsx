@@ -75,7 +75,18 @@ const PublishPage = () => {
 
       const result = await response.json();
       setSuccess(true);
+      console.log("before sending invites");
+      const response1 = await fetch(
+        `http://localhost:3001/participants/send-invites/${surveyID}/${selectedDelphiRound}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       console.log(result.message);
+      console.log("Invites sent:", response1);
     } catch (err) {
       setError(err.message);
     } finally {

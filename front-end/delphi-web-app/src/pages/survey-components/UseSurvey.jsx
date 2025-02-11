@@ -33,7 +33,7 @@ export const useSurvey = (surveyID, delphiRound) => {
   const fetchParticipants = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/participants/survey-id/${surveyId}`
+        `http://localhost:3001/participants/survey-id/${surveyID}`
       );
       setInviteList(response.data);
     } catch (error) {
