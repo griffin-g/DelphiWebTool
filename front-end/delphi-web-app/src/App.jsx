@@ -35,6 +35,7 @@ function App() {
             path="/publish-survey/:surveyID/:delphiRound"
             element={<PublishPage />}
           />
+          <Route path="/participate/:uuid" element={<ParticipatePage />} />
 
           {/* <Route path="/view-survey/:surveyID" element={<ViewSurvey />}/> */}
 

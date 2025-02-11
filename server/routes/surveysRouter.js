@@ -47,7 +47,7 @@ router.get("/:id/round/:delphi_round", async (req, res, next) => {
 });
 
 router.get("/uuid/:uuid", async (req, res, next) => {
-  const {uuid} = req.params;
+  const { uuid } = req.params;
   try {
     console.log("Get with UUID", req.params);
     const survey = await Surveys.findOne({
@@ -232,25 +232,33 @@ function hashToken(token) {
   return crypto.createHmac("sha256", salt).update(token).digest("hex");
 }
 
-router.post("/publish/:id", async (req, res) => {
+router.post("/publish/:id/:round", async (req, res) => {
   const { accessToken } = req.body;
   const surveyId = req.params.id;
+  const delphi_round = req.params.round;
 
   if (!accessToken) {
     return res.status(400).json({ message: "Access token is required" });
   }
 
   try {
-    const uuid = uuidv4();
+    //const uuid = uuidv4();
     const hashedToken = hashToken(accessToken); // Hash the access token
 
+    const existingSurvey = await Surveys.findOne({
+      where: {
+        survey_id: surveyId,
+        delphi_round: delphi_round,
+      },
+    });
+    const uuid = existingSurvey.uuid || uuidv4();
     await Surveys.update(
       {
         is_active: true,
         uuid,
         access_token_hash: hashedToken,
       },
-      { where: { survey_id: surveyId } }
+      { where: { survey_id: surveyId, delphi_round: delphi_round } }
     );
 
     res.status(200).json({
@@ -269,7 +277,7 @@ router.post("/publish/:id", async (req, res) => {
   }
 });
 
-// validate user ID token 
+// validate user ID token
 router.post("/validate-token", async (req, res) => {
   const { uuid, accessToken } = req.body;
   if (!uuid || !accessToken) {
@@ -304,6 +312,5 @@ router.post("/validate-token", async (req, res) => {
     });
   }
 });
-
 
 module.exports = router;

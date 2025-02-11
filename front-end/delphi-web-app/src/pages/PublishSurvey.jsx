@@ -59,7 +59,7 @@ const PublishPage = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/surveys/publish/${surveyID}`,
+        `http://localhost:3001/surveys/publish/${surveyID}/${selectedDelphiRound}`,
         {
           method: "POST",
           headers: {
