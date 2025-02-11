@@ -67,6 +67,7 @@ const transporter = nodemailer.createTransport({
 
 router.post("/send-invites/:id/:round", async (req, res) => {
   const survey_id = req.params.id;
+  const { accessToken } = req.body;
   const delphi_round = req.params.round;
   const participants = await Participants.findAll({ where: { survey_id } });
   var mailData = {};
@@ -77,7 +78,9 @@ router.post("/send-invites/:id/:round", async (req, res) => {
       delphi_round: delphi_round,
     },
   });
-  const surveyLink = `http://localhost:5173/participate/${survey.uuid}`;
+  const surveyLink = `http://localhost:5173/access-survey/`;
+  const uuid = survey.uuid;
+
   console.log("Survey link:", surveyLink);
   for (const participant of participants) {
     mailData = {
@@ -91,6 +94,9 @@ router.post("/send-invites/:id/:round", async (req, res) => {
       <p>We’re excited to invite you to participate in an exclusive survey.</b>. Your insights are valuable, and we'd love to hear your thoughts.</p>
       <p><strong>The survey will only take a few minutes, and your responses will make a big impact!</strong></p>
       <p>📝 <a href="${surveyLink}">Click here to take the survey</a></p>
+      <p>Here is the uuid: ${uuid}<p>
+      <P>Access token: ${accessToken}</p>
+      <p>If you have any questions, feel free to reach out.</p>
       <p>If you have any questions, feel free to reach out.</p>
       <p>Thank you in advance for your time and feedback!</p>
       <br>
