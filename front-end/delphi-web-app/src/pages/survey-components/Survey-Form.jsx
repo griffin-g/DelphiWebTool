@@ -4,21 +4,38 @@ import { Model } from "survey-core";
 import "survey-core/defaultV2.min.css";
 
 const SurveyForm = ({ survey }) => {
-  const surveyModel = new Model(survey.elements); 
+  if (!survey) {
+    return <p>Loading survey...</p>;
+  }
 
-  const handleSurveyComplete = (sender) => {
+  const surveyModel = new Model(survey);
+
+  surveyModel.onComplete.add(async (sender) => {
     const surveyData = sender.data;
-    console.log("Survey Completed with data:", surveyData); // TEST purposes only
+    const payload = {
+      survey_id: survey.survey_id, 
+      delphi_round: survey.delphi_round,
+      response_data: surveyData,        
+    };
 
-  };
+    try {
+      const response = await fetch("http://localhost:3001/responses/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-  surveyModel.onComplete.add(handleSurveyComplete);
+      if (response.ok) {
+        alert("Survey submitted successfully!");
+      } else {
+        alert("There was a problem submitting your survey.");
+      }
+    } catch (error) {
+      console.error("Error submitting survey:", error);
+    }
+  });
 
-  return (
-    <div>
-      <Survey model={surveyModel} />
-    </div>
-  );
+  return <Survey model={surveyModel} />;
 };
 
 export default SurveyForm;

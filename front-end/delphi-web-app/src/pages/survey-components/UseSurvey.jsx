@@ -1,24 +1,28 @@
 import { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import { useAuth } from "../../AuthProvider";
 
-export const useSurvey = (surveyID) => {
-  const [title, setTitle] = useState(""); // Title state
+export const useSurvey = (surveyID, delphiRound) => {
+  const [title, setTitle] = useState("");
   const [questions, setQuestions] = useState([]);
   const [surveyData, setSurveyData] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
-
-  const fetchedSurveyRef = useRef(false); // To track if survey has been fetched already
+  const [inviteList, setInviteList] = useState([]);
+  const [allQuestions, setAllQuestions] = useState([]);
+  const [maxRound, setMaxRound] = useState(1);
+  const fetchedSurveyRef = useRef(false);
   const auth = useAuth();
   // Function to fetch survey data based on surveyID
   const fetchSurvey = async () => {
-    if (fetchedSurveyRef.current) return;
+    //if (fetchedSurveyRef.current) return;
     try {
-      const response = await fetch(`http://localhost:3001/surveys/${surveyID}`);
-      if (!response.ok) throw new Error("Failed to fetch survey");
-
-      const data = await response.json();
-      setTitle(data.title);
-      setQuestions(data.elements);
+      const response = await axios.get(
+        `http://localhost:3001/surveys/${surveyID}/round/${delphiRound}`
+      );
+      setTitle(response.data.title);
+      setQuestions(response.data.elements);
+      setAllQuestions(response.data.elements);
+      console.log("all questions:", response.data.elements);
       // Mark as fetched
       fetchedSurveyRef.current = true;
     } catch (error) {
@@ -26,11 +30,37 @@ export const useSurvey = (surveyID) => {
     }
   };
 
+  const fetchParticipants = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/participants/survey-id/${surveyID}`
+      );
+      setInviteList(response.data);
+    } catch (error) {
+      console.error("Error fetching participants:", error);
+    }
+  };
+
+  const handleFindMaxRound = async () => {
+    const url = `http://localhost:3001/surveys/${surveyID}/max-round`;
+    try {
+      const response = await axios.get(url);
+      setMaxRound(response.data);
+      //return response.data;
+    } catch (error) {
+      console.error("Error fetching max round:", error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (surveyID) {
-      fetchSurvey(); // Fetch data when surveyID is available
+      fetchSurvey();
+      console.log("delphi round", delphiRound);
+      fetchParticipants();
+      handleFindMaxRound();
     }
-  }, [surveyID]); // Fetch data only when surveyID changes
+  }, [surveyID, delphiRound]);
 
   const handleAddQuestion = (newQuestion) => {
     setQuestions((prevQuestions) => [...prevQuestions, newQuestion]);
@@ -50,7 +80,37 @@ export const useSurvey = (surveyID) => {
     );
   };
 
+  const saveParticipants = async (inviteList, surveyId) => {
+    try {
+      for (const participant of inviteList) {
+        try {
+          const response = await axios.post(
+            "http://localhost:3001/participants/",
+            {
+              participant_email: participant,
+              survey_id: surveyId,
+            }
+          );
+
+          if (response.status === 200) {
+            console.log(`Participant ${participant} invited successfully`);
+          } else {
+            alert(`Failed to invite participant: ${participant}`);
+          }
+        } catch (error) {
+          console.error(`Error inviting participant ${participant}:`, error);
+          alert(`Error inviting participant: ${participant}`);
+        }
+      }
+    } catch (error) {
+      console.error("Error processing invite list:", error);
+      alert("Error processing invite list");
+    }
+  };
+
   const handleSaveSurvey = async () => {
+    const url = "http://localhost:3001/surveys/save-survey";
+
     const surveyData = {
       elements: questions.map((question) => ({
         type: question.type,
@@ -63,37 +123,99 @@ export const useSurvey = (surveyID) => {
       })),
     };
 
-    // const userID = 1;
     const userID = auth.user.id;
     setSurveyData(surveyData);
-    console.log("SurveyJS Format:", JSON.stringify(surveyData, null, 2));
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "http://localhost:3001/surveys/save-survey",
         {
-          method: "POST",
+          surveyJSON: surveyData,
+          title,
+          userID,
+        },
+        {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            surveyJSON: surveyData,
-            title,
-            userID,
-          }),
         }
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to save survey");
-      }
-
-      const data = await response.json();
-      console.log("Survey saved successfully:", data);
-      return data;
+      //map through participants here
+      console.log("save survey responst", response);
+      saveParticipants(inviteList, response.data.survey_id);
     } catch (error) {
       console.error("Error saving survey:", error);
       throw error;
+    }
+  };
+
+  const handleAddRound = async () => {
+    const newRound = maxRound + 1;
+    console.log("new round", newRound);
+    const userID = auth.user.id;
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/surveys/save-survey/add-round",
+        {
+          surveyID,
+          surveyJSON: {},
+          title,
+          userID,
+          delphi_round: newRound,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      console.error("Error saving survey:", error);
+      throw error;
+    }
+  };
+
+  const handleEditSurvey = async () => {
+    const url = "http://localhost:3001/surveys/edit-survey";
+    const surveyData = {
+      elements: questions.map((question) => ({
+        type: question.type,
+        name: question.name,
+        title: question.title,
+        description: question.description,
+        ...((question.type === "ranking" || question.type === "checkbox") && {
+          choices: question.choices,
+        }),
+      })),
+    };
+
+    const userID = auth.user.id;
+    setSurveyData(surveyData);
+    try {
+      const response = await axios.put(
+        "http://localhost:3001/surveys/edit-survey",
+        {
+          surveyID,
+          surveyJSON: surveyData,
+          title,
+          userID,
+          delphi_round: delphiRound,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Axios error response:", error.response);
+        if (error.response) {
+          console.error("Axios error status:", error.response.status);
+          console.error("Axios error data:", error.response.data);
+        }
+      }
     }
   };
 
@@ -109,7 +231,8 @@ export const useSurvey = (surveyID) => {
         }),
       })),
     };
-
+    console.log("hello");
+    console.log(surveyData);
     setSurveyData(surveyData);
 
     if (surveyData) {
@@ -119,16 +242,25 @@ export const useSurvey = (surveyID) => {
     }
   };
 
+  const handleAddInviteList = (newParticipant) => {
+    setInviteList((prevInvites) => [...prevInvites, newParticipant]);
+  };
   return {
     title,
     setSurveyTitle: setTitle,
     questions,
     surveyData,
     showPreview,
+    inviteList,
+    maxRound,
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,
     handleSaveSurvey,
+    handleEditSurvey,
     handlePreviewSurvey,
+    handleAddInviteList,
+    handleAddRound,
+    handleFindMaxRound,
   };
 };

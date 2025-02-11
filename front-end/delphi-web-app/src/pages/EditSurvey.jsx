@@ -1,28 +1,56 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Container,
+  Typography,
+  Divider,
+  Grid2,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { useSurvey } from "./survey-components/UseSurvey";
 import QuestionList from "./survey-components/Question-List";
 import QuestionForm from "./survey-components/Question-Form";
 import Header from "../Components/Header";
+import { use } from "react";
+import RoundSelect from "../Components/RoundSelect";
+
+import SurveyDisplay from "./survey-components/Survey-Display";
 
 const EditSurvey = () => {
-  const { surveyID } = useParams(); // Get surveyID from the URL params
+  const { surveyID, delphiRound } = useParams();
+  const navigate = useNavigate();
+  const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
   const {
     title,
     questions,
+    maxRound,
+    surveyData,
+    showPreview,
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,
-    handleSaveSurvey,
-  } = useSurvey(surveyID); 
+    handleEditSurvey,
+    handleAddRound,
+    handlePreviewSurvey,
+  } = useSurvey(surveyID, selectedDelphiRound);
 
-  const [questionType, setQuestionType] = useState(""); 
-  const [questionTitle, setQuestionTitleState] = useState("");
-  const [questionDescription, setQuestionDescription] = useState(""); 
-  const [choices, setChoices] = useState([]); 
+  const [questionType, setQuestionType] = useState("");
+  const [questionTitle, setQuestionTitle] = useState("");
+  const [questionDescription, setQuestionDescription] = useState("");
+  const [choices, setChoices] = useState([]);
   const [newChoice, setNewChoice] = useState("");
 
-  // add a new question with type, title, description, and if mc or ranking, choices
+  const addChoice = () => {
+    if (newChoice.trim()) {
+      setChoices([...choices, newChoice]);
+      setNewChoice("");
+    }
+  };
+
   const handleNewQuestion = () => {
     const newQuestion = {
       type: questionType,
@@ -31,55 +59,108 @@ const EditSurvey = () => {
       choices,
     };
 
-    // Check if the new question already exists before adding
     const existingQuestion = questions.find(
-      (q) => q.title === newQuestion.title && q.description === newQuestion.description
+      (q) =>
+        q.title === newQuestion.title &&
+        q.description === newQuestion.description
     );
     if (!existingQuestion) {
       handleAddQuestion(newQuestion);
     }
 
-    // Clear form
-    setQuestionTitleState("");
+    setQuestionTitle("");
     setQuestionDescription("");
     setChoices([]);
     setNewChoice("");
   };
 
+  const handleDelphiSelect = (event) => {
+    setSelectedDelphiRound(event.target.value);
+    console.log("selected round", event.target.value);
+    navigate(`/edit-survey/${surveyID}/${event.target.value}`);
+  };
+  console.log("max round", maxRound);
+
   return (
-    <div>
+    <Box>
       <Header />
-      <h1>Edit Survey: {title || "Untitled Survey"}</h1>
+      <Container
+        maxWidth="md"
+        sx={{ mt: 4, p: 2, bgcolor: "#f5f5f5", borderRadius: 2 }}
+      >
+        <Grid2
+          container
+          direction="row"
+          sx={{ justifyContent: "space-between" }}
+        >
+          <Grid2 container direction="column" sx={{ width: "50%" }}>
+            <Typography variant="h4" gutterBottom>
+              Edit Survey: {title || "Untitled Survey"}
+            </Typography>
+          </Grid2>
+          <Grid2 width="auto">
+            <RoundSelect
+              maxRound={maxRound}
+              selectedDelphiRound={selectedDelphiRound}
+              handleDelphiSelect={handleDelphiSelect}
+            />
+            <Button
+              variant="contained"
+              sx={{ height: "56px", marginLeft: "10px" }}
+              onClick={() => {
+                handleAddRound();
+                setSelectedDelphiRound(maxRound + 1);
+                navigate(`/edit-survey/${surveyID}/${maxRound + 1}`);
+              }}
+            >
+              +
+            </Button>
+          </Grid2>
+        </Grid2>
 
-      <QuestionForm
-        questionType={questionType}
-        setQuestionType={setQuestionType}
-        questionTitle={questionTitle}
-        setQuestionTitle={setQuestionTitleState}
-        questionDescription={questionDescription}
-        setQuestionDescription={setQuestionDescription}
-        choices={choices}
-        newChoice={newChoice}
-        setNewChoice={setNewChoice}
-        addChoice={() => {
-          if (newChoice) {
-            setChoices([...choices, newChoice]);
-            setNewChoice(""); // Clear the input field after adding a choice
-          }
-        }}
-      />
+        <QuestionForm
+          questionType={questionType}
+          setQuestionType={setQuestionType}
+          questionTitle={questionTitle}
+          setQuestionTitle={setQuestionTitle}
+          questionDescription={questionDescription}
+          setQuestionDescription={setQuestionDescription}
+          choices={choices}
+          newChoice={newChoice}
+          setNewChoice={setNewChoice}
+          addChoice={addChoice}
+        />
 
-      {/* Button to add a new question */}
-      <button onClick={handleNewQuestion}>Add Question</button>
+        <Box sx={{ mt: 2, textAlign: "right" }}>
+          <Button variant="contained" onClick={handleNewQuestion}>
+            Add Question
+          </Button>
+        </Box>
 
-      <QuestionList
-        questions={questions}
-        onEditQuestion={handleEditQuestion}
-        onDeleteQuestion={handleDeleteQuestion}
-      />
+        <Divider sx={{ my: 3 }} />
 
-      <button onClick={handleSaveSurvey}>Save Survey</button>
-    </div>
+        <QuestionList
+          questions={questions}
+          onEditQuestion={handleEditQuestion}
+          onDeleteQuestion={handleDeleteQuestion}
+        />
+
+        <Box sx={{ textAlign: "right", mt: 3 }}>
+          <Button variant="contained" onClick={handleEditSurvey} sx={{ mr: 2 }}>
+            Save Survey
+          </Button>
+          <Button variant="outlined" onClick={handlePreviewSurvey}>
+            Preview Survey
+          </Button>
+        </Box>
+
+        {showPreview && surveyData && (
+          <Box sx={{ mt: 4 }}>
+            <SurveyDisplay surveyData={surveyData} />
+          </Box>
+        )}
+      </Container>
+    </Box>
   );
 };
 

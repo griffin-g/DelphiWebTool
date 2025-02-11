@@ -3,6 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const nodemailer = require("nodemailer");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/userRouter");
@@ -50,10 +51,11 @@ app.use(function (err, req, res, next) {
   //res.send(error);
 });
 
-db.sequelize.sync(/*{ force: true }*/).then(() => {
+db.sequelize.sync().then(() => {
   app.listen(3001, () => {
     console.log("Server running on port 3001.");
   });
 });
 
 module.exports = app;
+

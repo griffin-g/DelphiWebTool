@@ -52,6 +52,7 @@ function Header() {
               <Button
                 variant="contained"
                 onClick={handleLogout}
+                id="logout"
                 sx={{
                   width: "166px",
                   height: "68px",
@@ -81,6 +82,7 @@ function Header() {
                 </Link>
                 <Button
                   variant="contained"
+                  id="sign-up"
                   component={Link}
                   to="/sign-up"
                   sx={{

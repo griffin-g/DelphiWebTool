@@ -75,6 +75,7 @@ function LoginComponent() {
           variant="contained"
           fullWidth
           type="submit"
+          name="submit"
           sx={{
             backgroundColor: "black",
             "&:hover": {
