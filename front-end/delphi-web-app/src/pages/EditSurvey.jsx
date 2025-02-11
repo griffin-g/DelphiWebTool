@@ -109,6 +109,7 @@ const EditSurvey = () => {
               sx={{ height: "56px", marginLeft: "10px" }}
               onClick={() => {
                 handleAddRound();
+                setSelectedDelphiRound(maxRound + 1);
                 navigate(`/edit-survey/${surveyID}/${maxRound + 1}`);
               }}
             >
