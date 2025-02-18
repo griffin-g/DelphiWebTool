@@ -54,6 +54,13 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
+  Surveys.associate = function (models) {
+    Surveys.hasMany(models.Participants, {
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+  };
+
   Surveys.beforeCreate((survey, options) => {
     if (survey.access_token) {
       survey.access_token_hash = hashToken(survey.access_token);

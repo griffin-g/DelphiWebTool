@@ -13,11 +13,19 @@ module.exports = (sequelize, DataTypes) => {
         model: "Surveys",
         key: "survey_id",
       },
+      onDelete: "CASCADE",
     },
     participant_email: {
       type: DataTypes.STRING,
       allowNull: false,
     },
   });
+
+  Participants.associate = function (models) {
+    Participants.belongsTo(models.Surveys, {
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+  };
   return Participants;
 };

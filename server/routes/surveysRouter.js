@@ -113,7 +113,7 @@ router.post("/save-survey", async (req, res) => {
     const newSurvey = await Surveys.create({
       survey_id: surveyID,
       elements: surveyJSON.elements,
-      is_active: true,
+      is_active: false,
       delphi_round: 1,
       title: title || "Untitled Survey",
       user_id: userID,
@@ -132,7 +132,7 @@ router.post("/save-survey/add-round", async (req, res) => {
     const newSurvey = await Surveys.create({
       survey_id: surveyID,
       elements: [],
-      is_active: true,
+      is_active: false,
       delphi_round: delphi_round,
       title: title || "Untitled Survey",
       user_id: userID,
