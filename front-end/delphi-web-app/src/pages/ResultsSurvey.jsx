@@ -1,3 +1,4 @@
+import { useParams, useNavigate } from "react-router-dom";
 const ResultsSurvey = () => {
   const { surveyID, delphiRound } = useParams();
   return (
