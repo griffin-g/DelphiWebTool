@@ -1,13 +1,6 @@
-import { useState } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  TextField,
-  Typography,
-  Divider,
-} from "@mui/material";
+import React, { useState } from "react";
 import Header from "../Components/Header";
+import { TextField, Button, Container, Typography, Box, Divider } from "@mui/material";
 import QuestionForm from "./survey-components/Question-Form";
 import QuestionList from "./survey-components/Question-List";
 import SurveyDisplay from "./survey-components/Survey-Display";
@@ -15,10 +8,10 @@ import { useSurvey } from "./survey-components/UseSurvey";
 import InviteModal from "../Components/InviteModal";
 
 function CreateSurvey() {
-  const [tempTitle, setTempTitle] = useState(""); // Temporary state for title input
+  const [tempTitle, setTempTitle] = useState(""); 
+  const [questionType, setQuestionType] = useState("text");
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionDescription, setQuestionDescription] = useState("");
-  const [questionType, setQuestionType] = useState("text");
   const [choices, setChoices] = useState([]);
   const [newChoice, setNewChoice] = useState("");
   const [rows, setRows] = useState([]);
@@ -26,6 +19,9 @@ function CreateSurvey() {
   const [columns, setColumns] = useState([]);
   const [newColumn, setNewColumn] = useState("");
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+
+  const [rateCount, setRateCount] = useState("");
+  const [rateType, setRateType] = useState("numeric"); 
 
   const handleInviteOpen = () => setIsInviteModalOpen(true);
   const handleInviteClose = () => setIsInviteModalOpen(false);
@@ -45,7 +41,6 @@ function CreateSurvey() {
     handleAddInviteList,
   } = useSurvey();
 
-  // Handlers for title input
   const handleTitleChange = (e) => setTempTitle(e.target.value);
   const setTitle = () => {
     if (!tempTitle.trim()) {
@@ -53,22 +48,6 @@ function CreateSurvey() {
       return;
     }
     setSurveyTitle(tempTitle);
-  };
-
-  // Handlers for question input
-  const addQuestion = () => {
-    const newQuestion = {
-      name: `question${Date.now()}`,
-      type: questionType,
-      title: questionTitle,
-      description: questionDescription,
-      ...((questionType === "ranking" || questionType === "checkbox") && {
-        choices,
-      }),
-      ...(questionType === "matrix" && { rows, columns }),
-    };
-    handleAddQuestion(newQuestion);
-    resetQuestionInputs();
   };
 
   const resetQuestionInputs = () => {
@@ -80,6 +59,22 @@ function CreateSurvey() {
     setNewRow("");
     setColumns([]);
     setNewColumn("");
+    setRateCount("");
+    setRateType("numeric");
+  };
+
+  const addQuestion = () => {
+    const newQuestion = {
+      name: `question${Date.now()}`,
+      type: questionType,
+      title: questionTitle,
+      description: questionDescription,
+      ...((questionType === "ranking" || questionType === "checkbox") && { choices }),
+      ...(questionType === "matrix" && { rows, columns }),
+      ...(questionType === "rating" && { rateCount, rateType }),
+    };
+    handleAddQuestion(newQuestion);
+    resetQuestionInputs();
   };
 
   const addChoice = () => {
@@ -88,32 +83,21 @@ function CreateSurvey() {
       setNewChoice("");
     }
   };
-
-  const deleteChoice = (index) => {
-    setChoices(choices.filter((_, i) => i !== index));
-  };
-
+  const deleteChoice = (index) => setChoices(choices.filter((_, i) => i !== index));
   const addRow = () => {
     if (newRow.trim()) {
       setRows([...rows, newRow.trim()]);
       setNewRow("");
     }
   };
-
-  const deleteRow = (index) => {
-    setRows(rows.filter((_, i) => i !== index));
-  };
-
+  const deleteRow = (index) => setRows(rows.filter((_, i) => i !== index));
   const addColumn = () => {
     if (newColumn.trim()) {
       setColumns([...columns, newColumn.trim()]);
       setNewColumn("");
     }
   };
-
-  const deleteColumn = (index) => {
-    setColumns(columns.filter((_, i) => i !== index));
-  };
+  const deleteColumn = (index) => setColumns(columns.filter((_, i) => i !== index));
 
   const saveSurvey = async () => {
     if (!title) {
@@ -126,14 +110,11 @@ function CreateSurvey() {
   return (
     <Box>
       <Header />
-      <Container
-        maxWidth="md"
-        sx={{ mt: 4, p: 2, bgcolor: "#f5f5f5", borderRadius: 2 }}
-      >
+      <Container maxWidth="md" sx={{ mt: 4, p: 2, bgcolor: "#f5f5f5", borderRadius: 2 }}>
         <Typography variant="h4" gutterBottom>
           Create Survey
         </Typography>
-
+        
         <Box sx={{ mb: 3 }}>
           <TextField
             label="Survey Title"
@@ -156,7 +137,6 @@ function CreateSurvey() {
 
         <Divider sx={{ my: 3 }} />
 
-        {/* Question Form */}
         <QuestionForm
           questionType={questionType}
           setQuestionType={setQuestionType}
@@ -179,6 +159,10 @@ function CreateSurvey() {
           setNewColumn={setNewColumn}
           addColumn={addColumn}
           deleteColumn={deleteColumn}
+          rateCount={rateCount}
+          setRateCount={setRateCount}
+          rateType={rateType}
+          setRateType={setRateType}
         />
         <Box sx={{ textAlign: "right", mt: 2 }}>
           <Button variant="contained" onClick={addQuestion}>
@@ -196,16 +180,6 @@ function CreateSurvey() {
         />
 
         <Box sx={{ textAlign: "right", mt: 3 }}>
-          <Button variant="contained" onClick={handleInviteOpen} sx={{ mr: 2 }}>
-            Create Invite List
-          </Button>
-          <InviteModal
-            surveyId="1"
-            open={isInviteModalOpen}
-            addInviteList={handleAddInviteList}
-            onClose={handleInviteClose}
-            inviteList={inviteList}
-          />
           <Button variant="contained" onClick={saveSurvey} sx={{ mr: 2 }}>
             Save Survey
           </Button>
@@ -214,9 +188,22 @@ function CreateSurvey() {
           </Button>
         </Box>
 
+        {/* Invite Modal */}
+        <Button variant="contained" onClick={() => setIsInviteModalOpen(true)}>
+          Create Invite List
+        </Button>
+        <InviteModal
+          surveyId="1"
+          open={isInviteModalOpen}
+          onClose={() => setIsInviteModalOpen(false)}
+          inviteList={inviteList}
+          addInviteList={handleAddInviteList}
+        />
+
         {/* Survey Preview */}
         {showPreview && surveyData && (
           <Box sx={{ mt: 4 }}>
+            
             <SurveyDisplay surveyData={surveyData} />
           </Box>
         )}

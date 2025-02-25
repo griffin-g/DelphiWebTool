@@ -9,12 +9,13 @@ import {
   Button,
   List,
   ListItem,
-  ListItemText,
   IconButton,
   Stack,
+  Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import AddIcon from "@mui/icons-material/Add";
+ 
 function QuestionForm({
   questionType,
   setQuestionType,
@@ -37,11 +38,14 @@ function QuestionForm({
   setNewColumn,
   addColumn,
   deleteColumn,
+  rateCount,
+  setRateCount,
+  rateType,
+  setRateType,
 }) {
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
       <Stack spacing={3}>
-        {/* Question Type Dropdown */}
         <FormControl fullWidth>
           <InputLabel id="question-type-label">Question Type</InputLabel>
           <Select
@@ -52,11 +56,11 @@ function QuestionForm({
             <MenuItem value="text">Text</MenuItem>
             <MenuItem value="ranking">Ranking</MenuItem>
             <MenuItem value="checkbox">Checkbox</MenuItem>
+            <MenuItem value="rating">Rating</MenuItem>
             <MenuItem value="matrix">Matrix</MenuItem>
           </Select>
         </FormControl>
 
-        {/* Question Title */}
         <TextField
           label="Title"
           placeholder="Enter question title"
@@ -67,7 +71,6 @@ function QuestionForm({
           onChange={(e) => setQuestionTitle(e.target.value)}
         />
 
-        {/* Question Description */}
         <TextField
           label="Description"
           placeholder="Enter question description"
@@ -77,7 +80,6 @@ function QuestionForm({
           onChange={(e) => setQuestionDescription(e.target.value)}
         />
 
-        {/* Choices for Ranking or Checkbox */}
         {(questionType === "ranking" || questionType === "checkbox") && (
           <div>
             <TextField
@@ -105,14 +107,52 @@ function QuestionForm({
                     </IconButton>
                   }
                 >
-                  <ListItemText primary={choice} />
+                  <Typography>{choice}</Typography>
                 </ListItem>
               ))}
             </List>
           </div>
         )}
 
-        {/* Matrix Question Configuration */}
+        {questionType === "rating" && (
+          <div>
+            <TextField
+              label="Max Rating"
+              placeholder="Enter max rating (e.g., 10)"
+              variant="outlined"
+              fullWidth
+              type="number"
+              slotProps={{
+                htmlInput: { 
+                  max: 10, 
+                  min: 0 
+                }
+              }}              
+              value={rateCount}
+              onChange={(e) => {
+                let value = Number(e.target.value);
+                if (value > 10) value = 10;
+                if (value < 0) value = 0;
+            
+                setRateCount(value);
+              }}              
+              sx={{ mt: 2 }}
+            />
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <InputLabel id="rating-type-label">Rating Type</InputLabel>
+              <Select
+                labelId="rating-type-label"
+                value={rateType}
+                onChange={(e) => setRateType(e.target.value)}
+              >
+                <MenuItem value="numeric">Numeric</MenuItem>
+                <MenuItem value="stars">Stars</MenuItem>
+                <MenuItem value="smileys">Smileys</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        )}
+
         {questionType === "matrix" && (
           <div>
             {/* Rows */}
@@ -141,12 +181,11 @@ function QuestionForm({
                     </IconButton>
                   }
                 >
-                  <ListItemText primary={row} />
+                  <Typography>{row}</Typography>
                 </ListItem>
               ))}
             </List>
 
-            {/* Columns */}
             <TextField
               label="Column"
               placeholder="Enter a column label"
@@ -172,7 +211,7 @@ function QuestionForm({
                     </IconButton>
                   }
                 >
-                  <ListItemText primary={column} />
+                  <Typography>{column}</Typography>
                 </ListItem>
               ))}
             </List>

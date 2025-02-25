@@ -111,18 +111,7 @@ export const useSurvey = (surveyID, delphiRound) => {
   const handleSaveSurvey = async () => {
     const url = "http://localhost:3001/surveys/save-survey";
 
-    const surveyData = {
-      elements: questions.map((question) => ({
-        type: question.type,
-        name: question.name,
-        title: question.title,
-        description: question.description,
-        ...((question.type === "ranking" || question.type === "checkbox") && {
-          choices: question.choices,
-        }),
-      })),
-    };
-
+    const surveyData = constructSurveyData();
     const userID = auth.user.id;
     setSurveyData(surveyData);
 
@@ -178,17 +167,7 @@ export const useSurvey = (surveyID, delphiRound) => {
 
   const handleEditSurvey = async () => {
     const url = "http://localhost:3001/surveys/edit-survey";
-    const surveyData = {
-      elements: questions.map((question) => ({
-        type: question.type,
-        name: question.name,
-        title: question.title,
-        description: question.description,
-        ...((question.type === "ranking" || question.type === "checkbox") && {
-          choices: question.choices,
-        }),
-      })),
-    };
+    const surveyData = constructSurveyData();
 
     const userID = auth.user.id;
     setSurveyData(surveyData);
@@ -220,17 +199,7 @@ export const useSurvey = (surveyID, delphiRound) => {
   };
 
   const handlePreviewSurvey = () => {
-    const surveyData = {
-      elements: questions.map((question) => ({
-        type: question.type,
-        name: question.name,
-        title: question.title,
-        description: question.description,
-        ...((question.type === "ranking" || question.type === "checkbox") && {
-          choices: question.choices,
-        }),
-      })),
-    };
+    const surveyData = constructSurveyData();
     console.log("hello");
     console.log(surveyData);
     setSurveyData(surveyData);
@@ -242,6 +211,22 @@ export const useSurvey = (surveyID, delphiRound) => {
     }
   };
 
+  const constructSurveyData = () => ({
+    elements: questions.map((question) => ({
+      type: question.type,
+      name: question.name,
+      title: question.title,
+      description: question.description,
+      ...((question.type === "ranking" || question.type === "checkbox") && {
+        choices: question.choices,
+      }),
+      ...(question.type === "rating" && {
+        rateMax: question.rateCount ?? 5,
+        rateType: question.rateType ?? "numeric"
+      }),
+    })),
+  });
+  
   const handleAddInviteList = (newParticipant) => {
     setInviteList((prevInvites) => [...prevInvites, newParticipant]);
   };

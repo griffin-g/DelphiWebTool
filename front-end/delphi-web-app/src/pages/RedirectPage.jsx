@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../Components/Header";
 import { TextField, Button, Container, Typography, Box, CircularProgress } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function RedirectPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [uuid, setUuid] = useState("");
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const uuidParam = params.get('uuid');
+    if (uuidParam) {
+      setUuid(uuidParam);
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +38,8 @@ function RedirectPage() {
         return;
       }
 
-      // Navigate to the participate page with the desired uuid
+      localStorage.setItem('surveyToken', data.token);
+
       navigate(`/participate/${uuid}`);
     } catch (err) {
       setError("An error occurred. Please try again.");
@@ -48,7 +58,7 @@ function RedirectPage() {
           Access Survey
         </Typography>
         <Typography variant="body1" sx={{ mb: 3 }}>
-          Please enter your survey’s UUID and the access token provided by the survey creator.
+          Please enter your survey's UUID and the access token provided by the survey creator.
         </Typography>
 
         <form onSubmit={handleSubmit}>

@@ -8,6 +8,10 @@ import {
   IconButton,
   Stack,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -17,23 +21,29 @@ function QuestionList({ questions, onEditQuestion, onDeleteQuestion }) {
     const updatedQuestion = { ...questions[index], ...changes };
     onEditQuestion(index, updatedQuestion);
   };
-  // edit a choice
+
   const handleEditChoice = (index, choiceIndex, value) => {
     const updatedChoices = [...(questions[index].choices || [])];
     updatedChoices[choiceIndex] = value;
     updateQuestion(index, { choices: updatedChoices });
   };
-  // add a choice
+
   const handleAddChoice = (index) => {
     const updatedChoices = [...(questions[index].choices || []), ""];
     updateQuestion(index, { choices: updatedChoices });
   };
-  // delete a choice
+
   const handleDeleteChoice = (index, choiceIndex) => {
-    const updatedChoices = (questions[index].choices || []).filter(
-      (_, i) => i !== choiceIndex
-    );
+    const updatedChoices = (questions[index].choices || []).filter((_, i) => i !== choiceIndex);
     updateQuestion(index, { choices: updatedChoices });
+  };
+
+  const handleEditRateCount = (index, value) => {
+    updateQuestion(index, { rateCount: value });
+  };
+
+  const handleEditRateType = (index, value) => {
+    updateQuestion(index, { rateType: value });
   };
 
   return (
@@ -69,15 +79,15 @@ function QuestionList({ questions, onEditQuestion, onDeleteQuestion }) {
                       {question.type === "ranking" ? "Ranking Options:" : "Checkbox Options:"}
                     </Typography>
                     <List>
-                      {question.choices?.map((choice, choiceIndex) => (
-                        <ListItem key={choiceIndex} sx={{ display: "flex", alignItems: "center" }}>
+                      {question.choices?.map((choice, optionIndex) => (
+                        <ListItem key={optionIndex} sx={{ display: "flex", alignItems: "center" }}>
                           <TextField
                             variant="outlined"
                             fullWidth
                             value={choice}
-                            onChange={(e) => handleEditChoice(index, choiceIndex, e.target.value)}
+                            onChange={(e) => handleEditChoice(index, optionIndex, e.target.value)}
                           />
-                          <IconButton onClick={() => handleDeleteChoice(index, choiceIndex)}>
+                          <IconButton onClick={() => handleDeleteChoice(index, optionIndex)}>
                             <DeleteIcon />
                           </IconButton>
                         </ListItem>
@@ -87,18 +97,54 @@ function QuestionList({ questions, onEditQuestion, onDeleteQuestion }) {
                       startIcon={<AddIcon />}
                       variant="contained"
                       onClick={() => handleAddChoice(index)}
-                      sx={{ mt: 2 }}
+                      sx={{ mt: 1 }}
                     >
-                      Add Choice
+                      Add Option
                     </Button>
                   </div>
                 )}
 
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => onDeleteQuestion(index)}
-                >
+                {question.type === "rating" && (
+                  <div>
+                    <Typography variant="subtitle1">Rating Configuration:</Typography>
+                    <TextField
+                      label="Max Rating"
+                      placeholder="Enter max rating (e.g., 10)"
+                      variant="outlined"
+                      fullWidth
+                      type="number"
+                      slotProps={{
+                        htmlInput: { 
+                          max: 10, 
+                          min: 0 
+                        }
+                      }}
+                      value={question.rateCount || ""}
+                      onChange={(e) => {
+                        let value = Number(e.target.value);
+                        if (value > 10) value = 10;
+                        if (value < 0) value = 0;
+
+                        handleEditRateCount(index, value);
+                      }}
+                      sx={{ mt: 2 }}
+                    />
+                    <FormControl fullWidth sx={{ mt: 1 }}>
+                      <InputLabel id={`rating-type-label-${index}`}>Rating Type</InputLabel>
+                      <Select
+                        labelId={`rating-type-label-${index}`}
+                        value={question.rateType || "numeric"}
+                        onChange={(e) => handleEditRateType(index, e.target.value)}
+                      >
+                        <MenuItem value="numeric">Numeric</MenuItem>
+                        <MenuItem value="stars">Stars</MenuItem>
+                        <MenuItem value="smileys">Smileys</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
+                )}
+
+                <Button variant="outlined" color="error" onClick={() => onDeleteQuestion(index)}>
                   Delete Question
                 </Button>
               </Stack>
