@@ -117,7 +117,7 @@ const SurveyManagement = () => {
                         sx={{ mr: 1 }}
                         onClick={() =>
                           navigate(
-                            `/edit-survey/${survey.survey_id}/${survey.delphi_round}`
+                            `/results-survey/${survey.survey_id}/${survey.delphi_round}`
                           )
                         }
                       >

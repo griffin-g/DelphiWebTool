@@ -13,6 +13,7 @@ import InviteModalExample from "./pages/InviteModalExample";
 import RedirectPage from "./pages/RedirectPage";
 import PublishPage from "./pages/PublishSurvey";
 import ParticipatePage from "./pages/Participate";
+import ResultsSurvey from "./pages/ResultsSurvey";
 function App() {
   return (
     <AuthProvider>
@@ -41,6 +42,10 @@ function App() {
 
           <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/invite-example" element={<InviteModalExample />} />
+          <Route
+            path="/results-survey/:surveyID/:delphiRound"
+            element={<ResultsSurvey />}
+          />
         </Routes>
       </div>
     </AuthProvider>
