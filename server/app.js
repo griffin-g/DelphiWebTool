@@ -4,6 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const nodemailer = require("nodemailer");
+const cors = require("cors");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/userRouter");
@@ -13,19 +14,26 @@ var participantsRouter = require("./routes/participantsRouter");
 var responsesRouter = require("./routes/responsesRouter");
 var answerRouter = require("./routes/answerRouter");
 
-const cors = require("cors");
 var app = express();
 const db = require("./models");
 const { error } = require("console");
-// view engine setup
 
+// CORS configuration - this must come before other middleware
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+// Other middleware
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+// Routes
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/surveys", surveysRouter);
@@ -41,16 +49,12 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  // render the error page
   res.status(err.status || 500);
-  //res.render("error");
-  //res.send(error);
 });
 
+// Database connection and server start
 db.sequelize.sync().then(() => {
   app.listen(3001, () => {
     console.log("Server running on port 3001.");
@@ -58,4 +62,3 @@ db.sequelize.sync().then(() => {
 });
 
 module.exports = app;
-

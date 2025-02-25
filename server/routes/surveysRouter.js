@@ -3,6 +3,40 @@ var router = express.Router();
 const crypto = require("crypto");
 const { Surveys } = require("../models");
 const { v4: uuidv4 } = require("uuid");
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = "your-secret-key"; // Replace with a secure secret key
+
+const verifyToken = async (req, res, next) => {
+  console.log('Headers received:', req.headers); // Debug log
+  
+  const authHeader = req.headers.authorization;
+  console.log('Auth header:', authHeader); // Debug log
+
+  if (!authHeader) {
+    console.log('No authorization header found'); // Debug log
+    return res.status(401).json({ message: 'No token provided' });
+  }
+
+  // Check if it's a Bearer token
+  if (!authHeader.startsWith('Bearer ')) {
+    console.log('Invalid authorization header format'); // Debug log
+    return res.status(401).json({ message: 'Invalid token format' });
+  }
+
+  const token = authHeader.split(' ')[1];
+  console.log('Extracted token:', token); // Debug log
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    console.log('Decoded token:', decoded); // Debug log
+    req.surveyAuth = decoded;
+    next();
+  } catch (error) {
+    console.log('Token verification error:', error); // Debug log
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+};
 
 function generateSurveyHash(surveyID, salt) {
   const hash = crypto
@@ -46,17 +80,21 @@ router.get("/:id/round/:delphi_round", async (req, res, next) => {
   }
 });
 
-router.get("/uuid/:uuid", async (req, res, next) => {
+router.get("/uuid/:uuid", verifyToken, async (req, res, next) => {
   const { uuid } = req.params;
+  
+  // Verify that the token matches the requested survey
+  if (req.surveyAuth.uuid !== uuid) {
+    return res.status(403).json({ message: "Unauthorized access to this survey" });
+  }
+
   try {
-    console.log("Get with UUID", req.params);
     const survey = await Surveys.findOne({
       where: {
         uuid: uuid,
       },
     });
     if (!survey) {
-      console.log("no survey found");
       return res.status(404).json({ message: "Survey not found" });
     }
     res.json(survey);
@@ -277,7 +315,43 @@ router.post("/publish/:id/:round", async (req, res) => {
   }
 });
 
-// validate user ID token
+// // validate user ID token
+// router.post("/validate-token", async (req, res) => {
+//   const { uuid, accessToken } = req.body;
+//   if (!uuid || !accessToken) {
+//     return res
+//       .status(400)
+//       .json({ message: "Survey UUID and access token are required" });
+//   }
+
+//   try {
+//     const survey = await Surveys.findOne({
+//       where: { uuid },
+//     });
+//     if (!survey) {
+//       return res
+//         .status(404)
+//         .json({ message: "Survey not found or not published" });
+//     }
+
+//     const hashedToken = hashToken(accessToken);
+//     if (hashedToken !== survey.access_token_hash) {
+//       return res.status(401).json({ message: "Invalid access token" });
+//     }
+
+//     // TODO: Authent token
+
+//     res.status(200).json({ publishedURL: survey.url });
+//   } catch (error) {
+//     console.error("Error validating token:", error);
+//     res.status(500).json({
+//       message: "Error validating token",
+//       error: error.message,
+//     });
+//   }
+// });
+
+// Add this new route to generate JWT token upon successful validation
 router.post("/validate-token", async (req, res) => {
   const { uuid, accessToken } = req.body;
   if (!uuid || !accessToken) {
@@ -301,9 +375,18 @@ router.post("/validate-token", async (req, res) => {
       return res.status(401).json({ message: "Invalid access token" });
     }
 
-    // TODO: Authent token
+    // Generate JWT token
+    const token = jwt.sign(
+      { 
+        uuid,
+        surveyId: survey.survey_id,
+        delphiRound: survey.delphi_round
+      },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
 
-    res.status(200).json({ publishedURL: survey.url });
+    res.status(200).json({ token });
   } catch (error) {
     console.error("Error validating token:", error);
     res.status(500).json({
