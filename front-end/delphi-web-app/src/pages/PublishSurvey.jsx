@@ -25,7 +25,7 @@ const PublishPage = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [surveyData, setSurveyData] = useState(null);
-  const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
+  const [selectedDelphiRound, setSelectedDelphiRound] = useState(1);
   const navigate = useNavigate();
 
   const { maxRound } = useSurvey(surveyID, selectedDelphiRound);
