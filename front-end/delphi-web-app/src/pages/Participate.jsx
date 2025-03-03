@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Survey } from "survey-react-ui";
-import { Model } from "survey-core";
+import SurveyForm from "./survey-components/Survey-Form";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Container, Typography } from "@mui/material";
 import "survey-core/defaultV2.min.css";
@@ -78,8 +77,8 @@ function ParticipatePage() {
           <Typography variant="h4" gutterBottom>
             Participate in Survey
           </Typography>
-          <Survey model={new Model(survey)} />
-        </>
+          <SurveyForm survey={survey} />
+          </>
       )}
     </Container>
   );

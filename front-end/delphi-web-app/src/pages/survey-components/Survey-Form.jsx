@@ -11,12 +11,13 @@ const SurveyForm = ({ survey }) => {
   const surveyModel = new Model(survey);
 
   surveyModel.onComplete.add(async (sender) => {
-    const surveyData = sender.data;
     const payload = {
-      survey_id: survey.survey_id, 
+      survey_uuid: survey.uuid,
       delphi_round: survey.delphi_round,
-      response_data: surveyData,        
+      response_data: sender.data,        
     };
+
+    console.log("Submitting payload:", payload); 
 
     try {
       const response = await fetch("http://localhost:3001/responses/", {
@@ -37,5 +38,6 @@ const SurveyForm = ({ survey }) => {
 
   return <Survey model={surveyModel} />;
 };
+
 
 export default SurveyForm;
