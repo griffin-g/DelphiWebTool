@@ -45,7 +45,7 @@ function ParticipatePage() {
           console.log('Error response:', errData); 
           if (response.status === 401 || response.status === 403) {
             localStorage.removeItem('surveyToken');
-            navigate(`/redirect?uuid=${uuid}`);
+            navigate(`/access-survey/redirect?uuid=${uuid}`);
             return;
           }
           throw new Error(errData.message || "Survey not found");
