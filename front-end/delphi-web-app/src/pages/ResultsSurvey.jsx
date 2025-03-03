@@ -3,11 +3,18 @@ import { useSurvey } from "./survey-components/UseSurvey";
 import { useState } from "react";
 import Header from "../Components/Header";
 import { Grid2, Typography } from "@mui/material";
+import { useResults } from "./survey-components/UseResults";
+import { ResponseBarChart } from "../Components/BarChart";
 const ResultsSurvey = () => {
-  const { surveyID, delphiRound } = useParams();
+  const { surveyID, delphiRound, surveyUUID } = useParams();
   const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
   const { questions, title } = useSurvey(surveyID, selectedDelphiRound);
   console.log("questions", questions);
+  const { fetchSurveyResults, responses, numResponses } = useResults(
+    surveyUUID,
+    selectedDelphiRound
+  );
+  console.log("responses", responses);
   return (
     <div>
       <Header />
@@ -24,27 +31,56 @@ const ResultsSurvey = () => {
           <Typography variant="h4" gutterBottom>
             {title}
           </Typography>
+          <Typography variant="h6" gutterBottom>
+            Responses: {numResponses}
+          </Typography>
           {questions.map((question, index) => {
             return (
               <Grid2
-                key={index}
                 sx={{
-                  border: "2px solid black",
-                  p: 1,
-                  borderRadius: 5,
-                  width: "33%",
+                  display: "flex",
+                  flexDirection: "row",
+                  width: "100%",
+                  justifyContent: "space-between",
                 }}
               >
-                <h2>{question.title}</h2>
-                <p>{question.description}</p>
-                {(question.type === "ranking" ||
-                  question.type === "checkbox") && (
-                  <ul>
-                    {question.choices.map((choice, index) => {
-                      return <li key={index}>{choice}</li>;
-                    })}
-                  </ul>
-                )}
+                <Grid2
+                  key={index}
+                  sx={{
+                    border: "2px solid black",
+                    p: 1,
+                    borderRadius: 5,
+                    width: "33%",
+                    mb: 2,
+                  }}
+                >
+                  <h2>{question.title}</h2>
+                  <p>{question.description}</p>
+                  {(question.type === "ranking" ||
+                    question.type === "checkbox") && (
+                    <ul>
+                      {question.choices.map((choice, index) => {
+                        return <li key={index}>{choice}</li>;
+                      })}
+                    </ul>
+                  )}
+                </Grid2>
+                <Grid2
+                  sx={{
+                    border: "2px solid black",
+                    p: 1,
+                    borderRadius: 5,
+                    width: "60%",
+                    mb: 2,
+                  }}
+                >
+                  {question.type === "checkbox" && (
+                    <ResponseBarChart
+                      labels={question.choices}
+                      responses={responses[question.name]}
+                    />
+                  )}
+                </Grid2>
               </Grid2>
             );
           })}

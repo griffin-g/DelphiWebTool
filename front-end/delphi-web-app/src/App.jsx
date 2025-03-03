@@ -43,7 +43,7 @@ function App() {
           <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/invite-example" element={<InviteModalExample />} />
           <Route
-            path="/results-survey/:surveyID/:delphiRound"
+            path="/results-survey/:surveyID/:delphiRound/:surveyUUID"
             element={<ResultsSurvey />}
           />
         </Routes>

@@ -108,7 +108,7 @@ router.get("/user-surveys/:userID", async (req, res, next) => {
   try {
     const surveys = await Surveys.findAll({
       where: { user_id: userID },
-      attributes: ["survey_id", "title", "delphi_round", "elements"],
+      attributes: ["survey_id", "title", "delphi_round", "elements", "uuid"],
     });
 
     // Log surveys to check if the query is returning data

@@ -20,6 +20,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
     "react-sortablejs": "^6.1.4",
+    "recharts": "^2.15.1",
     "survey-creator-react": "^1.12.8",
     "survey-react-ui": "^1.12.8"
   },
