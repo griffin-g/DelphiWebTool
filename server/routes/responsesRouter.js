@@ -20,11 +20,37 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+router.get("/:uuid/round/:delphiRound", async (req, res, next) => {
+  console.log("Attempting to fetch response for:", {
+    url: req.url,
+    uuid: req.params.uuid,
+    round: req.params.delphiRound,
+  });
+  try {
+    const response = await Responses.findAll({
+      where: {
+        survey_uuid: req.params.uuid,
+        delphi_round: req.params.delphiRound,
+      },
+    });
+    const responseDataArray = response.map((item) => item.response_data);
+    res.json(responseDataArray);
+    //res.json(response);
+  } catch (error) {
+    console.error("Error fetching response:", error);
+    next(error);
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const { survey_uuid, delphi_round, response_data } = req.body;
 
-    console.log("Received payload:", { survey_uuid, delphi_round, response_data });
+    console.log("Received payload:", {
+      survey_uuid,
+      delphi_round,
+      response_data,
+    });
 
     const newResponse = await Responses.create({
       survey_uuid,
@@ -38,7 +64,6 @@ router.post("/", async (req, res) => {
     next(error);
   }
 });
-
 
 router.delete("/:id", async (req, res, next) => {
   try {

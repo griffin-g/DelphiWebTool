@@ -26,6 +26,7 @@ const SurveyManagement = () => {
           return acc;
         }, {})
       );
+      console.log("unique surveys:", uniqueSurveys);
       setSurveys(uniqueSurveys);
     } catch (error) {
       setError(error.message);
@@ -117,7 +118,7 @@ const SurveyManagement = () => {
                         sx={{ mr: 1 }}
                         onClick={() =>
                           navigate(
-                            `/results-survey/${survey.survey_id}/${survey.delphi_round}`
+                            `/results-survey/${survey.survey_id}/${survey.delphi_round}/${survey.uuid}`
                           )
                         }
                       >

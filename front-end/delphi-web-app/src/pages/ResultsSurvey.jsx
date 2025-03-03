@@ -3,11 +3,17 @@ import { useSurvey } from "./survey-components/UseSurvey";
 import { useState } from "react";
 import Header from "../Components/Header";
 import { Grid2, Typography } from "@mui/material";
+import { useResults } from "./survey-components/UseResults";
 const ResultsSurvey = () => {
-  const { surveyID, delphiRound } = useParams();
+  const { surveyID, delphiRound, surveyUUID } = useParams();
   const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
   const { questions, title } = useSurvey(surveyID, selectedDelphiRound);
   console.log("questions", questions);
+  const { fetchSurveyResults, responses, numResponses } = useResults(
+    surveyUUID,
+    selectedDelphiRound
+  );
+  console.log("responses", numResponses);
   return (
     <div>
       <Header />
@@ -24,6 +30,9 @@ const ResultsSurvey = () => {
           <Typography variant="h4" gutterBottom>
             {title}
           </Typography>
+          <Typography variant="h6" gutterBottom>
+            Responses: {numResponses}
+          </Typography>
           {questions.map((question, index) => {
             return (
               <Grid2
@@ -33,6 +42,7 @@ const ResultsSurvey = () => {
                   p: 1,
                   borderRadius: 5,
                   width: "33%",
+                  mb: 2,
                 }}
               >
                 <h2>{question.title}</h2>
