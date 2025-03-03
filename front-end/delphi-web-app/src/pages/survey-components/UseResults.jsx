@@ -37,7 +37,6 @@ export const useResults = (surveyUUID, delphiRound) => {
       const response = await axios.get(
         `http://localhost:3001/responses/${surveyUUID}/round/${delphiRound}`
       );
-      console.log("all responses:", response);
       const transformedResponses = transformResponses(response.data);
       setNumResponses(response.data.length);
       setResponses(transformedResponses);
