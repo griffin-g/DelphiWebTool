@@ -10,16 +10,19 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useEffect, useState } from "react";
-export const ResponseBarChart = ({ labels, responses }) => {
+export const ResponseBarChart = ({ labels, responses, type }) => {
   console.log("labels:", labels);
   console.log("responses:", responses);
+  console.log("type:", type);
   const [data, setData] = useState([]);
+  const [dataKey, setDataKey] = useState("");
   useEffect(() => {
-    if (responses && responses.length > 0) {
+    if (responses && responses.length > 0 && type == "checkbox") {
+      setDataKey("Checked");
       const data = labels.map((label, index) => {
         return {
           name: label,
-          checked: responses.reduce(
+          Checked: responses.reduce(
             (count, responseArray) =>
               count +
               responseArray.filter((response) => response === label).length,
@@ -29,8 +32,30 @@ export const ResponseBarChart = ({ labels, responses }) => {
       });
       setData(data);
       console.log("data:", data);
+    } else if (responses && responses.length > 0 && type === "ranking") {
+      setDataKey("rank_scores");
+      const data = labels.map((label, index) => {
+        return {
+          name: label,
+          rank_scores: responses.reduce((count, responseArray) => {
+            return (
+              count +
+              responseArray.reduce((score, response, index) => {
+                if (response === label) {
+                  // Add (array length - index) points for each occurrence
+                  // This gives more points for earlier positions
+                  return score + (responseArray.length - index);
+                }
+                return score;
+              }, 0)
+            );
+          }, 0),
+        };
+      });
+      setData(data);
+      console.log("data:", data);
     }
-  }, [responses, labels]);
+  }, [responses, labels, type]);
   return (
     <ResponsiveContainer width="100%" height="100%" paddingRight="50px">
       <BarChart width={"auto"} height={"auto"} data={data}>
@@ -40,7 +65,7 @@ export const ResponseBarChart = ({ labels, responses }) => {
         <Tooltip />
         <Legend />
         <Bar
-          dataKey="checked"
+          dataKey={dataKey}
           fill="#9DD6C8"
           activeBar={<Rectangle fill="#A58686" stroke="black" />}
         />

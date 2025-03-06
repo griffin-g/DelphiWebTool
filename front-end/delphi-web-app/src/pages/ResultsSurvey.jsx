@@ -5,6 +5,7 @@ import Header from "../Components/Header";
 import { Grid2, Typography } from "@mui/material";
 import { useResults } from "./survey-components/UseResults";
 import { ResponseBarChart } from "../Components/BarChart";
+import { ResponsePieChart } from "../Components/ResponsePieChart";
 const ResultsSurvey = () => {
   const { surveyID, delphiRound, surveyUUID } = useParams();
   const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
@@ -47,9 +48,10 @@ const ResultsSurvey = () => {
                 <Grid2
                   key={index}
                   sx={{
-                    border: "2px solid black",
+                    border: "1px solid black",
+                    boxShadow: 1,
                     p: 1,
-                    borderRadius: 5,
+                    borderRadius: 3,
                     width: "33%",
                     mb: 2,
                   }}
@@ -69,7 +71,7 @@ const ResultsSurvey = () => {
                   sx={{
                     border: "2px solid black",
                     p: 1,
-                    borderRadius: 5,
+                    borderRadius: 3,
                     width: "60%",
                     mb: 2,
                   }}
@@ -78,7 +80,19 @@ const ResultsSurvey = () => {
                     <ResponseBarChart
                       labels={question.choices}
                       responses={responses[question.name]}
+                      type="checkbox"
                     />
+                  )}
+                  {question.type === "ranking" && (
+                    <ResponseBarChart
+                      labels={question.choices}
+                      responses={responses[question.name]}
+                      type="ranking"
+                    />
+                    /* <ResponsePieChart
+                        responses={responses[question.name]}
+                        labels={question.choices}
+                      /> */
                   )}
                 </Grid2>
               </Grid2>
