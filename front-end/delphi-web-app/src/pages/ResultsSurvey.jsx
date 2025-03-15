@@ -5,6 +5,8 @@ import Header from "../Components/Header";
 import { Grid2, Typography } from "@mui/material";
 import { useResults } from "./survey-components/UseResults";
 import { ResponseBarChart } from "../Components/BarChart";
+import CSVConverter from "./survey-components/CSVConverter";
+
 const ResultsSurvey = () => {
   const { surveyID, delphiRound, surveyUUID } = useParams();
   const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
@@ -18,6 +20,7 @@ const ResultsSurvey = () => {
   return (
     <div>
       <Header />
+      <CSVConverter responses={responses} questions={questions} />
       <Grid2 container sx={{ justifyContent: "center", mt: 4 }}>
         <Grid2
           container
