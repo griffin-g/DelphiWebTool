@@ -42,8 +42,6 @@ export const ResponseBarChart = ({ labels, responses, type }) => {
               count +
               responseArray.reduce((score, response, index) => {
                 if (response === label) {
-                  // Add (array length - index) points for each occurrence
-                  // This gives more points for earlier positions
                   return score + (responseArray.length - index);
                 }
                 return score;
@@ -57,7 +55,7 @@ export const ResponseBarChart = ({ labels, responses, type }) => {
     }
   }, [responses, labels, type]);
   return (
-    <ResponsiveContainer width="100%" height="100%" paddingRight="50px">
+    <ResponsiveContainer width="80%" height="100%" paddingRight="50px">
       <BarChart width={"auto"} height={"auto"} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
