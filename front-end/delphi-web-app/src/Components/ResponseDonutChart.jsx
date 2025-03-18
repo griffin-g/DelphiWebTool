@@ -74,7 +74,7 @@ export const ResponseDonutChart = ({ responses = [], labels = [] }) => {
   const data = transformData(responses, labels);
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" minHeight={300} height="100%">
       <PieChart>
         <Pie
           data={data}
@@ -98,6 +98,7 @@ export const ResponseDonutChart = ({ responses = [], labels = [] }) => {
           verticalAlign="bottom"
           wrapperStyle={{
             paddingTop: "20px",
+            fontSize: "12px",
           }}
         />
       </PieChart>

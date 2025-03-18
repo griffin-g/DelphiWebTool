@@ -7,7 +7,7 @@ const ResultsToggleButton = ({ viewMode, handleChange }) => {
   return (
     <Grid2
       sx={{
-        width: "10%",
+        width: "100%",
         height: "100%",
         borderTopLeftRadius: "3px",
         borderBottomLeftRadius: "3px",
