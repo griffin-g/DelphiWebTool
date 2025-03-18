@@ -16,19 +16,27 @@ const renderActiveShape = (props) => {
     percent,
     value,
   } = props;
+
   const sin = Math.sin(-RADIAN * midAngle);
   const cos = Math.cos(-RADIAN * midAngle);
-  const sx = cx + (outerRadius + 10) * cos;
-  const sy = cy + (outerRadius + 10) * sin;
-  const mx = cx + (outerRadius + 30) * cos;
-  const my = cy + (outerRadius + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const sx = cx + (outerRadius + 5) * cos;
+  const sy = cy + (outerRadius + 5) * sin;
+  const mx = cx + (outerRadius + 15) * cos;
+  const my = cy + (outerRadius + 15) * sin;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 15;
   const ey = my;
   const textAnchor = cos >= 0 ? "start" : "end";
 
   return (
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+      <text
+        x={cx}
+        y={cy - outerRadius - 10}
+        dy={8}
+        textAnchor="middle"
+        fill="#333"
+        fontSize="14px"
+      >
         {payload.name}
       </text>
       <Sector
@@ -45,8 +53,8 @@ const renderActiveShape = (props) => {
         cy={cy}
         startAngle={startAngle}
         endAngle={endAngle}
-        innerRadius={outerRadius + 6}
-        outerRadius={outerRadius + 10}
+        innerRadius={outerRadius + 3}
+        outerRadius={outerRadius + 6}
         fill={fill}
       />
       <path
@@ -56,21 +64,23 @@ const renderActiveShape = (props) => {
       />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
       <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        x={ex + (cos >= 0 ? 1 : -1) * 8}
         y={ey}
         textAnchor={textAnchor}
         fill="#333"
+        fontSize="12px"
       >
-        {`Value ${value}`}
+        {`${value} selections`}
       </text>
       <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        x={ex + (cos >= 0 ? 1 : -1) * 8}
         y={ey}
-        dy={18}
+        dy={14}
         textAnchor={textAnchor}
         fill="#999"
+        fontSize="11px"
       >
-        {`(${(percent * 100).toFixed(2)}%)`}
+        {`(${(percent * 100).toFixed(1)}%)`}
       </text>
     </g>
   );
@@ -119,19 +129,19 @@ export const ResponsePieChart = ({ responses = [], labels = [] }) => {
   return (
     <ResponsiveContainer
       width="100%"
-      height={300}
-      minHeight={280}
-      minWidth={280}
+      height="100%"
+      minHeight={300}
+      minWidth={300}
     >
-      <PieChart>
+      <PieChart margin={{ top: 20, right: 30, left: 30, bottom: 20 }}>
         <Pie
           activeIndex={activeIndex}
           activeShape={renderActiveShape}
           data={data}
           cx="50%"
           cy="50%"
-          innerRadius={60}
-          outerRadius={80}
+          innerRadius={50}
+          outerRadius={70}
           fill="#8884d8"
           dataKey="value"
           onMouseEnter={onPieEnter}

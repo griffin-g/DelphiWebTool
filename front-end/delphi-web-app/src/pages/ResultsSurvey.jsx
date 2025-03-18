@@ -129,12 +129,14 @@ const ResultsSurvey = () => {
                         flexDirection: "row",
                       }}
                     >
-                      <ResultsToggleButton
-                        viewMode={currentViewMode}
-                        handleChange={(event, nextView) =>
-                          handleChange(question.name, event, nextView)
-                        }
-                      />
+                      <Grid2 sx={{ width: "10%" }}>
+                        <ResultsToggleButton
+                          viewMode={currentViewMode}
+                          handleChange={(event, nextView) =>
+                            handleChange(question.name, event, nextView)
+                          }
+                        />
+                      </Grid2>
                       {currentViewMode === "graphs" ? (
                         <>
                           <Grid2 sx={{ width: "50%", maxHeight: "100%" }}>
@@ -172,12 +174,14 @@ const ResultsSurvey = () => {
                         flexDirection: "row",
                       }}
                     >
-                      <ResultsToggleButton
-                        viewMode={currentViewMode}
-                        handleChange={(event, nextView) =>
-                          handleChange(question.name, event, nextView)
-                        }
-                      />
+                      <Grid2 sx={{ width: "10%" }}>
+                        <ResultsToggleButton
+                          viewMode={currentViewMode}
+                          handleChange={(event, nextView) =>
+                            handleChange(question.name, event, nextView)
+                          }
+                        />
+                      </Grid2>
                       {currentViewMode === "graphs" ? (
                         <>
                           <Grid2 sx={{ width: "50%", maxHeight: "100%" }}>
