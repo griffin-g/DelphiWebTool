@@ -57,7 +57,7 @@ function QuestionForm({
             <MenuItem value="ranking">Ranking</MenuItem>
             <MenuItem value="checkbox">Checkbox</MenuItem>
             <MenuItem value="rating">Rating</MenuItem>
-            <MenuItem value="matrix">Matrix</MenuItem>
+            {/* <MenuItem value="matrix">Matrix</MenuItem> */}
           </Select>
         </FormControl>
 
