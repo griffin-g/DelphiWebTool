@@ -6,7 +6,7 @@ import { Button, Grid2, Typography } from "@mui/material";
 import { useResults } from "./survey-components/UseResults";
 import { ResponseBarChart } from "../Components/BarChart";
 import CSVConverter from "./survey-components/CSVConverter";
-
+import TextWordCloud from "./survey-components/TextWordCloud";
 import { ResponsePieChart } from "../Components/ResponsePieChart";
 import { RankingStatSummary } from "../Components/RankingStatSummary";
 import ResultsToggleButton from "../Components/ResultsToggleButton";
@@ -45,7 +45,6 @@ const ResultsSurvey = () => {
   return (
     <div>
       <Header />
-      <CSVConverter responses={responses} questions={questions} />
       <Grid2 container sx={{ justifyContent: "center", mt: 4 }}>
         <Grid2
           container
@@ -68,6 +67,7 @@ const ResultsSurvey = () => {
               <Typography variant="h4" gutterBottom>
                 {title}
               </Typography>
+              <CSVConverter responses={responses} questions={questions} />
               <Typography variant="h6" gutterBottom>
                 Responses: {numResponses}
               </Typography>
@@ -124,6 +124,9 @@ const ResultsSurvey = () => {
                     mb: 2,
                   }}
                 >
+                  {question.type === "text" && (
+                    <TextWordCloud responses={responses[question.name]} />
+                  )}
                   {question.type === "checkbox" && (
                     <Grid2
                       sx={{
