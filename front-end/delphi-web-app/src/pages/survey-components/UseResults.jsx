@@ -9,6 +9,8 @@ export const useResults = (surveyUUID, delphiRound) => {
   const fetchedSurveyRef = useRef(false);
 
   useEffect(() => {
+    //fetchedSurveyRef.current = false;
+
     if (!fetchedSurveyRef.current && surveyUUID && delphiRound) {
       fetchSurveyResults();
     }

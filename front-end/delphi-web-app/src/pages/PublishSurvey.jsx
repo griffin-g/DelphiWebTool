@@ -121,7 +121,7 @@ const PublishPage = () => {
         </Typography>
         <RoundSelect
           maxRound={maxRound}
-          value={selectedDelphiRound}
+          selectedDelphiRound={selectedDelphiRound}
           handleDelphiSelect={handleDelphiSelect}
         />
         <Typography variant="body1" sx={{ mb: 3 }}>

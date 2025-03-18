@@ -9,24 +9,37 @@ import { ResponsePieChart } from "../Components/ResponsePieChart";
 import { RankingStatSummary } from "../Components/RankingStatSummary";
 import ResultsToggleButton from "../Components/ResultsToggleButton";
 import { ResponseDonutChart } from "../Components/ResponseDonutChart";
+import RoundSelect from "../Components/RoundSelect";
 
 const ResultsSurvey = () => {
   const { surveyID, delphiRound, surveyUUID } = useParams();
+
+  const navigate = useNavigate();
   const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
   const { questions, title } = useSurvey(surveyID, selectedDelphiRound);
   const [viewModes, setViewModes] = useState({});
-  console.log("questions", questions);
+  console.log("selectedDelphiRound:", selectedDelphiRound);
   const { fetchSurveyResults, responses, numResponses } = useResults(
     surveyUUID,
     selectedDelphiRound
   );
-  console.log("responses", responses);
+  const { maxRound } = useSurvey(surveyID, selectedDelphiRound);
+
+  const handleRoundChange = async (event) => {
+    const newRound = event.target.value;
+    setSelectedDelphiRound(newRound);
+    console.log("newRound:", newRound);
+    setViewModes({});
+    navigate(`/results-survey/${surveyID}/${newRound}/${surveyUUID}`);
+  };
+
   const handleChange = (questionId, event, nextView) => {
     setViewModes((prev) => ({
       ...prev,
       [questionId]: nextView,
     }));
   };
+
   return (
     <div>
       <Header />
@@ -40,12 +53,31 @@ const ResultsSurvey = () => {
             justifyContent: "center",
           }}
         >
-          <Typography variant="h4" gutterBottom>
-            {title}
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-            Responses: {numResponses}
-          </Typography>
+          <Grid2
+            container
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Grid2 item>
+              <Typography variant="h4" gutterBottom>
+                {title}
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Responses: {numResponses}
+              </Typography>
+            </Grid2>
+            <Grid2 item>
+              <RoundSelect
+                maxRound={maxRound}
+                selectedDelphiRound={selectedDelphiRound}
+                handleDelphiSelect={handleRoundChange}
+              />
+            </Grid2>
+          </Grid2>
+
           {questions.map((question, index) => {
             const currentViewMode = viewModes[question.name] || "graphs";
             return (
