@@ -1,209 +1,242 @@
-import React from "react";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid2";
-import Button from "@mui/material/Button";
+import React, { useState } from "react";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  Button,
+  Typography,
+  Container,
+  IconButton,
+  Menu,
+  MenuItem,
+  Divider,
+  useMediaQuery,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
-import { Link } from "react-router-dom";
-import { Typography } from "@mui/material";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
-import { useNavigate } from "react-router-dom";
 
 function Header() {
   const auth = useAuth();
-  console.log("Current user data: ", auth.user);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isMobile = useMediaQuery("(max-width:900px)");
+  const [anchorElNav, setAnchorElNav] = useState(null);
+
+  // Navigation menu items
+  const navItems = [
+    { label: "About Us", path: "/about-us" },
+    { label: "Investigate The Delphi Method", path: "/delphi-method" },
+    { label: "Manage Surveys", path: "/manage-survey" },
+    { label: "Participating Surveys", path: "/participating-surveys" },
+  ];
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
 
   const handleLogout = () => {
     if (auth.logOut) {
-      auth.logOut(); // Call the logout function from AuthProvider
+      auth.logOut();
     }
   };
-  const navigate = useNavigate();
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    handleCloseNavMenu();
+  };
+
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
+
   return (
-    <Box>
-      <Grid
-        container
-        sx={{ height: "147px", backgroundColor: "#9DD6C8", width: "100%" }}
-      >
-        <Grid
-          container
-          sx={{
-            paddingTop: "20px",
-            paddingX: "20px",
-            justifyContent: "space-between",
-            width: "100%",
-            height: "auto",
-            alignContent: "center",
-          }}
-        >
-          <Grid item sx={{ height: "40px", width: "auto" }}>
-            <Typography
-              variant="h5"
+    <AppBar
+      position="static"
+      elevation={0}
+      sx={{
+        backgroundColor: "white",
+        color: "#333",
+        borderBottom: "1px solid #eaeaea",
+      }}
+    >
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          {/* Logo/App Name */}
+          <Typography
+            variant="h5"
+            component={Link}
+            to="/"
+            sx={{
+              fontWeight: 700,
+              color: "#4A77E5",
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              mr: 4,
+            }}
+          >
+            Delphi Web App
+          </Typography>
+
+          {/* Mobile menu */}
+          {isMobile ? (
+            <Box
               sx={{
-                fontWeight: "bold",
-                color: "black",
+                flexGrow: 1,
+                display: { xs: "flex", md: "none" },
+                justifyContent: "flex-end",
               }}
             >
-              Delphi Web App
-            </Typography>
-          </Grid>
-          <Grid container sx={{ height: "68px", alignItems: "center" }}>
-            {auth.user ? (
-              // If user data exists, show Logout button
-              <Button
-                variant="contained"
-                onClick={handleLogout}
-                id="logout"
+              <IconButton
+                size="large"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                keepMounted
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{ display: { xs: "block", md: "none" } }}
+              >
+                {navItems.map((item) => (
+                  <MenuItem
+                    key={item.label}
+                    onClick={() => handleNavigation(item.path)}
+                    selected={isActive(item.path)}
+                  >
+                    <Typography textAlign="center">{item.label}</Typography>
+                  </MenuItem>
+                ))}
+                <Divider />
+                {auth.user ? (
+                  <MenuItem onClick={handleLogout}>
+                    <Typography textAlign="center">Logout</Typography>
+                  </MenuItem>
+                ) : (
+                  [
+                    <MenuItem
+                      key="login"
+                      onClick={() => handleNavigation("/login")}
+                    >
+                      <Typography textAlign="center">Login</Typography>
+                    </MenuItem>,
+                    <MenuItem
+                      key="signup"
+                      onClick={() => handleNavigation("/sign-up")}
+                    >
+                      <Typography textAlign="center">Sign Up</Typography>
+                    </MenuItem>,
+                  ]
+                )}
+              </Menu>
+            </Box>
+          ) : (
+            <>
+              {/* Desktop Navigation */}
+              <Box
                 sx={{
-                  width: "166px",
-                  height: "68px",
-                  backgroundColor: "#A58686",
-                  padding: "0px",
-                  "&:hover": {
-                    backgroundColor: "#A58686", // Hover color
-                  },
+                  flexGrow: 1,
+                  display: { xs: "none", md: "flex" },
+                  gap: 3,
                 }}
               >
-                Logout
-              </Button>
-            ) : (
-              // If no user data, show Login and Sign Up buttons
-              <>
-                <Link
-                  to="/login"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <LoginIcon
+                {navItems.map((item) => (
+                  <Button
+                    key={item.label}
+                    onClick={() => handleNavigation(item.path)}
                     sx={{
-                      width: "48px",
-                      height: "48px",
-                      marginRight: "10px",
+                      color: isActive(item.path) ? "#4A77E5" : "#555",
+                      fontWeight: isActive(item.path) ? 600 : 400,
+                      display: "block",
+                      textTransform: "none",
+                      fontSize: "1rem",
+                      borderBottom: isActive(item.path)
+                        ? "2px solid #4A77E5"
+                        : "none",
+                      borderRadius: 0,
+                      "&:hover": {
+                        backgroundColor: "transparent",
+                        color: "#4A77E5",
+                      },
                     }}
-                  />
-                </Link>
-                <Button
-                  variant="contained"
-                  id="sign-up"
-                  component={Link}
-                  to="/sign-up"
-                  sx={{
-                    width: "166px",
-                    height: "68px",
-                    backgroundColor: "#A58686",
-                    padding: "0px",
-                    "&:hover": {
-                      backgroundColor: "#A58686", // Hover color
-                    },
-                  }}
-                >
-                  Sign Up
-                </Button>
-              </>
-            )}
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          sx={{
-            width: "100%",
-            minWidth: "790px",
-            justifyContent: "space-between",
-            paddingX: "20%",
-            alignContent: "center",
-          }}
-        >
-          <Typography
-            variant="h6"
-            component="a"
-            onClick={() => {
-              navigate("/about-us");
-            }}
-            sx={{
-              color: "inherit", // Default color
-              cursor: "pointer",
-              textDecoration: "none", // No underline
-              "&:hover": {
-                color: "white", // Hover color
-              },
-            }}
-          >
-            About Us
-          </Typography>
-          <Box
-            sx={{
-              width: "1px",
-              height: "20px",
-              backgroundColor: "black",
-              margin: "0 10px",
-              paddingTop: "10px",
-            }}
-          />
-          <Typography
-            variant="h6"
-            component="a"
-            //onClick={navigate("/about-us")}
-            sx={{
-              color: "inherit", // Default color
-              textDecoration: "none", // No underline
-              "&:hover": {
-                color: "white", // Hover color
-              },
-            }}
-          >
-            Investigate The Delphi Method
-          </Typography>
-          <Box
-            sx={{
-              width: "1px",
-              height: "20px",
-              backgroundColor: "black",
-              margin: "0 10px",
-              paddingTop: "10px",
-            }}
-          />
-          <Typography
-            variant="h6"
-            component="a"
-            onClick={() => {
-              navigate("/manage-survey");
-              //console.log("in on click");
-            }}
-            sx={{
-              color: "inherit", // Default color
-              cursor: "pointer",
-              textDecoration: "none", // No underline
-              "&:hover": {
-                color: "white", // Hover color
-              },
-            }}
-          >
-            Manage Surveys
-          </Typography>
-          <Box
-            sx={{
-              width: "1px",
-              height: "20px",
-              backgroundColor: "black",
-              margin: "0 10px",
-              paddingTop: "10px",
-            }}
-          />
-          <Typography
-            variant="h6"
-            component="a"
-            href="/about-us"
-            sx={{
-              color: "inherit", // Default color
-              textDecoration: "none", // No underline
-              "&:hover": {
-                color: "white", // Hover color
-              },
-            }}
-          >
-            Participating Surveys
-          </Typography>
-        </Grid>
-      </Grid>
-    </Box>
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </Box>
+
+              {/* User Auth */}
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                {auth.user ? (
+                  <Button
+                    variant="outlined"
+                    onClick={handleLogout}
+                    sx={{
+                      borderColor: "#4A77E5",
+                      color: "#4A77E5",
+                      "&:hover": {
+                        backgroundColor: "rgba(74, 119, 229, 0.04)",
+                        borderColor: "#4A77E5",
+                      },
+                    }}
+                  >
+                    Logout
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      component={Link}
+                      to="/login"
+                      startIcon={<LoginIcon />}
+                      sx={{
+                        color: "#555",
+                        mr: 2,
+                        textTransform: "none",
+                        "&:hover": {
+                          backgroundColor: "transparent",
+                          color: "#4A77E5",
+                        },
+                      }}
+                    >
+                      Login
+                    </Button>
+                    <Button
+                      variant="contained"
+                      component={Link}
+                      to="/sign-up"
+                      sx={{
+                        backgroundColor: "#4A77E5",
+                        textTransform: "none",
+                        fontWeight: 500,
+                        "&:hover": {
+                          backgroundColor: "#3A67D5",
+                        },
+                      }}
+                    >
+                      Sign Up
+                    </Button>
+                  </>
+                )}
+              </Box>
+            </>
+          )}
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }
 

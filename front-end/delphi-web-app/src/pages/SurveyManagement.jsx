@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Components/Header";
 import { useAuth } from "../AuthProvider";
-import { Button, Box, Typography, Grid2 } from "@mui/material";
+import { Button, Box, Typography, Grid2, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const SurveyManagement = () => {
@@ -42,138 +42,174 @@ const SurveyManagement = () => {
   return (
     <div>
       <Header />
-      <Typography variant="h4" align="center" sx={{ mt: 4 }}>
-        Survey Management
-      </Typography>
-
       <Grid2
         container
-        direction="row"
-        alignItems="start"
-        sx={{ justifyContent: "center", mt: 3 }}
+        direction="column"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          width: "100%",
+          alignItems: "center",
+        }}
       >
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "#A09260",
-            width: "200px",
-            height: "50px",
-            marginRight: "100px",
-          }}
-          onClick={() => navigate(`/create-survey`)}
-        >
-          Create New Survey
-        </Button>
+        <Grid2 item sx={{ width: "100%", mt: 4 }}>
+          <Typography
+            variant="h4"
+            sx={{ mt: 4, width: "80%", maxWidth: "1200px", margin: "0 auto" }}
+          >
+            Survey Management
+          </Typography>
+        </Grid2>
 
-        <br />
-        <Grid2 container direction="column" sx={{ width: "600px", mt: 2 }}>
-          {surveys.length === 0 ? (
-            <Typography align="center">No surveys available.</Typography>
-          ) : (
-            surveys.map((survey) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 2,
-                }}
-              >
+        <Grid2
+          container
+          direction="row"
+          sx={{
+            width: "80%",
+            maxWidth: "1200px",
+            justifyContent: "space-between",
+            mt: 3,
+          }}
+        >
+          <Grid2 item sx={{ width: "800px", mt: 2 }}>
+            {surveys.length === 0 ? (
+              <Typography align="center">No surveys available.</Typography>
+            ) : (
+              surveys.map((survey) => (
                 <Box
                   key={survey.survey_id}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    width: "80%",
-                    p: 2,
-                    border: "1px solid #ccc",
-                    borderRadius: 2,
-                    boxShadow: 1,
+                    mb: 2,
                   }}
                 >
-                  <Box>
-                    <Typography variant="h6">{survey.title}</Typography>
-                    <Typography variant="body2">Delphi Round: {1}</Typography>
-                  </Box>
-                  <Box>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      sx={{ mr: 1 }}
-                      onClick={() =>
-                        navigate(
-                          `/edit-survey/${survey.survey_id}/${survey.delphi_round}`
-                        )
-                      }
-                    >
-                      Edit
-                    </Button>
-                    {survey.is_active ? (
-                      <></>
-                    ) : (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      width: "90%",
+                      p: 2,
+                      border: "1px solid #ccc",
+                      borderRadius: 2,
+                      boxShadow: 1,
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="h6">{survey.title}</Typography>
+                      <Typography variant="body2">Delphi Round: {1}</Typography>
+                    </Box>
+                    <Box>
                       <Button
                         variant="outlined"
-                        color="primary"
-                        sx={{ mr: 1 }}
+                        sx={{
+                          mr: 1,
+                          borderColor: "#4A77E5",
+                          color: "#4A77E5",
+                          "&:hover": {
+                            backgroundColor: "rgba(74, 119, 229, 0.04)",
+                            borderColor: "#4A77E5",
+                          },
+                        }}
                         onClick={() =>
                           navigate(
-                            `/results-survey/${survey.survey_id}/${survey.delphi_round}/${survey.uuid}`
+                            `/edit-survey/${survey.survey_id}/${survey.delphi_round}`
                           )
                         }
                       >
-                        Results
+                        Edit
                       </Button>
-                    )}
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() =>
-                        navigate(
-                          `/publish-survey/${survey.survey_id}/${survey.delphi_round}`
-                        )
-                      }
-                    >
-                      Publish
-                    </Button>
-                  </Box>
-                </Box>
-                <Button
-                  variant="contained"
-                  color="error"
-                  startIcon={<DeleteIcon />}
-                  sx={{
-                    width: "10px",
-                    height: "25px",
-                    display: "flex",
-                    marginLeft: "20px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    "& .MuiButton-startIcon": {
-                      marginRight: "0px", // Remove right margin on the icon
-                    },
-                  }}
-                  onClick={async () => {
-                    try {
-                      const response = await fetch(
-                        `http://localhost:3001/surveys/${survey.survey_id}`,
-                        {
-                          method: "DELETE",
+                      {survey.is_active ? (
+                        <></>
+                      ) : (
+                        <Button
+                          variant="outlined"
+                          sx={{
+                            mr: 1,
+                            borderColor: "#4A77E5",
+                            color: "#4A77E5",
+                            "&:hover": {
+                              backgroundColor: "rgba(74, 119, 229, 0.04)",
+                              borderColor: "#4A77E5",
+                            },
+                          }}
+                          onClick={() =>
+                            navigate(
+                              `/results-survey/${survey.survey_id}/${survey.delphi_round}/${survey.uuid}`
+                            )
+                          }
+                        >
+                          Results
+                        </Button>
+                      )}
+                      <Button
+                        variant="outlined"
+                        sx={{
+                          mr: 1,
+                          borderColor: "#4A77E5",
+                          color: "#4A77E5",
+                          "&:hover": {
+                            backgroundColor: "rgba(74, 119, 229, 0.04)",
+                            borderColor: "#4A77E5",
+                          },
+                        }}
+                        onClick={() =>
+                          navigate(
+                            `/publish-survey/${survey.survey_id}/${survey.delphi_round}`
+                          )
                         }
-                      );
-                      if (!response.ok)
-                        throw new Error("Failed to delete survey");
-                      setSurveys(
-                        surveys.filter((s) => s.survey_id !== survey.survey_id)
-                      );
-                    } catch (error) {
-                      setError(error.message);
-                    }
-                  }}
-                ></Button>
-              </Box>
-            ))
-          )}
+                      >
+                        Publish
+                      </Button>
+                    </Box>
+                  </Box>
+                  <IconButton
+                    color="error"
+                    sx={{
+                      height: "32px",
+                      width: "32px",
+                    }}
+                    onClick={async () => {
+                      try {
+                        const response = await fetch(
+                          `http://localhost:3001/surveys/${survey.survey_id}`,
+                          {
+                            method: "DELETE",
+                          }
+                        );
+                        if (!response.ok)
+                          throw new Error("Failed to delete survey");
+                        setSurveys(
+                          surveys.filter(
+                            (s) => s.survey_id !== survey.survey_id
+                          )
+                        );
+                      } catch (error) {
+                        setError(error.message);
+                      }
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              ))
+            )}
+          </Grid2>
+          <Grid2 item sx={{ mt: 2 }}>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#e5b44a",
+                width: "200px",
+                height: "50px",
+              }}
+              onClick={() => navigate(`/create-survey`)}
+            >
+              Create New Survey
+            </Button>
+          </Grid2>
         </Grid2>
       </Grid2>
     </div>
