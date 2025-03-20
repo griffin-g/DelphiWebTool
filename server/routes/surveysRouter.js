@@ -1,40 +1,40 @@
 var express = require("express");
 var router = express.Router();
 const crypto = require("crypto");
-const { Surveys } = require("../models");
+const { Surveys, Participants } = require("../models");
 const { v4: uuidv4 } = require("uuid");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = "your-secret-key"; // Replace with a secure secret key
 
 const verifyToken = async (req, res, next) => {
-  console.log('Headers received:', req.headers); // Debug log
-  
+  console.log("Headers received:", req.headers); // Debug log
+
   const authHeader = req.headers.authorization;
-  console.log('Auth header:', authHeader); // Debug log
+  console.log("Auth header:", authHeader); // Debug log
 
   if (!authHeader) {
-    console.log('No authorization header found'); // Debug log
-    return res.status(401).json({ message: 'No token provided' });
+    console.log("No authorization header found"); // Debug log
+    return res.status(401).json({ message: "No token provided" });
   }
 
   // Check if it's a Bearer token
-  if (!authHeader.startsWith('Bearer ')) {
-    console.log('Invalid authorization header format'); // Debug log
-    return res.status(401).json({ message: 'Invalid token format' });
+  if (!authHeader.startsWith("Bearer ")) {
+    console.log("Invalid authorization header format"); // Debug log
+    return res.status(401).json({ message: "Invalid token format" });
   }
 
-  const token = authHeader.split(' ')[1];
-  console.log('Extracted token:', token); // Debug log
+  const token = authHeader.split(" ")[1];
+  console.log("Extracted token:", token); // Debug log
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    console.log('Decoded token:', decoded); // Debug log
+    console.log("Decoded token:", decoded); // Debug log
     req.surveyAuth = decoded;
     next();
   } catch (error) {
-    console.log('Token verification error:', error); // Debug log
-    return res.status(401).json({ message: 'Invalid token' });
+    console.log("Token verification error:", error); // Debug log
+    return res.status(401).json({ message: "Invalid token" });
   }
 };
 
@@ -82,10 +82,12 @@ router.get("/:id/round/:delphi_round", async (req, res, next) => {
 
 router.get("/uuid/:uuid", verifyToken, async (req, res, next) => {
   const { uuid } = req.params;
-  
+
   // Verify that the token matches the requested survey
   if (req.surveyAuth.uuid !== uuid) {
-    return res.status(403).json({ message: "Unauthorized access to this survey" });
+    return res
+      .status(403)
+      .json({ message: "Unauthorized access to this survey" });
   }
 
   try {
@@ -353,7 +355,7 @@ router.post("/publish/:id/:round", async (req, res) => {
 
 // Add this new route to generate JWT token upon successful validation
 router.post("/validate-token", async (req, res) => {
-  const { uuid, accessToken } = req.body;
+  const { uuid, accessToken, email } = req.body;
   if (!uuid || !accessToken) {
     return res
       .status(400)
@@ -370,6 +372,15 @@ router.post("/validate-token", async (req, res) => {
         .json({ message: "Survey not found or not published" });
     }
 
+    const participant = await Participants.findOne({
+      where: { participant_email: email, survey_id: survey.survey_id },
+    });
+    if (!participant) {
+      return res
+        .status(404)
+        .json({ message: "Participant not found or email is misspelled" });
+    }
+
     const hashedToken = hashToken(accessToken);
     if (hashedToken !== survey.access_token_hash) {
       return res.status(401).json({ message: "Invalid access token" });
@@ -377,13 +388,13 @@ router.post("/validate-token", async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { 
+      {
         uuid,
         surveyId: survey.survey_id,
-        delphiRound: survey.delphi_round
+        delphiRound: survey.delphi_round,
       },
       JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: "24h" }
     );
 
     res.status(200).json({ token });

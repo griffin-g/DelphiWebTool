@@ -78,8 +78,8 @@ router.post("/send-invites/:id/:round", async (req, res) => {
       delphi_round: delphi_round,
     },
   });
-  const surveyLink = `http://localhost:5173/access-survey/`;
   const uuid = survey.uuid;
+  const surveyLink = `http://localhost:5173/access-survey/${uuid}`;
 
   console.log("Survey link:", surveyLink);
   for (const participant of participants) {
