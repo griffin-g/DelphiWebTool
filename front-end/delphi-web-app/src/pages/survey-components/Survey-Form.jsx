@@ -3,7 +3,7 @@ import { Survey } from "survey-react-ui";
 import { Model } from "survey-core";
 import "survey-core/defaultV2.min.css";
 
-const SurveyForm = ({ survey }) => {
+const SurveyForm = ({ survey, anonymousIdentifier }) => {
   if (!survey) {
     return <p>Loading survey...</p>;
   }
@@ -14,10 +14,11 @@ const SurveyForm = ({ survey }) => {
     const payload = {
       survey_uuid: survey.uuid,
       delphi_round: survey.delphi_round,
-      response_data: sender.data,        
+      response_data: sender.data,
+      hashedIdentifier: anonymousIdentifier,
     };
 
-    console.log("Submitting payload:", payload); 
+    console.log("Submitting payload:", payload);
 
     try {
       const response = await fetch("http://localhost:3001/responses/", {
@@ -38,6 +39,5 @@ const SurveyForm = ({ survey }) => {
 
   return <Survey model={surveyModel} />;
 };
-
 
 export default SurveyForm;

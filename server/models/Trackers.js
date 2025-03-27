@@ -1,21 +1,17 @@
 module.exports = (sequelize, DataTypes) => {
-  const Trackers = sequelize.define("Tracker", {
-    participant_id: {
-      type: DataTypes.INTEGER,
+  const Trackers = sequelize.define("Trackers", {
+    hashed_participant: {
+      type: DataTypes.STRING,
       allowNull: false,
-      references: {
-        model: "Participants",
-        key: "participant_id",
-      },
     },
-    survey_id: {
-      type: DataTypes.INTEGER,
+    survey_uuid: {
+      type: DataTypes.STRING,
       allowNull: false,
       references: {
-        model: "Surveys",
-        key: "survey_id",
+        model: 'Surveys',
+        key: 'uuid',
       },
-      onDelete: "CASCADE",
+      onDelete: 'CASCADE',
     },
     Round: {
       type: DataTypes.INTEGER,

@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
-const { Responses } = require("../models");
+const { Responses, Trackers } = require("../models");
+const crypto = require("crypto");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -44,13 +45,30 @@ router.get("/:uuid/round/:delphiRound", async (req, res, next) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { survey_uuid, delphi_round, response_data } = req.body;
+    const { survey_uuid, delphi_round, response_data, hashedIdentifier } = req.body;
 
     console.log("Received payload:", {
       survey_uuid,
       delphi_round,
       response_data,
+      hashedIdentifier,
     });
+
+    if (!hashedIdentifier) {
+      return res.status(400).json({ message: "Missing hashedIdentifier" });
+    }
+
+    const existingTracker = await Trackers.findOne({
+      where: {
+        hashed_participant: hashedIdentifier,
+        survey_uuid: survey_uuid,
+        Round: delphi_round,
+      },
+    });
+
+    if (existingTracker) {
+      return res.status(400).json({ message: "You have already responded to this round." });
+    }
 
     const newResponse = await Responses.create({
       survey_uuid,
@@ -58,10 +76,17 @@ router.post("/", async (req, res) => {
       response_data,
     });
 
+    await Trackers.create({
+      hashed_participant: hashedIdentifier,
+      survey_uuid: survey_uuid,
+      Round: delphi_round,
+      Participation: true,
+    });
+
     res.json(newResponse);
   } catch (error) {
     console.error("Error creating response:", error);
-    next(error);
+    res.status(500).json({ message: "Failed to submit response" });
   }
 });
 

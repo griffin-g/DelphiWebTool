@@ -9,6 +9,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
+import SHA256 from 'crypto-js/sha256';
+import Hex from 'crypto-js/enc-hex';
 
 function RedirectPage() {
   const location = useLocation();
@@ -21,40 +23,44 @@ function RedirectPage() {
   const { surveyUUID } = useParams();
 
   console.log("Survey UUID from params:", surveyUUID);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-
     const uuidParam = params.get("uuid");
-    console.log("UUID from URL:", uuidParam);
     if (uuidParam) {
       setUuid(uuidParam);
     }
   }, [location]);
 
+  const generateAnonymousIdentifier = (email, uuid) => {
+    return SHA256(email + uuid).toString(Hex);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    console.log("email in submit", email);
+
     try {
-      const response = await fetch(
-        "http://localhost:3001/surveys/validate-token",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            uuid: surveyUUID,
-            accessToken: token,
-            email: email,
-          }),
-        }
-      );
+      // Generate a unique anonymous identifier for tracking
+      // Keep participant id secure while tracking participation
+      const anonymousIdentifier = generateAnonymousIdentifier(email, surveyUUID);
+      localStorage.setItem("anonymousIdentifier", anonymousIdentifier);
+
+      const response = await fetch("http://localhost:3001/surveys/validate-token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          uuid: surveyUUID,
+          accessToken: token,
+          email: email,
+        }),
+      });
+
       const data = await response.json();
 
       if (!response.ok) {
-        setError(
-          data.message || "Validation failed. Please check your UUID and token."
-        );
+        setError(data.message || "Validation failed.");
         setLoading(false);
         return;
       }
@@ -63,6 +69,7 @@ function RedirectPage() {
 
       navigate(`/participate/${surveyUUID}`);
     } catch (err) {
+      console.log(err);
       setError("An error occurred. Please try again.");
       setLoading(false);
     }
@@ -79,8 +86,7 @@ function RedirectPage() {
           Access Survey
         </Typography>
         <Typography variant="body1" sx={{ mb: 3 }}>
-          Please enter your survey's UUID and the access token provided by the
-          survey creator.
+          Please enter your email and the access token provided by the survey creator.
         </Typography>
 
         <form onSubmit={handleSubmit}>
@@ -112,11 +118,7 @@ function RedirectPage() {
               disabled={loading}
               sx={{ mt: 2 }}
             >
-              {loading ? (
-                <CircularProgress size={24} color="secondary" />
-              ) : (
-                "Access Survey"
-              )}
+              {loading ? <CircularProgress size={24} color="secondary" /> : "Access Survey"}
             </Button>
           </Box>
         </form>

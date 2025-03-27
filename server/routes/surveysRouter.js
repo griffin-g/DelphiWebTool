@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const crypto = require("crypto");
-const { Surveys, Participants } = require("../models");
+const { Surveys, Participants, Trackers } = require("../models");
 const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
 
@@ -80,27 +80,33 @@ router.get("/:id/round/:delphi_round", async (req, res, next) => {
   }
 });
 
-router.get("/uuid/:uuid", verifyToken, async (req, res, next) => {
+router.post("/uuid/:uuid", verifyToken, async (req, res, next) => {
   const { uuid } = req.params;
+  const { anonymousIdentifier } = req.body;
 
-  // Verify that the token matches the requested survey
-  if (req.surveyAuth.uuid !== uuid) {
-    return res
-      .status(403)
-      .json({ message: "Unauthorized access to this survey" });
+  if (!anonymousIdentifier) {
+    return res.status(400).json({ message: "Missing anonymous identifier" });
+  }
+
+  const existingTracker = await Trackers.findOne({
+    where: { hashed_participant: anonymousIdentifier, survey_uuid: uuid },
+  });
+
+  if (existingTracker) {
+    return res.status(403).json({ message: "You have already participated in this round." });
   }
 
   try {
-    const survey = await Surveys.findOne({
-      where: {
-        uuid: uuid,
-      },
-    });
+    const survey = await Surveys.findOne({ where: { uuid } });
+
     if (!survey) {
-      return res.status(404).json({ message: "Survey not found" });
+      console.log("Survey not found in database for UUID:", uuid); // ✅ Add this log
+      return res.status(404).json({ message: "Survey not found or not published" });
     }
+
     res.json(survey);
   } catch (error) {
+    console.error("Error fetching survey:", error);
     next(error);
   }
 });
@@ -266,7 +272,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Utility function to hash the token
+
 function hashToken(token) {
   const salt = "default_salt"; // Use a salt for extra security
   return crypto.createHmac("sha256", salt).update(token).digest("hex");
@@ -317,49 +323,13 @@ router.post("/publish/:id/:round", async (req, res) => {
   }
 });
 
-// // validate user ID token
-// router.post("/validate-token", async (req, res) => {
-//   const { uuid, accessToken } = req.body;
-//   if (!uuid || !accessToken) {
-//     return res
-//       .status(400)
-//       .json({ message: "Survey UUID and access token are required" });
-//   }
 
-//   try {
-//     const survey = await Surveys.findOne({
-//       where: { uuid },
-//     });
-//     if (!survey) {
-//       return res
-//         .status(404)
-//         .json({ message: "Survey not found or not published" });
-//     }
-
-//     const hashedToken = hashToken(accessToken);
-//     if (hashedToken !== survey.access_token_hash) {
-//       return res.status(401).json({ message: "Invalid access token" });
-//     }
-
-//     // TODO: Authent token
-
-//     res.status(200).json({ publishedURL: survey.url });
-//   } catch (error) {
-//     console.error("Error validating token:", error);
-//     res.status(500).json({
-//       message: "Error validating token",
-//       error: error.message,
-//     });
-//   }
-// });
-
-// Add this new route to generate JWT token upon successful validation
 router.post("/validate-token", async (req, res) => {
   const { uuid, accessToken, email } = req.body;
   if (!uuid || !accessToken) {
     return res
       .status(400)
-      .json({ message: "Survey UUID and access token are required" });
+      .json({ message: "Participant e-mail and access token are required" });
   }
 
   try {
