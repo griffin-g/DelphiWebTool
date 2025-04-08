@@ -25,5 +25,33 @@
     "database": "database_production",
     "host": "127.0.0.1",
     "dialect": "mysql"
+  },
+  "hosted": {
+    "username": "${DB_USER}",
+    "password": "${DB_PASS}",
+    "database": "${DB_NAME}",
+    "host": "/cloudsql/delphi-web-tool-454323:us-central1:delphidev",
+    "dialect": "mysql",
+    "dialectOptions": {
+      "socketPath": "/cloudsql/delphi-web-tool-454323:us-central1:delphidev"
+    }
+  },
+  "hosted-local": {
+    "username": "user",
+    "password": "password",
+    "database": "database",
+    "host": "ip",
+    "dialect": "mysql",
+    "pool": {
+      "max": 5,
+      "min": 0,
+      "acquire": 30000,
+      "idle": 10000
+    },
+    "dialectOptions": {
+      "ssl": {
+        "rejectUnauthorized": false
+      }
+    }
   }
 }

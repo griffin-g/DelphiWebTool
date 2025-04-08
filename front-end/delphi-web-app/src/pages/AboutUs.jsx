@@ -8,7 +8,8 @@ function AboutUs() {
   //   console.log("User Data:", userData.user_id);
   // }
   const auth = useAuth();
-
+  console.log("Using this url for api calls:", import.meta.env.VTIE_API_URL);
+  console.log("All environment variables:", import.meta.env);
   if (auth.user) {
     console.log("auth user:", auth.user);
   }

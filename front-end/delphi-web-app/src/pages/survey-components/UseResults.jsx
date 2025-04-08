@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import apiClient from "../../utils/apiClient";
 import { useAuth } from "../../AuthProvider";
 
 export const useResults = (surveyUUID, delphiRound) => {
@@ -36,8 +36,8 @@ export const useResults = (surveyUUID, delphiRound) => {
 
   const fetchSurveyResults = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3001/responses/${surveyUUID}/round/${delphiRound}`
+      const response = await apiClient.get(
+        `/responses/${surveyUUID}/round/${delphiRound}`
       );
       const transformedResponses = transformResponses(response.data);
       setNumResponses(response.data.length);

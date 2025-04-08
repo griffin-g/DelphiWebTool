@@ -2,6 +2,7 @@ import { useContext, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import apiClient from "./utils/apiClient";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -14,7 +15,7 @@ const AuthProvider = ({ children }) => {
   }, []);
   const loginAction = async (email, password) => {
     try {
-      const response = await axios.post("http://localhost:3001/users/login/", {
+      const response = await apiClient.post("/users/login/", {
         email,
         password,
       });
@@ -37,16 +38,13 @@ const AuthProvider = ({ children }) => {
   };
   const signUpAction = async (first_name, last_name, email, password_hash) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3001/users/register/",
-        {
-          first_name,
-          last_name,
-          email,
-          password_hash,
-          //formData,
-        }
-      );
+      const response = await apiClient.post("/users/register/", {
+        first_name,
+        last_name,
+        email,
+        password_hash,
+        //formData,
+      });
 
       //const res = await response.json();
       const res = response;
