@@ -5,7 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Container, Typography, Button } from "@mui/material";
 import "survey-core/defaultV2.min.css";
 import Header from "../Components/Header";
-import apiClient from "../apiClient";
+import apiClient from "../utils/apiClient";
 
 function ParticipatePage() {
   const { uuid } = useParams();

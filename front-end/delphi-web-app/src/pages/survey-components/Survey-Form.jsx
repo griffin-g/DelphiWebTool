@@ -2,7 +2,7 @@ import React from "react";
 import { Survey } from "survey-react-ui";
 import { Model } from "survey-core";
 import "survey-core/defaultV2.min.css";
-import apiClient from "../../apiClient";
+import apiClient from "../../utils/apiClient";
 
 const SurveyForm = ({ survey, anonymousIdentifier }) => {
   if (!survey) {
