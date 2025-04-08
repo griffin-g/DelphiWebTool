@@ -297,12 +297,9 @@ const SurveyManagement = () => {
                       }}
                       onClick={async () => {
                         try {
-                          const response = await fetch(
-                            `http://localhost:3001/surveys/${survey.survey_id}`,
-                            { method: "DELETE" }
+                          const response = await apiClient.delete(
+                            `/surveys/${survey.survey_id}`
                           );
-                          if (!response.ok)
-                            throw new Error("Failed to delete survey");
                           setSurveys(
                             surveys.filter(
                               (s) => s.survey_id !== survey.survey_id

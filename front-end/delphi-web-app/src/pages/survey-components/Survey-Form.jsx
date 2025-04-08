@@ -21,11 +21,7 @@ const SurveyForm = ({ survey, anonymousIdentifier }) => {
     console.log("Submitting payload:", payload);
 
     try {
-      const response = await fetch("http://localhost:3001/responses/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const response = await apiClient.post("/responses/", payload);
 
       if (response.ok) {
         alert("Survey submitted successfully!");

@@ -32,16 +32,14 @@ function ParticipatePage() {
       setAnonymousIdentifier(storedIdentifier);
 
       try {
-        const response = await fetch(
-          `http://localhost:3001/surveys/uuid/${uuid}`,
+        const response = await apiClient.post(
+          `/surveys/uuid/${uuid}`,
+          { anonymousIdentifier: storedIdentifier },
           {
-            method: "POST",
             headers: {
               Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
             },
-            credentials: "include",
-            body: JSON.stringify({ anonymousIdentifier: storedIdentifier }),
+            withCredentials: true,
           }
         );
 
@@ -55,7 +53,9 @@ function ParticipatePage() {
             return;
           }
 
-          if (errData.message === "You have already participated in this round") {
+          if (
+            errData.message === "You have already participated in this round"
+          ) {
             setError(errData.message);
             setLoading(false);
             return;
@@ -86,7 +86,8 @@ function ParticipatePage() {
           <CircularProgress />
         ) : (
           <>
-            {error && error === "You have already participated in this round" ? (
+            {error &&
+            error === "You have already participated in this round" ? (
               <>
                 <Typography variant="h6" color="error" sx={{ mt: 2 }}>
                   {error}

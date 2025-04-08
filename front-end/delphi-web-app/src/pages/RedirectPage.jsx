@@ -9,8 +9,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
-import SHA256 from 'crypto-js/sha256';
-import Hex from 'crypto-js/enc-hex';
+import SHA256 from "crypto-js/sha256";
+import Hex from "crypto-js/enc-hex";
 
 function RedirectPage() {
   const location = useLocation();
@@ -44,17 +44,16 @@ function RedirectPage() {
     try {
       // Generate a unique anonymous identifier for tracking
       // Keep participant id secure while tracking participation
-      const anonymousIdentifier = generateAnonymousIdentifier(email, surveyUUID);
+      const anonymousIdentifier = generateAnonymousIdentifier(
+        email,
+        surveyUUID
+      );
       localStorage.setItem("anonymousIdentifier", anonymousIdentifier);
 
-      const response = await fetch("http://localhost:3001/surveys/validate-token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          uuid: surveyUUID,
-          accessToken: token,
-          email: email,
-        }),
+      const response = await apiClient.post("/surveys/validate-token", {
+        uuid: surveyUUID,
+        accessToken: token,
+        email: email,
       });
 
       const data = await response.json();
@@ -86,7 +85,8 @@ function RedirectPage() {
           Access Survey
         </Typography>
         <Typography variant="body1" sx={{ mb: 3 }}>
-          Please enter your email and the access token provided by the survey creator.
+          Please enter your email and the access token provided by the survey
+          creator.
         </Typography>
 
         <form onSubmit={handleSubmit}>
@@ -118,7 +118,11 @@ function RedirectPage() {
               disabled={loading}
               sx={{ mt: 2 }}
             >
-              {loading ? <CircularProgress size={24} color="secondary" /> : "Access Survey"}
+              {loading ? (
+                <CircularProgress size={24} color="secondary" />
+              ) : (
+                "Access Survey"
+              )}
             </Button>
           </Box>
         </form>

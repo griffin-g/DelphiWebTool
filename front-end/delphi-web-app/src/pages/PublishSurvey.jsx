@@ -33,12 +33,10 @@ const PublishPage = () => {
   useEffect(() => {
     const fetchSurveyData = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3001/surveys/${surveyID}/round/${selectedDelphiRound}`
+        const response = await apiClient.get(
+          `/surveys/${surveyID}/round/${selectedDelphiRound}`
         );
-        if (!response.ok) throw new Error("Failed to load survey data.");
-        const data = await response.json();
-        setSurveyData(data);
+        setSurveyData(response.data);
       } catch (err) {
         setError(err.message);
       }
@@ -58,15 +56,9 @@ const PublishPage = () => {
     setError("");
 
     try {
-      const response = await fetch(
-        `http://localhost:3001/surveys/publish/${surveyID}/${selectedDelphiRound}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ accessToken }),
-        }
+      const response = await apiClient.post(
+        `/surveys/publish/${surveyID}/${selectedDelphiRound}`,
+        { accessToken }
       );
 
       if (!response.ok) {
@@ -76,15 +68,10 @@ const PublishPage = () => {
       const result = await response.json();
       setSuccess(true);
       console.log("before sending invites");
-      const response1 = await fetch(
-        `http://localhost:3001/participants/send-invites/${surveyID}/${selectedDelphiRound}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ accessToken }),
-        }
+
+      const response1 = await apiClient.post(
+        `/participants/send-invites/${surveyID}/${selectedDelphiRound}`,
+        { accessToken }
       );
       console.log(result.message);
       console.log("Invites sent:", response1);
