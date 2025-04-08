@@ -11,6 +11,7 @@ import {
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import SHA256 from "crypto-js/sha256";
 import Hex from "crypto-js/enc-hex";
+import apiClient from "../apiClient";
 
 function RedirectPage() {
   const location = useLocation();
