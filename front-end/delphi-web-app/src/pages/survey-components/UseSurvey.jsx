@@ -11,6 +11,7 @@ export const useSurvey = (surveyID, delphiRound) => {
   const [allQuestions, setAllQuestions] = useState([]);
   const [maxRound, setMaxRound] = useState(1);
   const fetchedSurveyRef = useRef(false);
+  
   const auth = useAuth();
   // Function to fetch survey data based on surveyID
   const fetchSurvey = async () => {
@@ -212,19 +213,29 @@ export const useSurvey = (surveyID, delphiRound) => {
   };
 
   const constructSurveyData = () => ({
-    elements: questions.map((question) => ({
-      type: question.type,
-      name: question.name,
-      title: question.title,
-      description: question.description,
-      ...((question.type === "ranking" || question.type === "checkbox") && {
-        choices: question.choices,
-      }),
-      ...(question.type === "rating" && {
-        rateMax: question.rateCount ?? 5,
-        rateType: question.rateType ?? "numeric"
-      }),
-    })),
+    elements: questions.map((question) => {
+      if (question.type === "html") {
+        return {
+          type: question.type,
+          name: question.name,
+          html: question.description || question.html
+        };
+      }
+      
+      return {
+        type: question.type,
+        name: question.name,
+        title: question.title,
+        description: question.description,
+        ...((question.type === "ranking" || question.type === "checkbox") && {
+          choices: question.choices,
+        }),
+        ...(question.type === "rating" && {
+          rateMax: question.rateCount ?? 5,
+          rateType: question.rateType ?? "numeric"
+        }),
+      };
+    }),
   });
   
   const handleAddInviteList = (newParticipant) => {

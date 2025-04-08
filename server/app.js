@@ -19,7 +19,7 @@ const db = require("./models");
 const { error } = require("console");
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://delphi-web-tool.web.app'],
+  origin: ['http://localhost:5173', 'https://delphi-web-tool.web.app', 'http://localhost:5174'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true

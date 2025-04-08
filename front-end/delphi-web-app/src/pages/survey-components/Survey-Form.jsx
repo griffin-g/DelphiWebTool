@@ -9,6 +9,9 @@ const SurveyForm = ({ survey, anonymousIdentifier }) => {
   }
 
   const surveyModel = new Model(survey);
+  surveyModel.onTextMarkdown.add((sender, options) => {
+    options.html = options.text;
+  });
 
   surveyModel.onComplete.add(async (sender) => {
     const payload = {
