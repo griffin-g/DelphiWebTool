@@ -9,7 +9,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import axios from "axios";
+import apiClient from "../utils/apiClient";
 
 const InviteModal = ({
   surveyId,
@@ -24,8 +24,8 @@ const InviteModal = ({
   // Fetch participants from the backend
   const fetchParticipants = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3001/participants/survey-id/${surveyId}`
+      const response = await apiClient.get(
+        `/participants/survey-id/${surveyId}`
       );
       setParticipants(response.data);
     } catch (error) {
