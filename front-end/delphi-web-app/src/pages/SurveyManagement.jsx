@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Components/Header";
 import { useAuth } from "../AuthProvider";
+import apiClient from "../utils/apiClient";
 import {
   Button,
   Box,
@@ -34,11 +35,10 @@ const SurveyManagement = () => {
 
   const fetchSurveys = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/surveys/user-surveys/${auth.user.id}`
+      const response = await apiClient.get(
+        `/surveys/user-surveys/${auth.user.id}`
       );
-      if (!response.ok) throw new Error("Failed to fetch surveys");
-      const data = await response.json();
+      const data = response.data;
       const uniqueSurveys = Object.values(
         data.reduce((acc, survey) => {
           if (!acc[survey.survey_id]) {
