@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import apiClient from "../../utils/apiClient";
 import { useAuth } from "../../AuthProvider";
 
 export const useSurvey = (surveyID, delphiRound) => {
@@ -16,8 +16,8 @@ export const useSurvey = (surveyID, delphiRound) => {
   const fetchSurvey = async () => {
     //if (fetchedSurveyRef.current) return;
     try {
-      const response = await axios.get(
-        `http://localhost:3001/surveys/${surveyID}/round/${delphiRound}`
+      const response = await apiClient.get(
+        `/surveys/${surveyID}/round/${delphiRound}`
       );
       setTitle(response.data.title);
       setQuestions(response.data.elements);
@@ -32,8 +32,8 @@ export const useSurvey = (surveyID, delphiRound) => {
 
   const fetchParticipants = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3001/participants/survey-id/${surveyID}`
+      const response = await apiClient.get(
+        `/participants/survey-id/${surveyID}`
       );
       setInviteList(response.data);
     } catch (error) {
@@ -42,9 +42,9 @@ export const useSurvey = (surveyID, delphiRound) => {
   };
 
   const handleFindMaxRound = async () => {
-    const url = `http://localhost:3001/surveys/${surveyID}/max-round`;
+    const url = `/surveys/${surveyID}/max-round`;
     try {
-      const response = await axios.get(url);
+      const response = await apiClient.get(url);
       setMaxRound(response.data);
       //return response.data;
     } catch (error) {
@@ -84,13 +84,10 @@ export const useSurvey = (surveyID, delphiRound) => {
     try {
       for (const participant of inviteList) {
         try {
-          const response = await axios.post(
-            "http://localhost:3001/participants/",
-            {
-              participant_email: participant,
-              survey_id: surveyId,
-            }
-          );
+          const response = await apiClient.post("/participants/", {
+            participant_email: participant,
+            survey_id: surveyId,
+          });
 
           if (response.status === 200) {
             console.log(`Participant ${participant} invited successfully`);
@@ -116,8 +113,8 @@ export const useSurvey = (surveyID, delphiRound) => {
     setSurveyData(surveyData);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3001/surveys/save-survey",
+      const response = await apiClient.post(
+        "/surveys/save-survey",
         {
           surveyJSON: surveyData,
           title,
@@ -143,8 +140,8 @@ export const useSurvey = (surveyID, delphiRound) => {
     console.log("new round", newRound);
     const userID = auth.user.id;
     try {
-      const response = await axios.post(
-        "http://localhost:3001/surveys/save-survey/add-round",
+      const response = await apiClient.post(
+        "/surveys/save-survey/add-round",
         {
           surveyID,
           surveyJSON: {},
@@ -172,8 +169,8 @@ export const useSurvey = (surveyID, delphiRound) => {
     const userID = auth.user.id;
     setSurveyData(surveyData);
     try {
-      const response = await axios.put(
-        "http://localhost:3001/surveys/edit-survey",
+      const response = await apiClient.put(
+        "/surveys/edit-survey",
         {
           surveyID,
           surveyJSON: surveyData,
@@ -188,7 +185,7 @@ export const useSurvey = (surveyID, delphiRound) => {
         }
       );
     } catch (error) {
-      if (axios.isAxiosError(error)) {
+      if (apiClient.isAxiosError(error)) {
         console.error("Axios error response:", error.response);
         if (error.response) {
           console.error("Axios error status:", error.response.status);
@@ -222,11 +219,11 @@ export const useSurvey = (surveyID, delphiRound) => {
       }),
       ...(question.type === "rating" && {
         rateMax: question.rateCount ?? 5,
-        rateType: question.rateType ?? "numeric"
+        rateType: question.rateType ?? "numeric",
       }),
     })),
   });
-  
+
   const handleAddInviteList = (newParticipant) => {
     setInviteList((prevInvites) => [...prevInvites, newParticipant]);
   };
