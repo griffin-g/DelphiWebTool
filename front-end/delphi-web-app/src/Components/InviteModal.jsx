@@ -18,20 +18,26 @@ const InviteModal = ({
   inviteList = [],
   addInviteList,
   surveyId,
+  setInviteList,
 }) => {
   const [email, setEmail] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email.trim()) {
-      addInviteList(surveyId, email.trim());
+      console.log(
+        "Adding email to invite list from invite modal:",
+        email.trim()
+      );
+      addInviteList(email.trim());
       setEmail("");
     }
   };
 
   const handleDelete = (index) => {
     const updatedList = inviteList.filter((_, i) => i !== index);
-    addInviteList(surveyId, updatedList);
+    console.log("Updated invite list:", updatedList);
+    setInviteList(updatedList);
   };
 
   return (
@@ -78,7 +84,7 @@ const InviteModal = ({
         </form>
 
         <List sx={{ mt: 2 }}>
-          {inviteList.map((email, index) => (
+          {inviteList.map((participant, index) => (
             <ListItem
               key={index}
               secondaryAction={
@@ -91,7 +97,7 @@ const InviteModal = ({
                 </IconButton>
               }
             >
-              <ListItemText primary={email} />
+              <ListItemText primary={participant.participant_email} />
             </ListItem>
           ))}
         </List>

@@ -2,8 +2,8 @@ import React from "react";
 import { InputLabel, MenuItem, Select, Grid2 } from "@mui/material";
 
 function RoundSelect({ maxRound, selectedDelphiRound, handleDelphiSelect }) {
-  console.log("maxRound in RoundSelect:", maxRound);
-  console.log("selectedDelphiRound in RoundSelect:", selectedDelphiRound);
+  //console.log("maxRound in RoundSelect:", maxRound);
+  //console.log("selectedDelphiRound in RoundSelect:", selectedDelphiRound);
   return (
     <>
       <InputLabel id="delphi-round-label">Delphi Round</InputLabel>

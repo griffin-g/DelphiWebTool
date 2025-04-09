@@ -31,10 +31,8 @@ const PublishPage = () => {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const { maxRound, inviteList, handleAddInviteList } = useSurvey(
-    surveyID,
-    selectedDelphiRound
-  );
+  const { maxRound, inviteList, handleAddInviteList, setInviteList } =
+    useSurvey(surveyID, selectedDelphiRound);
 
   useEffect(() => {
     const fetchSurveyData = async () => {
@@ -156,10 +154,9 @@ const PublishPage = () => {
             surveyId={surveyID}
             open={isInviteModalOpen}
             onClose={() => setIsInviteModalOpen(false)}
-            inviteList={
-              inviteList?.map((invite) => invite.participant_email) || []
-            }
+            inviteList={inviteList}
             addInviteList={handleAddInviteList}
+            setInviteList={setInviteList}
           />
 
           <Button
