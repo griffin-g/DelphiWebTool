@@ -4,11 +4,14 @@ import SignUpComponent from "../Components/SignUpComponent";
 
 function SignUpPage() {
   return (
-    <Grid container width={{ width: "100vw", height: "100vh" }}>
+    <Grid
+      container
+      width={{ width: "100vw", height: "100vh", justifyContent: "center" }}
+    >
       <Grid
         container
         sx={{
-          width: "50vw",
+          //width: "50vw",
           justifyContent: "center",
           alignContent: "center",
           height: "100%",
@@ -16,10 +19,10 @@ function SignUpPage() {
       >
         <SignUpComponent />
       </Grid>
-      <Grid
+      {/* <Grid
         container
         sx={{ width: "50vw", backgroundColor: "#9DD6C8", height: "100%" }}
-      ></Grid>
+      ></Grid> */}
     </Grid>
   );
 }

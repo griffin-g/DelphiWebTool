@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import RoundSelect from "../Components/RoundSelect";
 import { useSurvey } from "./survey-components/UseSurvey";
 import apiClient from "../utils/apiClient";
+import InviteModal from "../Components/InviteModal";
 
 const PublishPage = () => {
   const { surveyID, delphiRound } = useParams();
@@ -27,9 +28,13 @@ const PublishPage = () => {
   const [error, setError] = useState("");
   const [surveyData, setSurveyData] = useState(null);
   const [selectedDelphiRound, setSelectedDelphiRound] = useState(1);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const { maxRound } = useSurvey(surveyID, selectedDelphiRound);
+  const { maxRound, inviteList, handleAddInviteList } = useSurvey(
+    surveyID,
+    selectedDelphiRound
+  );
 
   useEffect(() => {
     const fetchSurveyData = async () => {
@@ -141,6 +146,21 @@ const PublishPage = () => {
           >
             Submit Token
           </Button>
+          <Button
+            variant="contained"
+            onClick={() => setIsInviteModalOpen(true)}
+          >
+            Invite List
+          </Button>
+          <InviteModal
+            surveyId={surveyID}
+            open={isInviteModalOpen}
+            onClose={() => setIsInviteModalOpen(false)}
+            inviteList={
+              inviteList?.map((invite) => invite.participant_email) || []
+            }
+            addInviteList={handleAddInviteList}
+          />
 
           <Button
             variant="contained"

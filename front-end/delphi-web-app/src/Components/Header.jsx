@@ -11,11 +11,14 @@ import {
   MenuItem,
   Divider,
   useMediaQuery,
+  Modal,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
+import LoginComponent from "./LoginComponent";
+import SignUpComponent from "./SignUpComponent";
 
 function Header() {
   const auth = useAuth();
@@ -23,6 +26,8 @@ function Header() {
   const location = useLocation();
   const isMobile = useMediaQuery("(max-width:900px)");
   const [anchorElNav, setAnchorElNav] = useState(null);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   // Navigation menu items
   const navItems = [
@@ -71,7 +76,7 @@ function Header() {
           <Typography
             variant="h5"
             component={Link}
-            to="/"
+            to="/about-us"
             sx={{
               fontWeight: 700,
               color: "#4A77E5",
@@ -199,8 +204,9 @@ function Header() {
                 ) : (
                   <>
                     <Button
-                      component={Link}
-                      to="/login"
+                      // component={Link}
+                      // to="/login"
+                      onClick={() => setIsLoginOpen(true)}
                       startIcon={<LoginIcon />}
                       sx={{
                         color: "#555",
@@ -214,10 +220,22 @@ function Header() {
                     >
                       Login
                     </Button>
+                    <Modal
+                      open={isLoginOpen}
+                      onClose={() => setIsLoginOpen(false)}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <LoginComponent open={setIsLoginOpen} />
+                    </Modal>
                     <Button
                       variant="contained"
-                      component={Link}
-                      to="/sign-up"
+                      // component={Link}
+                      // to="/sign-up"
+                      onClick={() => setIsSignUpOpen(true)}
                       sx={{
                         backgroundColor: "#4A77E5",
                         textTransform: "none",
@@ -229,6 +247,17 @@ function Header() {
                     >
                       Sign Up
                     </Button>
+                    <Modal
+                      open={isSignUpOpen}
+                      onClose={() => setIsSignUpOpen(false)}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <SignUpComponent setOpen={setIsSignUpOpen} />
+                    </Modal>
                   </>
                 )}
               </Box>

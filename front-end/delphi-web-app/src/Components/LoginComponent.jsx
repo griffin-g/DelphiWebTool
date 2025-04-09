@@ -1,15 +1,27 @@
 import React, { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { useAuth } from "../AuthProvider";
+import { useNavigate } from "react-router-dom";
+const COLORS = {
+  primary: "#4a77e5", // Blue - primary actions, highlights
+  secondary: "#e5b44a", // Gold - secondary actions, accents
+  accent: "#e5664a", // Coral - attention-grabbing elements
+  background: "#f5f7fa",
+  white: "#ffffff",
+  gray: "#f0f0f0",
+  darkGray: "#555555",
+};
 
-function LoginComponent() {
+function LoginComponent({ setOpen }) {
   const [input, setInput] = useState({
     email: "",
     password: "",
   });
+  const isMobile = useMediaQuery("(max-width:900px)");
+  const navigate = useNavigate();
 
   const auth = useAuth();
   const handleSubmitEvent = (e) => {
@@ -18,7 +30,13 @@ function LoginComponent() {
     if (input.email !== "" && input.password !== "") {
       console.log("valid input");
 
-      auth.loginAction(input.email, input.password);
+      const res = auth.loginAction(input.email, input.password);
+      if (res) {
+        console.log("login success", res);
+
+        if (isMobile) navigate("/about-us");
+        else setOpen(false);
+      }
     } else {
       alert("please provide a valid input");
     }
@@ -41,6 +59,7 @@ function LoginComponent() {
         border: "1px solid #e0e0e0",
         borderRadius: "8px",
         boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
+        backgroundColor: COLORS.white,
       }}
     >
       <form onSubmit={handleSubmitEvent}>
@@ -77,9 +96,11 @@ function LoginComponent() {
           type="submit"
           name="submit"
           sx={{
-            backgroundColor: "black",
+            backgroundColor: "#4A77E5",
+            textTransform: "none",
+            fontWeight: 500,
             "&:hover": {
-              backgroundColor: "#9DD6C8",
+              backgroundColor: "#3A67D5",
             },
             mb: 2,
           }}

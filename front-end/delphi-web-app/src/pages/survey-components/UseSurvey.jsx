@@ -226,6 +226,7 @@ export const useSurvey = (surveyID, delphiRound) => {
 
   const handleAddInviteList = (newParticipant) => {
     setInviteList((prevInvites) => [...prevInvites, newParticipant]);
+    saveParticipants([...inviteList, newParticipant], surveyID);
   };
   return {
     title,

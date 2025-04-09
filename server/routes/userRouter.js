@@ -72,15 +72,23 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user with hashed password
-    const newUser = await Users.create({
+    const user = await Users.create({
       email,
       password_hash: hashedPassword,
       first_name,
       last_name,
     });
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user.user_id, email: user.email, first_name: user.first_name },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
     res
       .status(201)
-      .json({ message: "User registered successfully", user: newUser });
+      .json({ message: "User registered successfully", user, token });
   } catch (error) {
     console.error("Error during registration:", error);
     res.status(500).json({ message: "Internal server error" });

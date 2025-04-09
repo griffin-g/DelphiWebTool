@@ -1,15 +1,24 @@
 import React, { useState } from "react";
-import { TextField, Button, Container, Box, Typography } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Container,
+  Box,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { useAuth } from "../AuthProvider";
+import { useNavigate } from "react-router-dom";
 
-function SignUpComponent() {
+function SignUpComponent({ setOpen }) {
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     email: "",
     password_hash: "",
   });
-
+  const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width:900px)");
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -24,13 +33,19 @@ function SignUpComponent() {
     if (formData.email !== "" && formData.password !== "") {
       console.log("valid input");
 
-      auth.signUpAction(
+      const res = auth.signUpAction(
         formData.first_name,
         formData.last_name,
         formData.email,
         formData.password_hash
         // formData
       );
+      if (res) {
+        console.log("sign up", res);
+
+        if (isMobile) navigate("/about-us");
+        else setOpen(false);
+      }
     } else {
       alert("please provide a valid input");
     }
@@ -100,7 +115,16 @@ function SignUpComponent() {
             name="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{
+              backgroundColor: "#4A77E5",
+              textTransform: "none",
+              fontWeight: 500,
+              "&:hover": {
+                backgroundColor: "#3A67D5",
+              },
+              mt: 2,
+              mb: 2,
+            }}
           >
             Sign Up
           </Button>

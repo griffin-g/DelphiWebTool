@@ -28,8 +28,8 @@ const AuthProvider = ({ children }) => {
         setToken(res.data.token);
         localStorage.setItem("site", res.data.token);
         localStorage.setItem("user", jwtDecode(res.data.token));
-        navigate("/about-us");
-        return;
+        //navigate("/about-us");
+        return true;
       }
       throw new Error(res.message);
     } catch (err) {
@@ -43,6 +43,7 @@ const AuthProvider = ({ children }) => {
         last_name,
         email,
         password_hash,
+        token,
         //formData,
       });
 
@@ -50,18 +51,19 @@ const AuthProvider = ({ children }) => {
       const res = response;
       console.log("res", res);
       if (res.data) {
-        //setUser(res.data);
-        //setToken(res.token);
-        //localStorage.setItem("site", res.token);
-        //localStorage.setItem("user", res.data);
-        navigate("/login");
-        return;
+        setUser(jwtDecode(res.data.token));
+        setToken(res.data.token);
+        localStorage.setItem("site", res.data.token);
+        localStorage.setItem("user", jwtDecode(res.data.token));
+        //navigate("/about-us");
+        return true;
       }
       throw new Error(res.message);
     } catch (err) {
       console.error(err);
     }
   };
+
   const logOut = () => {
     setUser(null);
     setToken("");

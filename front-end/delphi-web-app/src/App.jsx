@@ -13,6 +13,7 @@ import RedirectPage from "./pages/RedirectPage";
 import PublishPage from "./pages/PublishSurvey";
 import ParticipatePage from "./pages/Participate";
 import ResultsSurvey from "./pages/ResultsSurvey";
+import DelphiMethodPage from "./pages/DelphiMethodPage";
 function App() {
   return (
     <AuthProvider>
@@ -44,6 +45,7 @@ function App() {
             path="/results-survey/:surveyID/:delphiRound/:surveyUUID"
             element={<ResultsSurvey />}
           />
+          <Route path="/delphi-method" element={<DelphiMethodPage />} />
         </Routes>
       </div>
     </AuthProvider>
