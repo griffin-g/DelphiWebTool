@@ -11,6 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useEffect } from "react";
 
 const InviteModal = ({
   open,
@@ -19,6 +20,7 @@ const InviteModal = ({
   addInviteList,
   surveyId,
   setInviteList,
+  deleteInviteList,
 }) => {
   const [email, setEmail] = useState("");
 
@@ -35,10 +37,12 @@ const InviteModal = ({
   };
 
   const handleDelete = (index) => {
-    const updatedList = inviteList.filter((_, i) => i !== index);
-    console.log("Updated invite list:", updatedList);
-    setInviteList(updatedList);
+    deleteInviteList(inviteList[index]);
   };
+
+  useEffect(() => {
+    console.log("Updated invite list:", inviteList);
+  }, [inviteList]);
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="invite-modal-title">

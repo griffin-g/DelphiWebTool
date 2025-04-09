@@ -42,6 +42,36 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.delete("/:survey_id/:participant_email", async (req, res) => {
+  const { survey_id, participant_email } = req.params;
+  console.log("survey_id", survey_id);
+  console.log("participant_email", participant_email);
+
+  try {
+    const result = await Participants.destroy({
+      where: {
+        survey_id,
+        participant_email,
+      },
+    });
+
+    if (result > 0) {
+      res.json({ success: true, deletedCount: result });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Participant not found",
+      });
+    }
+  } catch (error) {
+    console.error("Could not delete participant:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to delete participant",
+    });
+  }
+});
+
 router.put("/:id", async (req, res) => {
   const participant_id = req.params.id;
   const updatedParticipant = req.body;

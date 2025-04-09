@@ -232,6 +232,21 @@ export const useSurvey = (surveyID, delphiRound) => {
     var newList = [...inviteList, newParticipant];
     console.log("invite list in handle add invite", newList);
     saveParticipants(newList, surveyID);
+    fetchParticipants();
+  };
+
+  const handleDeleteInviteList = (participant) => {
+    const updatedList = inviteList.filter((item) => item !== participant);
+    var res = "";
+    if (participant.participant_email) {
+      res = apiClient.delete(
+        `/participants/${surveyID}/${participant.participant_email}`
+      );
+    } else {
+      res = apiClient.delete(`/participants/${surveyID}/${participant}`);
+    }
+    console.log("res from participant del", res);
+    if (res) fetchParticipants();
   };
   return {
     title,
@@ -251,5 +266,6 @@ export const useSurvey = (surveyID, delphiRound) => {
     handleAddInviteList,
     handleAddRound,
     handleFindMaxRound,
+    handleDeleteInviteList,
   };
 };
