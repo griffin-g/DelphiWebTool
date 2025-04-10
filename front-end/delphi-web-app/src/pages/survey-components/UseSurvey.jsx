@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import apiClient from "../../utils/apiClient";
 import { useAuth } from "../../AuthProvider";
 
@@ -11,6 +12,7 @@ export const useSurvey = (surveyID, delphiRound) => {
   const [allQuestions, setAllQuestions] = useState([]);
   const [maxRound, setMaxRound] = useState(1);
   const fetchedSurveyRef = useRef(false);
+  const navigate = useNavigate();
 
   const auth = useAuth();
   // Function to fetch survey data based on surveyID
@@ -129,8 +131,9 @@ export const useSurvey = (surveyID, delphiRound) => {
         }
       );
       //map through participants here
-      console.log("save survey responst", response);
+      console.log("save survey response", response);
       saveParticipants(inviteList, response.data.survey_id);
+      navigate("/manage-survey")
     } catch (error) {
       console.error("Error saving survey:", error);
       throw error;
