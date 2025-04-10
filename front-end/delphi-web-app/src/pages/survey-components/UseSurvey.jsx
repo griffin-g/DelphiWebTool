@@ -210,7 +210,6 @@ export const useSurvey = (surveyID, delphiRound) => {
   };
 
   const constructSurveyData = () => ({
-<<<<<<< HEAD
     elements: questions.map((question) => {
       if (question.type === "html") {
         return {
@@ -234,21 +233,6 @@ export const useSurvey = (surveyID, delphiRound) => {
         }),
       };
     }),
-=======
-    elements: questions.map((question) => ({
-      type: question.type,
-      name: question.name,
-      title: question.title,
-      description: question.description,
-      ...((question.type === "ranking" || question.type === "checkbox") && {
-        choices: question.choices,
-      }),
-      ...(question.type === "rating" && {
-        rateMax: question.rateCount ?? 5,
-        rateType: question.rateType ?? "numeric",
-      }),
-    })),
->>>>>>> main
   });
 
   const handleAddInviteList = (newParticipant) => {

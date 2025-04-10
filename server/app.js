@@ -33,7 +33,6 @@ var responsesRouter = require("./routes/responsesRouter");
 var answerRouter = require("./routes/answerRouter");
 
 var app = express();
-const db = require("./models");
 const { error } = require("console");
 
 app.use(cors({
