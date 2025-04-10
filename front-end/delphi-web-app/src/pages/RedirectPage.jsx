@@ -23,8 +23,6 @@ function RedirectPage() {
   const [error, setError] = useState("");
   const { surveyUUID } = useParams();
 
-  console.log("Survey UUID from params:", surveyUUID);
-
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const uuidParam = params.get("uuid");
@@ -57,9 +55,7 @@ function RedirectPage() {
         email: email,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
+      if (response.status !== 200) {
         setError(data.message || "Validation failed.");
         setLoading(false);
         return;
