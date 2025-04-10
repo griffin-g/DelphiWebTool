@@ -23,8 +23,6 @@ function RedirectPage() {
   const [error, setError] = useState("");
   const { surveyUUID } = useParams();
 
-  console.log("Survey UUID from params:", surveyUUID);
-
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const uuidParam = params.get("uuid");
@@ -57,15 +55,13 @@ function RedirectPage() {
         email: email,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || "Validation failed.");
+      if (response.status !== 200) {
+        setError(response.message || "Validation failed.");
         setLoading(false);
         return;
       }
 
-      localStorage.setItem("surveyToken", data.token);
+      localStorage.setItem("surveyToken", response.token);
 
       navigate(`/participate/${surveyUUID}`);
     } catch (err) {

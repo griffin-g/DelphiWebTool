@@ -30,6 +30,7 @@ const COLORS = {
 const SurveyManagement = () => {
   const [surveys, setSurveys] = useState([]);
   const [error, setError] = useState(null);
+  const [surveyLength, setSurveyLength] = useState(0);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [selectedSurveyId, setSelectedSurveyId] = useState(null);
   const navigate = useNavigate();
@@ -57,14 +58,14 @@ const SurveyManagement = () => {
 
   useEffect(() => {
     if (auth.user != null) fetchSurveys();
-  }, [auth.user]);
+  }, [auth.user, surveyLength]);
 
   const handleDeleteSurvey = async () => {
     try {
       await apiClient.delete(`/surveys/${selectedSurveyId}`);
       setDeleteConfirmOpen(false);
       setSelectedSurveyId(null);
-      await fetchSurveys();
+      setSurveyLength(surveys.length);
     } catch (error) {
       setError("Failed to delete survey: " + error.message);
     }

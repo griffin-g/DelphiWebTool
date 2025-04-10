@@ -93,7 +93,9 @@ router.post("/uuid/:uuid", verifyToken, async (req, res, next) => {
   });
 
   if (existingTracker) {
-    return res.status(403).json({ message: "You have already participated in this round." });
+    return res
+      .status(403)
+      .json({ message: "You have already participated in this round." });
   }
 
   try {
@@ -101,7 +103,9 @@ router.post("/uuid/:uuid", verifyToken, async (req, res, next) => {
 
     if (!survey) {
       console.log("Survey not found in database for UUID:", uuid); // ✅ Add this log
-      return res.status(404).json({ message: "Survey not found or not published" });
+      return res
+        .status(404)
+        .json({ message: "Survey not found or not published" });
     }
 
     res.json(survey);
@@ -245,6 +249,7 @@ router.delete("/:id", async (req, res) => {
         survey_id: survey_id,
       },
     });
+    res.status(200).json({ message: "Survey deleted successfully" });
   } catch (error) {
     console.log("Could not delete survey with id:", survey_id, error);
   }
@@ -271,7 +276,6 @@ router.put("/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to update survey" });
   }
 });
-
 
 function hashToken(token) {
   const salt = "default_salt"; // Use a salt for extra security
@@ -322,7 +326,6 @@ router.post("/publish/:id/:round", async (req, res) => {
     });
   }
 });
-
 
 router.post("/validate-token", async (req, res) => {
   const { uuid, accessToken, email } = req.body;

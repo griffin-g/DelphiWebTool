@@ -44,8 +44,8 @@ function ParticipatePage() {
           }
         );
 
-        if (!response.ok) {
-          const errData = await response.json();
+        if (!response.status !== 200) {
+          const errData = response;
           console.log("Error response:", errData);
 
           if (response.status === 401) {
@@ -66,7 +66,7 @@ function ParticipatePage() {
           return;
         }
 
-        const surveyData = await response.json();
+        const surveyData = response;
         setSurvey(surveyData);
       } catch (err) {
         console.error("Error fetching survey:", err);
