@@ -61,7 +61,7 @@ function RedirectPage() {
         return;
       }
 
-      localStorage.setItem("surveyToken", response.token);
+      localStorage.setItem("surveyToken", response.data.token);
 
       navigate(`/participate/${surveyUUID}`);
     } catch (err) {

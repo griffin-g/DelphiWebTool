@@ -8,32 +8,29 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = "your-secret-key"; // Replace with a secure secret key
 
 const verifyToken = async (req, res, next) => {
-  console.log("Headers received:", req.headers); // Debug log
+  console.log("Headers received:", req.headers);
 
   const authHeader = req.headers.authorization;
-  console.log("Auth header:", authHeader); // Debug log
+  console.log("Auth header:", authHeader); 
 
   if (!authHeader) {
-    console.log("No authorization header found"); // Debug log
+    console.log("No authorization header found"); 
     return res.status(401).json({ message: "No token provided" });
   }
 
   // Check if it's a Bearer token
   if (!authHeader.startsWith("Bearer ")) {
-    console.log("Invalid authorization header format"); // Debug log
+    console.log("Invalid authorization header format"); 
     return res.status(401).json({ message: "Invalid token format" });
   }
 
   const token = authHeader.split(" ")[1];
-  console.log("Extracted token:", token); // Debug log
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    console.log("Decoded token:", decoded); // Debug log
     req.surveyAuth = decoded;
     next();
   } catch (error) {
-    console.log("Token verification error:", error); // Debug log
     return res.status(401).json({ message: "Invalid token" });
   }
 };
@@ -102,7 +99,7 @@ router.post("/uuid/:uuid", verifyToken, async (req, res, next) => {
     const survey = await Surveys.findOne({ where: { uuid } });
 
     if (!survey) {
-      console.log("Survey not found in database for UUID:", uuid); // ✅ Add this log
+      console.log("Survey not found in database for UUID:", uuid);
       return res
         .status(404)
         .json({ message: "Survey not found or not published" });
