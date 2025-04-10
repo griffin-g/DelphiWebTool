@@ -44,7 +44,7 @@ function ParticipatePage() {
           }
         );
 
-        if (!response.ok) {
+        if (!response.status !== 200) {
           const errData = response;
           console.log("Error response:", errData);
 
