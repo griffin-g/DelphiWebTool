@@ -70,7 +70,7 @@ const PublishPage = () => {
         { accessToken }
       );
 
-      if (response.statusText !== "OK" || response.status !== 200) {
+      if (response.status !== 200) {
         console.log(response);
         throw new Error("Failed to publish survey. Please try again.");
       }
