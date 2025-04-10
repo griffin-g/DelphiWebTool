@@ -56,12 +56,12 @@ function RedirectPage() {
       });
 
       if (response.status !== 200) {
-        setError(data.message || "Validation failed.");
+        setError(response.message || "Validation failed.");
         setLoading(false);
         return;
       }
 
-      localStorage.setItem("surveyToken", data.token);
+      localStorage.setItem("surveyToken", response.token);
 
       navigate(`/participate/${surveyUUID}`);
     } catch (err) {
