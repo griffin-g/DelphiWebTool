@@ -48,7 +48,6 @@ const AuthProvider = ({ children }) => {
         //formData,
       });
 
-      //const res = await response.json();
       const res = response;
       console.log("res", res);
       if (res.data) {
@@ -57,11 +56,12 @@ const AuthProvider = ({ children }) => {
         localStorage.setItem("site", res.data.token);
         localStorage.setItem("user", jwtDecode(res.data.token));
         //navigate("/about-us");
-        return true;
+        return res;
       }
       throw new Error(res.message);
     } catch (err) {
       console.error(err);
+      return err;
     }
   };
 

@@ -40,11 +40,11 @@ function LoginComponent({ setOpen }) {
       console.log("valid input");
       const res = await auth.loginAction(input.email, input.password);
       console.log("res in login component", res);
-      if (res.name === "AxiosError") {
+      if (res.status === 401 || res.status === 404) {
         setError("Invalid email or password. Please try again.");
       }
 
-      if (res) {
+      if (res.status === 200) {
         console.log("login success", res);
         if (isMobile) navigate("/about-us");
         else setOpen(false);
