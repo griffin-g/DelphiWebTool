@@ -8,11 +8,12 @@ import { useSurvey } from "./survey-components/UseSurvey";
 import InviteModal from "../Components/InviteModal";
 
 function CreateSurvey() {
+  // set states
   const [tempTitle, setTempTitle] = useState(""); 
   const [questionType, setQuestionType] = useState("text");
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionDescription, setQuestionDescription] = useState("");
-  const [htmlContent, setHtmlContent] = useState(""); // New state for HTML content
+  const [htmlContent, setHtmlContent] = useState("");
   const [choices, setChoices] = useState([]);
   const [newChoice, setNewChoice] = useState("");
   const [rows, setRows] = useState([]);
@@ -42,19 +43,15 @@ function CreateSurvey() {
     handleAddInviteList,
   } = useSurvey();
 
-  const handleTitleChange = (e) => setTempTitle(e.target.value);
-  const setTitle = () => {
-    if (!tempTitle.trim()) {
-      alert("Please enter a valid title");
-      return;
-    }
-    setSurveyTitle(tempTitle);
+  const handleTitleChange = (e) => {
+    const newTitle = e.target.value;
+    setSurveyTitle(newTitle);
   };
 
   const resetQuestionInputs = () => {
     setQuestionTitle("");
     setQuestionDescription("");
-    setHtmlContent(""); // Reset HTML content
+    setHtmlContent("");
     setChoices([]);
     setNewChoice("");
     setRows([]);
@@ -66,19 +63,17 @@ function CreateSurvey() {
   };
 
   const addQuestion = () => {
-    // Handle HTML content blocks differently
     if (questionType === "html") {
       const newQuestion = {
         name: `htmlContent${Date.now()}`,
         type: "html",
-        html: htmlContent, // Use the dedicated htmlContent state
+        html: htmlContent, 
       };
       handleAddQuestion(newQuestion);
       resetQuestionInputs();
       return;
     }
     
-    // Handle regular question types
     const newQuestion = {
       name: `question${Date.now()}`,
       type: questionType,
@@ -144,19 +139,11 @@ function CreateSurvey() {
             label="Survey Title"
             variant="outlined"
             fullWidth
-            value={tempTitle}
+            value={title}
             onChange={handleTitleChange}
             placeholder="Enter survey title"
             sx={{ mb: 2 }}
           />
-          <Button variant="contained" onClick={setTitle}>
-            Set Title
-          </Button>
-          {title && (
-            <Typography variant="subtitle1" sx={{ mt: 1 }}>
-              Current Survey Title: {title}
-            </Typography>
-          )}
         </Box>
 
         <Divider sx={{ my: 3 }} />

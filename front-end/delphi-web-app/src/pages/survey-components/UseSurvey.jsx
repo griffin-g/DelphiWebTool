@@ -84,22 +84,20 @@ export const useSurvey = (surveyID, delphiRound) => {
   const saveParticipants = async (inviteList, surveyId) => {
     try {
       for (const participant of inviteList) {
-        if (!participant.participant_id) {
-          try {
-            const response = await apiClient.post("/participants/", {
-              participant_email: participant,
-              survey_id: surveyId,
-            });
+        try {
+          const response = await apiClient.post("/participants/", {
+            participant_email: participant,
+            survey_id: surveyId,
+          });
 
-            if (response.status === 200) {
-              console.log(`Participant ${participant} invited successfully`);
-            } else {
-              alert(`Failed to invite participant: ${participant}`);
-            }
-          } catch (error) {
-            console.error(`Error inviting participant ${participant}:`, error);
-            alert(`Error inviting participant: ${participant}`);
+          if (response.status === 200) {
+            console.log(`Participant ${participant} invited successfully`);
+          } else {
+            alert(`Failed to invite participant: ${participant}`);
           }
+        } catch (error) {
+          console.error(`Error inviting participant ${participant}:`, error);
+          alert(`Error inviting participant: ${participant}`);
         }
       }
     } catch (error) {
@@ -238,26 +236,7 @@ export const useSurvey = (surveyID, delphiRound) => {
   });
 
   const handleAddInviteList = (newParticipant) => {
-    console.log("new participant", newParticipant);
     setInviteList((prevInvites) => [...prevInvites, newParticipant]);
-    var newList = [...inviteList, newParticipant];
-    console.log("invite list in handle add invite", newList);
-    saveParticipants(newList, surveyID);
-    fetchParticipants();
-  };
-
-  const handleDeleteInviteList = (participant) => {
-    const updatedList = inviteList.filter((item) => item !== participant);
-    var res = "";
-    if (participant.participant_email) {
-      res = apiClient.delete(
-        `/participants/${surveyID}/${participant.participant_email}`
-      );
-    } else {
-      res = apiClient.delete(`/participants/${surveyID}/${participant}`);
-    }
-    console.log("res from participant del", res);
-    if (res) fetchParticipants();
   };
   return {
     title,
@@ -267,7 +246,6 @@ export const useSurvey = (surveyID, delphiRound) => {
     showPreview,
     inviteList,
     maxRound,
-    setInviteList,
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,
@@ -277,6 +255,5 @@ export const useSurvey = (surveyID, delphiRound) => {
     handleAddInviteList,
     handleAddRound,
     handleFindMaxRound,
-    handleDeleteInviteList,
   };
 };
