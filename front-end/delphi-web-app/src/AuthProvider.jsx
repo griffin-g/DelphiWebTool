@@ -34,6 +34,7 @@ const AuthProvider = ({ children }) => {
       throw new Error(res.message);
     } catch (err) {
       console.error(err);
+      return err;
     }
   };
   const signUpAction = async (first_name, last_name, email, password_hash) => {
@@ -82,20 +83,30 @@ const AuthProvider = ({ children }) => {
           },
         }
       );
-  
+
       if (response.data) {
         console.log("Password changed successfully");
         return { success: true, message: response.data.message };
       }
     } catch (err) {
       console.error(err);
-      return { success: false, message: err.response?.data?.message || "Error changing password" };
+      return {
+        success: false,
+        message: err.response?.data?.message || "Error changing password",
+      };
     }
   };
-  
+
   return (
     <AuthContext.Provider
-      value={{ token, user, loginAction, logOut, signUpAction, changePasswordAction }}
+      value={{
+        token,
+        user,
+        loginAction,
+        logOut,
+        signUpAction,
+        changePasswordAction,
+      }}
     >
       {children}
     </AuthContext.Provider>
