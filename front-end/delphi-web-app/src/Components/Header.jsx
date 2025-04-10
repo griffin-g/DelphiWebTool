@@ -202,7 +202,9 @@ function Header() {
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 {auth.user ? (
                   <>
-                    <MenuItem onClick={() => handleNavigation("/change-password")}>
+                    <MenuItem
+                      onClick={() => handleNavigation("/change-password")}
+                    >
                       <SettingsIcon sx={{ mr: 1 }} />
                       <Typography textAlign="center">
                         Change Password
@@ -252,7 +254,7 @@ function Header() {
                         justifyContent: "center",
                       }}
                     >
-                      <LoginComponent open={setIsLoginOpen} />
+                      <LoginComponent setOpen={setIsLoginOpen} />
                     </Modal>
                     <Button
                       variant="contained"

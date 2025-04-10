@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import { Box, Typography, useMediaQuery, Paper } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -22,25 +22,39 @@ function LoginComponent({ setOpen }) {
   });
   const isMobile = useMediaQuery("(max-width:900px)");
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   const auth = useAuth();
-  const handleSubmitEvent = (e) => {
+
+  const handleSubmitEvent = async (e) => {
     e.preventDefault();
     console.log("in handle submit");
-    if (input.email !== "" && input.password !== "") {
-      console.log("valid input");
+    setError(""); // Clear any previous errors
 
-      const res = auth.loginAction(input.email, input.password);
+    try {
+      if (input.email === "" || input.password === "") {
+        setError("Please provide a valid email and password");
+        return;
+      }
+
+      console.log("valid input");
+      const res = await auth.loginAction(input.email, input.password);
+      console.log("res in login component", res);
+      if (res.name === "AxiosError") {
+        setError("Invalid email or password. Please try again.");
+      }
+
       if (res) {
         console.log("login success", res);
-
         if (isMobile) navigate("/about-us");
         else setOpen(false);
       }
-    } else {
-      alert("please provide a valid input");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err.message || "Failed to login. Please try again.");
     }
   };
+
   const handleInput = (e) => {
     const { name, value } = e.target;
     setInput((prev) => ({
@@ -63,6 +77,20 @@ function LoginComponent({ setOpen }) {
       }}
     >
       <form onSubmit={handleSubmitEvent}>
+        {error && (
+          <Paper
+            elevation={0}
+            sx={{
+              p: 2,
+              mb: 3,
+              backgroundColor: "#fff3f0",
+              border: `1px solid ${COLORS.accent}`,
+              borderRadius: 2,
+            }}
+          >
+            <Typography color={COLORS.accent}>Error: {error}</Typography>
+          </Paper>
+        )}
         <Typography variant="body1" sx={{ mb: 1 }}>
           Email
         </Typography>

@@ -11,7 +11,7 @@ export const useSurvey = (surveyID, delphiRound) => {
   const [allQuestions, setAllQuestions] = useState([]);
   const [maxRound, setMaxRound] = useState(1);
   const fetchedSurveyRef = useRef(false);
-  
+
   const auth = useAuth();
   // Function to fetch survey data based on surveyID
   const fetchSurvey = async () => {
@@ -37,6 +37,7 @@ export const useSurvey = (surveyID, delphiRound) => {
         `/participants/survey-id/${surveyID}`
       );
       setInviteList(response.data);
+      console.log("invite list in fetch participants", response.data);
     } catch (error) {
       console.error("Error fetching participants:", error);
     }
@@ -215,10 +216,10 @@ export const useSurvey = (surveyID, delphiRound) => {
         return {
           type: question.type,
           name: question.name,
-          html: question.description || question.html
+          html: question.description || question.html,
         };
       }
-      
+
       return {
         type: question.type,
         name: question.name,
@@ -229,14 +230,30 @@ export const useSurvey = (surveyID, delphiRound) => {
         }),
         ...(question.type === "rating" && {
           rateMax: question.rateCount ?? 5,
-          rateType: question.rateType ?? "numeric"
+          rateType: question.rateType ?? "numeric",
         }),
       };
     }),
   });
 
-  const handleAddInviteList = (newParticipant) => {
+  const handleAddInviteList = async (newParticipant) => {
     setInviteList((prevInvites) => [...prevInvites, newParticipant]);
+    var newList = [...inviteList, newParticipant];
+    await saveParticipants(newList, surveyID);
+    await fetchParticipants();
+  };
+
+  const handleDeleteInviteList = async (participant) => {
+    const updatedList = inviteList.filter((item) => item !== participant);
+    var res = "";
+    if (participant.participant_email) {
+      res = await apiClient.delete(
+        `/participants/${surveyID}/${participant.participant_email}`
+      );
+    } else {
+      res = apiClient.delete(`/participants/${surveyID}/${participant}`);
+    }
+    await fetchParticipants();
   };
   return {
     title,

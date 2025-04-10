@@ -41,7 +41,7 @@ const InviteModal = ({
   };
 
   useEffect(() => {
-    console.log("Updated invite list:", inviteList);
+    console.log("Updated invite list in use effect:", inviteList);
   }, [inviteList]);
 
   return (
