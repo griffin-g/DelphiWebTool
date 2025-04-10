@@ -30,6 +30,7 @@ const COLORS = {
 const SurveyManagement = () => {
   const [surveys, setSurveys] = useState([]);
   const [error, setError] = useState(null);
+  const [surveyLength, setSurveyLength] = useState(0);
   const navigate = useNavigate();
   const auth = useAuth();
 
@@ -55,7 +56,7 @@ const SurveyManagement = () => {
 
   useEffect(() => {
     if (auth.user != null) fetchSurveys();
-  }, [auth.user]);
+  }, [auth.user, surveyLength]);
 
   return (
     <Box sx={{ backgroundColor: COLORS.background, minHeight: "100vh" }}>
@@ -300,11 +301,9 @@ const SurveyManagement = () => {
                           const response = await apiClient.delete(
                             `/surveys/${survey.survey_id}`
                           );
-                          setSurveys(
-                            surveys.filter(
-                              (s) => s.survey_id !== survey.survey_id
-                            )
-                          );
+
+                          console.log(response);
+                          setSurveyLength(surveys.length);
                         } catch (error) {
                           setError(error.message);
                         }
