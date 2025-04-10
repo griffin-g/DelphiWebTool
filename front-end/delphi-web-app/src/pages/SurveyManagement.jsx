@@ -30,6 +30,8 @@ const COLORS = {
 const SurveyManagement = () => {
   const [surveys, setSurveys] = useState([]);
   const [error, setError] = useState(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [selectedSurveyId, setSelectedSurveyId] = useState(null);
   const navigate = useNavigate();
   const auth = useAuth();
 
@@ -56,6 +58,17 @@ const SurveyManagement = () => {
   useEffect(() => {
     if (auth.user != null) fetchSurveys();
   }, [auth.user]);
+
+  const handleDeleteSurvey = async () => {
+    try {
+      await apiClient.delete(`/surveys/${selectedSurveyId}`);
+      setDeleteConfirmOpen(false);
+      setSelectedSurveyId(null);
+      await fetchSurveys();
+    } catch (error) {
+      setError("Failed to delete survey: " + error.message);
+    }
+  };
 
   return (
     <Box sx={{ backgroundColor: COLORS.background, minHeight: "100vh" }}>
@@ -137,7 +150,7 @@ const SurveyManagement = () => {
             </Typography>
           </Paper>
         ) : (
-          <Box>
+          <Box key={surveys.length}>
             {surveys.map((survey) => (
               <Paper
                 key={survey.survey_id}
@@ -295,19 +308,9 @@ const SurveyManagement = () => {
                           backgroundColor: "rgba(211, 47, 47, 0.08)",
                         },
                       }}
-                      onClick={async () => {
-                        try {
-                          const response = await apiClient.delete(
-                            `/surveys/${survey.survey_id}`
-                          );
-                          setSurveys(
-                            surveys.filter(
-                              (s) => s.survey_id !== survey.survey_id
-                            )
-                          );
-                        } catch (error) {
-                          setError(error.message);
-                        }
+                      onClick={() => {
+                        setSelectedSurveyId(survey.survey_id);
+                        setDeleteConfirmOpen(true);
                       }}
                     >
                       <DeleteIcon />
@@ -319,6 +322,58 @@ const SurveyManagement = () => {
           </Box>
         )}
       </Box>
+
+      {deleteConfirmOpen && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            bgcolor: "rgba(0,0,0,0.4)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1300,
+          }}
+        >
+          <Paper
+            elevation={3}
+            sx={{
+              padding: 4,
+              width: 400,
+              textAlign: "center",
+              borderRadius: 2,
+            }}
+          >
+            <Typography variant="h6" gutterBottom>
+              Confirm Deletion
+            </Typography>
+            <Typography sx={{ mb: 3 }}>
+              Are you sure you want to delete this survey?
+            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Button
+                variant="outlined"
+                onClick={() => setDeleteConfirmOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  handleDeleteSurvey();
+                  setDeleteConfirmOpen(false);
+                }}
+              >
+                Delete Survey
+              </Button>
+            </Box>
+          </Paper>
+        </Box>
+      )}
     </Box>
   );
 };
