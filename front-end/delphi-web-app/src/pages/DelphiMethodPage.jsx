@@ -39,7 +39,6 @@ function DelphiMethodPage() {
       <Header />
 
       <Container maxWidth="lg" sx={{ py: 5 }}>
-        {/* Hero Section */}
         <Paper
           elevation={0}
           sx={{

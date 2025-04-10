@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
+import SettingsIcon from "@mui/icons-material/Settings";
+
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 import LoginComponent from "./LoginComponent";
@@ -34,7 +36,6 @@ function Header() {
     { label: "About Us", path: "/about-us" },
     { label: "Investigate The Delphi Method", path: "/delphi-method" },
     { label: "Manage Surveys", path: "/manage-survey" },
-    { label: "Participating Surveys", path: "/participating-surveys" },
   ];
 
   const handleOpenNavMenu = (event) => {
@@ -47,10 +48,13 @@ function Header() {
 
   const handleLogout = () => {
     if (auth.logOut) {
-      auth.logOut();
+      auth.logOut("/change-password");
     }
   };
 
+  const handleChangePassword = () => {
+    navigate();
+  };
   const handleNavigation = (path) => {
     navigate(path);
     handleCloseNavMenu();
@@ -128,9 +132,19 @@ function Header() {
                 ))}
                 <Divider />
                 {auth.user ? (
-                  <MenuItem onClick={handleLogout}>
-                    <Typography textAlign="center">Logout</Typography>
-                  </MenuItem>
+                  <>
+                    <MenuItem onClick={handleLogout}>
+                      <Typography textAlign="center">Logout</Typography>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => handleNavigation("/change-password")}
+                    >
+                      <SettingsIcon sx={{ mr: 1 }} />
+                      <Typography textAlign="center">
+                        Change Password
+                      </Typography>
+                    </MenuItem>
+                  </>
                 ) : (
                   [
                     <MenuItem
@@ -187,20 +201,29 @@ function Header() {
               {/* User Auth */}
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 {auth.user ? (
-                  <Button
-                    variant="outlined"
-                    onClick={handleLogout}
-                    sx={{
-                      borderColor: "#4A77E5",
-                      color: "#4A77E5",
-                      "&:hover": {
-                        backgroundColor: "rgba(74, 119, 229, 0.04)",
+                  <>
+                    <MenuItem onClick={() => handleNavigation("/change-password")}>
+                      <SettingsIcon sx={{ mr: 1 }} />
+                      <Typography textAlign="center">
+                        Change Password
+                      </Typography>
+                    </MenuItem>
+
+                    <Button
+                      variant="outlined"
+                      onClick={handleLogout}
+                      sx={{
                         borderColor: "#4A77E5",
-                      },
-                    }}
-                  >
-                    Logout
-                  </Button>
+                        color: "#4A77E5",
+                        "&:hover": {
+                          backgroundColor: "rgba(74, 119, 229, 0.04)",
+                          borderColor: "#4A77E5",
+                        },
+                      }}
+                    >
+                      Logout
+                    </Button>
+                  </>
                 ) : (
                   <>
                     <Button
