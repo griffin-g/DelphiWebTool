@@ -96,29 +96,30 @@ const transporter = nodemailer.createTransport({
 });
 
 router.post("/send-invites/:id/:round", async (req, res) => {
-  const survey_id = req.params.id;
-  const { accessToken } = req.body;
-  const delphi_round = req.params.round;
-  const participants = await Participants.findAll({ where: { survey_id } });
-  var mailData = {};
-  console.log("Participants:", participants);
-  const survey = await Surveys.findOne({
-    where: {
-      survey_id: survey_id,
-      delphi_round: delphi_round,
-    },
-  });
-  const uuid = survey.uuid;
-  const surveyLink = `https://delphi-web-tool.web.app/access-survey/${uuid}`;
+  try {
+    const survey_id = req.params.id;
+    const { accessToken } = req.body;
+    const delphi_round = req.params.round;
+    const participants = await Participants.findAll({ where: { survey_id } });
+    var mailData = {};
+    console.log("Participants:", participants);
+    const survey = await Surveys.findOne({
+      where: {
+        survey_id: survey_id,
+        delphi_round: delphi_round,
+      },
+    });
+    const uuid = survey.uuid;
+    const surveyLink = `https://delphi-web-tool.web.app/access-survey/${uuid}`;
 
-  console.log("Survey link:", surveyLink);
-  for (const participant of participants) {
-    mailData = {
-      from: "delphiwebapptest@gmail.com",
-      to: participant.participant_email,
-      subject: "You're invited to a Delphi survey!",
-      text: "some text",
-      html: `
+    console.log("Survey link:", surveyLink);
+    for (const participant of participants) {
+      mailData = {
+        from: "delphiwebapptest@gmail.com",
+        to: participant.participant_email,
+        subject: "You're invited to a Delphi survey!",
+        text: "some text",
+        html: `
       <p>Dear Participant,</p>
       <p>We hope you're doing well! 🎉</p>
       <p>We’re excited to invite you to participate in an exclusive survey.</b>. Your insights are valuable, and we'd love to hear your thoughts.</p>
@@ -131,13 +132,20 @@ router.post("/send-invites/:id/:round", async (req, res) => {
       <p>Best regards,</p>
       <p>Delphi Web Surveys</p>
     `,
-    };
+      };
 
-    transporter.sendMail(mailData, (error, info) => {
-      if (error) {
-        console.log(error);
-      }
+      transporter.sendMail(mailData, (error, info) => {
+        if (error) {
+          console.log(error);
+        }
+      });
+    }
+    return res.status(200).json({
+      message: "Invites sent successfully",
     });
+  } catch (error) {
+    console.error("Error sending invites:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

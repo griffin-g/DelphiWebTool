@@ -70,12 +70,11 @@ const PublishPage = () => {
         { accessToken }
       );
 
-      if (!response.ok) {
+      if (response.statusText !== "OK") {
         console.log(response);
         throw new Error("Failed to publish survey. Please try again.");
       }
 
-      const result = await response.json();
       setSuccess(true);
       console.log("before sending invites");
 
@@ -83,8 +82,8 @@ const PublishPage = () => {
         `/participants/send-invites/${surveyID}/${selectedDelphiRound}`,
         { accessToken }
       );
-      console.log(result.message);
       console.log("Invites sent:", response1);
+      setLoading(false);
     } catch (err) {
       setError(err.message);
     } finally {
