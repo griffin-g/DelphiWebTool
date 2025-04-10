@@ -1,14 +1,20 @@
 import React, { useState } from "react";
 import Header from "../Components/Header";
-import { TextField, Button, Container, Typography, Box, Divider } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Box,
+  Divider,
+} from "@mui/material";
 import QuestionForm from "./survey-components/Question-Form";
 import QuestionList from "./survey-components/Question-List";
 import SurveyDisplay from "./survey-components/Survey-Display";
 import { useSurvey } from "./survey-components/UseSurvey";
-import InviteModal from "../Components/InviteModal";
 
 function CreateSurvey() {
-  const [tempTitle, setTempTitle] = useState(""); 
+  const [tempTitle, setTempTitle] = useState("");
   const [questionType, setQuestionType] = useState("text");
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionDescription, setQuestionDescription] = useState("");
@@ -19,13 +25,9 @@ function CreateSurvey() {
   const [newRow, setNewRow] = useState("");
   const [columns, setColumns] = useState([]);
   const [newColumn, setNewColumn] = useState("");
-  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   const [rateCount, setRateCount] = useState("");
-  const [rateType, setRateType] = useState("numeric"); 
-
-  const handleInviteOpen = () => setIsInviteModalOpen(true);
-  const handleInviteClose = () => setIsInviteModalOpen(false);
+  const [rateType, setRateType] = useState("numeric");
 
   const {
     title,
@@ -33,13 +35,11 @@ function CreateSurvey() {
     questions,
     surveyData,
     showPreview,
-    inviteList,
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,
     handleSaveSurvey,
     handlePreviewSurvey,
-    handleAddInviteList,
   } = useSurvey();
 
   const handleTitleChange = (e) => setTempTitle(e.target.value);
@@ -77,28 +77,31 @@ function CreateSurvey() {
       resetQuestionInputs();
       return;
     }
-    
+
     // Handle regular question types
     const newQuestion = {
       name: `question${Date.now()}`,
       type: questionType,
       title: questionTitle,
       description: questionDescription,
-      ...((questionType === "ranking" || questionType === "checkbox") && { choices }),
+      ...((questionType === "ranking" || questionType === "checkbox") && {
+        choices,
+      }),
       ...(questionType === "matrix" && { rows, columns }),
       ...(questionType === "rating" && { rateCount, rateType }),
     };
     handleAddQuestion(newQuestion);
     resetQuestionInputs();
   };
-  
+
   const addChoice = () => {
     if (newChoice.trim()) {
       setChoices([...choices, newChoice.trim()]);
       setNewChoice("");
     }
   };
-  const deleteChoice = (index) => setChoices(choices.filter((_, i) => i !== index));
+  const deleteChoice = (index) =>
+    setChoices(choices.filter((_, i) => i !== index));
   const addRow = () => {
     if (newRow.trim()) {
       setRows([...rows, newRow.trim()]);
@@ -112,7 +115,8 @@ function CreateSurvey() {
       setNewColumn("");
     }
   };
-  const deleteColumn = (index) => setColumns(columns.filter((_, i) => i !== index));
+  const deleteColumn = (index) =>
+    setColumns(columns.filter((_, i) => i !== index));
 
   const saveSurvey = async () => {
     if (!title) {
@@ -123,22 +127,25 @@ function CreateSurvey() {
   };
 
   const isAddDisabled = () => {
-    if (!questionTitle.trim()) return true; 
-    if (questionType === "ranking" || questionType === "checkbox") return choices.length === 0; 
-    if (questionType === "rating") return rateCount < 1 || rateCount > 10; 
+    if (!questionTitle.trim()) return true;
+    if (questionType === "ranking" || questionType === "checkbox")
+      return choices.length === 0;
+    if (questionType === "rating") return rateCount < 1 || rateCount > 10;
     if (questionType === "html") return !htmlContent.trim();
     return false;
   };
-  
 
   return (
     <Box>
       <Header />
-      <Container maxWidth="md" sx={{ mt: 4, p: 2, bgcolor: "#f5f5f5", borderRadius: 2 }}>
+      <Container
+        maxWidth="md"
+        sx={{ mt: 4, p: 2, bgcolor: "#f5f5f5", borderRadius: 2 }}
+      >
         <Typography variant="h4" gutterBottom>
           Create Survey
         </Typography>
-        
+
         <Box sx={{ mb: 3 }}>
           <TextField
             label="Survey Title"
@@ -191,7 +198,11 @@ function CreateSurvey() {
           setRateType={setRateType}
         />
         <Box sx={{ textAlign: "right", mt: 2 }}>
-          <Button variant="contained" onClick={addQuestion} disabled={isAddDisabled()}>
+          <Button
+            variant="contained"
+            onClick={addQuestion}
+            disabled={isAddDisabled()}
+          >
             Add Question
           </Button>
         </Box>
@@ -212,17 +223,6 @@ function CreateSurvey() {
             Preview Survey
           </Button>
         </Box>
-
-        <Button variant="contained" onClick={() => setIsInviteModalOpen(true)}>
-          Create Invite List
-        </Button>
-        <InviteModal
-          surveyId="1"
-          open={isInviteModalOpen}
-          onClose={() => setIsInviteModalOpen(false)}
-          inviteList={inviteList}
-          addInviteList={handleAddInviteList}
-        />
 
         {showPreview && surveyData && (
           <Box sx={{ mt: 4 }}>
