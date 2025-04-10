@@ -97,7 +97,7 @@ router.post("/uuid/:uuid", verifyToken, async (req, res, next) => {
       .status(403)
       .json({ message: "You have already participated in this round." });
   }
-
+  console.log("before finding survey");
   try {
     const survey = await Surveys.findOne({ where: { uuid } });
 
@@ -111,6 +111,7 @@ router.post("/uuid/:uuid", verifyToken, async (req, res, next) => {
     res.json(survey);
   } catch (error) {
     console.error("Error fetching survey:", error);
+    res.status(500).json({ message: "Error fetching survey", error: error });
     next(error);
   }
 });

@@ -3,7 +3,7 @@ var router = express.Router();
 const { Users } = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const {verifyToken} = require("../middleware/verifyToken");
+const { verifyToken } = require("../middleware/verifyToken");
 
 const JWT_SECRET = "your-secret-key"; // Replace with a secure secret key
 /* GET users listing. */
@@ -65,7 +65,6 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-
 router.post("/change-password", verifyToken, async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
@@ -76,7 +75,10 @@ router.post("/change-password", verifyToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isPasswordValid = await bcrypt.compare(oldPassword, user.password_hash);
+    const isPasswordValid = await bcrypt.compare(
+      oldPassword,
+      user.password_hash
+    );
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Old password is incorrect" });
     }
@@ -100,7 +102,11 @@ router.post("/register", async (req, res) => {
   try {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    const duplicateEmailCheck = await Users.findOne({ where: { email } });
+    if (duplicateEmailCheck) {
+      res.status(499).json({ message: "User with this email already exists." });
+      return;
+    }
     // Create new user with hashed password
     const user = await Users.create({
       email,
