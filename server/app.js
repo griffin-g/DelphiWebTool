@@ -32,6 +32,22 @@ var participantsRouter = require("./routes/participantsRouter");
 var responsesRouter = require("./routes/responsesRouter");
 var answerRouter = require("./routes/answerRouter");
 
+var app = express();
+const { error } = require("console");
+
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://delphi-web-tool.web.app', 'http://localhost:5174'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+app.use(logger("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/surveys", surveysRouter);

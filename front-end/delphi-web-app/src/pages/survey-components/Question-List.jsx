@@ -12,6 +12,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Divider,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,30 +21,6 @@ function QuestionList({ questions, onEditQuestion, onDeleteQuestion }) {
   const updateQuestion = (index, changes) => {
     const updatedQuestion = { ...questions[index], ...changes };
     onEditQuestion(index, updatedQuestion);
-  };
-
-  const handleEditChoice = (index, choiceIndex, value) => {
-    const updatedChoices = [...(questions[index].choices || [])];
-    updatedChoices[choiceIndex] = value;
-    updateQuestion(index, { choices: updatedChoices });
-  };
-
-  const handleAddChoice = (index) => {
-    const updatedChoices = [...(questions[index].choices || []), ""];
-    updateQuestion(index, { choices: updatedChoices });
-  };
-
-  const handleDeleteChoice = (index, choiceIndex) => {
-    const updatedChoices = (questions[index].choices || []).filter((_, i) => i !== choiceIndex);
-    updateQuestion(index, { choices: updatedChoices });
-  };
-
-  const handleEditRateCount = (index, value) => {
-    updateQuestion(index, { rateCount: value });
-  };
-
-  const handleEditRateType = (index, value) => {
-    updateQuestion(index, { rateType: value });
   };
 
   return (
@@ -56,98 +33,128 @@ function QuestionList({ questions, onEditQuestion, onDeleteQuestion }) {
       ) : (
         <List>
           {questions.map((question, index) => (
-            <ListItem key={index} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
-              <Stack spacing={2} sx={{ width: "100%" }}>
-                <TextField
-                  label="Title"
-                  variant="outlined"
-                  fullWidth
-                  value={question.title || ""}
-                  onChange={(e) => updateQuestion(index, { title: e.target.value })}
-                />
-                <TextField
-                  label="Description"
-                  variant="outlined"
-                  fullWidth
-                  value={question.description || ""}
-                  onChange={(e) => updateQuestion(index, { description: e.target.value })}
-                />
+            <ListItem key={index} sx={{ flexDirection: "column", alignItems: "flex-start", mb: 2 }}>
+              {question.type === "html" ? (
+                <Stack spacing={2} sx={{ width: "100%" }}>
+                  <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                    HTML Content Block
+                  </Typography>
+                  <TextField
+                    label="HTML Content"
+                    variant="outlined"
+                    fullWidth
+                    multiline
+                    rows={8}
+                    value={question.html || ""}
+                    onChange={(e) => updateQuestion(index, { html: e.target.value })}
+                  />
+                  <Typography variant="caption" color="text.secondary">
+                    This content will be rendered as HTML in your survey.
+                  </Typography>
+                  <Button variant="outlined" color="error" onClick={() => onDeleteQuestion(index)}>
+                    Delete HTML Block
+                  </Button>
+                </Stack>
+              ) : (
+                // Handling for other question types
+                <Stack spacing={2} sx={{ width: "100%" }}>
+                  <Typography variant="subtitle1">
+                    Question Type: {question.type.charAt(0).toUpperCase() + question.type.slice(1)}
+                  </Typography>
 
-                {(question.type === "ranking" || question.type === "checkbox") && (
-                  <div>
-                    <Typography variant="subtitle1">
-                      {question.type === "ranking" ? "Ranking Options:" : "Checkbox Options:"}
-                    </Typography>
-                    <List>
-                      {question.choices?.map((choice, optionIndex) => (
-                        <ListItem key={optionIndex} sx={{ display: "flex", alignItems: "center" }}>
-                          <TextField
-                            variant="outlined"
-                            fullWidth
-                            value={choice}
-                            onChange={(e) => handleEditChoice(index, optionIndex, e.target.value)}
-                          />
-                          <IconButton onClick={() => handleDeleteChoice(index, optionIndex)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </ListItem>
-                      ))}
-                    </List>
-                    <Button
-                      startIcon={<AddIcon />}
-                      variant="contained"
-                      onClick={() => handleAddChoice(index)}
-                      sx={{ mt: 1 }}
-                    >
-                      Add Option
-                    </Button>
-                  </div>
-                )}
+                  <TextField
+                    label="Title"
+                    variant="outlined"
+                    fullWidth
+                    value={question.title || ""}
+                    onChange={(e) => updateQuestion(index, { title: e.target.value })}
+                  />
 
-                {question.type === "rating" && (
-                  <div>
-                    <Typography variant="subtitle1">Rating Configuration:</Typography>
-                    <TextField
-                      label="Max Rating"
-                      placeholder="Enter max rating (e.g., 10)"
-                      variant="outlined"
-                      fullWidth
-                      type="number"
-                      slotProps={{
-                        htmlInput: { 
-                          max: 10, 
-                          min: 0 
+                  <TextField
+                    label="Description"
+                    variant="outlined"
+                    fullWidth
+                    value={question.description || ""}
+                    onChange={(e) => updateQuestion(index, { description: e.target.value })}
+                  />
+
+                  {(question.type === "ranking" || question.type === "checkbox") && (
+                    <div>
+                      <Typography variant="subtitle1">
+                        {question.type === "ranking" ? "Ranking Options:" : "Checkbox Options:"}
+                      </Typography>
+                      <List>
+                        {question.choices?.map((choice, optionIndex) => (
+                          <ListItem key={optionIndex} sx={{ display: "flex", alignItems: "center" }}>
+                            <TextField
+                              variant="outlined"
+                              fullWidth
+                              value={choice}
+                              onChange={(e) => {
+                                const updatedChoices = [...question.choices];
+                                updatedChoices[optionIndex] = e.target.value;
+                                updateQuestion(index, { choices: updatedChoices });
+                              }}
+                            />
+                            <IconButton
+                              onClick={() =>
+                                updateQuestion(index, {
+                                  choices: question.choices.filter((_, i) => i !== optionIndex),
+                                })
+                              }
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </ListItem>
+                        ))}
+                      </List>
+                      <Button
+                        startIcon={<AddIcon />}
+                        variant="contained"
+                        onClick={() =>
+                          updateQuestion(index, { choices: [...(question.choices || []), ""] })
                         }
-                      }}
-                      value={question.rateCount || ""}
-                      onChange={(e) => {
-                        let value = Number(e.target.value);
-                        if (value > 10) value = 10;
-                        if (value < 0) value = 0;
-
-                        handleEditRateCount(index, value);
-                      }}
-                      sx={{ mt: 2 }}
-                    />
-                    <FormControl fullWidth sx={{ mt: 1 }}>
-                      <InputLabel id={`rating-type-label-${index}`}>Rating Type</InputLabel>
-                      <Select
-                        labelId={`rating-type-label-${index}`}
-                        value={question.rateType || "numeric"}
-                        onChange={(e) => handleEditRateType(index, e.target.value)}
+                        sx={{ mt: 1 }}
                       >
-                        <MenuItem value="numeric">Numeric</MenuItem>
-                        <MenuItem value="stars">Stars</MenuItem>
-                        <MenuItem value="smileys">Smileys</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </div>
-                )}
+                        Add Option
+                      </Button>
+                    </div>
+                  )}
 
-                <Button variant="outlined" color="error" onClick={() => onDeleteQuestion(index)}>
-                  Delete Question
-                </Button>
-              </Stack>
+                  {question.type === "rating" && (
+                    <div>
+                      <Typography variant="subtitle1">Rating Configuration:</Typography>
+                      <TextField
+                        label="Max Rating"
+                        placeholder="Enter max rating (e.g., 10)"
+                        variant="outlined"
+                        fullWidth
+                        type="number"
+                        inputProps={{ max: 10, min: 1 }}
+                        value={question.rateCount || ""}
+                        onChange={(e) => updateQuestion(index, { rateCount: e.target.value })}
+                        sx={{ mt: 2 }}
+                      />
+                      <FormControl fullWidth sx={{ mt: 1 }}>
+                        <InputLabel>Rating Type</InputLabel>
+                        <Select
+                          value={question.rateType || "numeric"}
+                          onChange={(e) => updateQuestion(index, { rateType: e.target.value })}
+                        >
+                          <MenuItem value="numeric">Numeric</MenuItem>
+                          <MenuItem value="stars">Stars</MenuItem>
+                          <MenuItem value="smileys">Smileys</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </div>
+                  )}
+
+                  <Button variant="outlined" color="error" onClick={() => onDeleteQuestion(index)}>
+                    Delete Question
+                  </Button>
+                </Stack>
+              )}
+              {index < questions.length - 1 && <Divider sx={{ width: "100%", mt: 2 }} />}
             </ListItem>
           ))}
         </List>

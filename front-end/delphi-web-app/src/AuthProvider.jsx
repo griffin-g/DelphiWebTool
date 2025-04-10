@@ -71,9 +71,31 @@ const AuthProvider = ({ children }) => {
     navigate("/about-us");
   };
 
+  const changePasswordAction = async (oldPassword, newPassword) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/users/change-password",
+        { oldPassword, newPassword },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.data) {
+        console.log("Password changed successfully");
+        return { success: true, message: response.data.message };
+      }
+    } catch (err) {
+      console.error(err);
+      return { success: false, message: err.response?.data?.message || "Error changing password" };
+    }
+  };
+  
   return (
     <AuthContext.Provider
-      value={{ token, user, loginAction, logOut, signUpAction }}
+      value={{ token, user, loginAction, logOut, signUpAction, changePasswordAction }}
     >
       {children}
     </AuthContext.Provider>

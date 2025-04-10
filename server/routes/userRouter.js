@@ -3,6 +3,7 @@ var router = express.Router();
 const { Users } = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const {verifyToken} = require("../middleware/verifyToken");
 
 const JWT_SECRET = "your-secret-key"; // Replace with a secure secret key
 /* GET users listing. */
@@ -63,6 +64,35 @@ router.post("/login", async (req, res, next) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+
+router.post("/change-password", verifyToken, async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+
+  try {
+    const user = await Users.findOne({ where: { user_id: req.user.id } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password_hash);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Old password is incorrect" });
+    }
+
+    const saltRounds = 10;
+    const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    await user.update({ password_hash: hashedNewPassword });
+
+    res.json({ message: "Password changed successfully" });
+  } catch (error) {
+    console.error("Error changing password:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 /* Register a new user (hashing password). */
 router.post("/register", async (req, res) => {
   const { email, password_hash, first_name, last_name } = req.body;
@@ -93,12 +123,6 @@ router.post("/register", async (req, res) => {
     console.error("Error during registration:", error);
     res.status(500).json({ message: "Internal server error" });
   }
-});
-router.post("/", async (req, res) => {
-  const newUser = req.body;
-  console.log("user", newUser);
-  await Users.create(newUser);
-  res.json(newUser);
 });
 
 router.delete("/:id", async (req, res) => {

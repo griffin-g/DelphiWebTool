@@ -4,7 +4,13 @@ import { Survey } from 'survey-react-ui';
 import 'survey-core/defaultV2.min.css';
 
 function SurveyDisplay({ surveyData }) {
-  const survey = useMemo(() => new Model(surveyData), [surveyData]); // use to prevent re-render when updating access tokens
+  const survey = useMemo(() => {
+    const model = new Model(surveyData);
+    model.onTextMarkdown.add((sender, options) => {
+      options.html = options.text;
+    });
+    return model;
+  }, [surveyData]);
 
   return (
     <div>

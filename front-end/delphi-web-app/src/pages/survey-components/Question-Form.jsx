@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   TextField,
@@ -12,9 +12,9 @@ import {
   IconButton,
   Stack,
   Typography,
+  Alert,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
  
 function QuestionForm({
   questionType,
@@ -23,26 +23,31 @@ function QuestionForm({
   setQuestionTitle,
   questionDescription,
   setQuestionDescription,
+  htmlContent,
+  setHtmlContent,
   choices,
   newChoice,
   setNewChoice,
   addChoice,
   deleteChoice,
-  rows,
-  newRow,
-  setNewRow,
-  addRow,
-  deleteRow,
-  columns,
-  newColumn,
-  setNewColumn,
-  addColumn,
-  deleteColumn,
   rateCount,
   setRateCount,
   rateType,
   setRateType,
 }) {
+  const [htmlError, setHtmlError] = useState(false);
+
+  const validateHtml = (content) => {
+    const scriptTagPattern = /<script[\s\S]*?>[\s\S]*?<\/script>/gi;
+    return scriptTagPattern.test(content);
+  };
+
+  const handleHtmlChange = (e) => {
+    const content = e.target.value;
+    setHtmlContent(content);
+    setHtmlError(validateHtml(content));
+  };
+
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
       <Stack spacing={3}>
@@ -57,165 +62,121 @@ function QuestionForm({
             <MenuItem value="ranking">Ranking</MenuItem>
             <MenuItem value="checkbox">Checkbox</MenuItem>
             <MenuItem value="rating">Rating</MenuItem>
-            {/* <MenuItem value="matrix">Matrix</MenuItem> */}
+            <MenuItem value="html">HTML Content</MenuItem>
           </Select>
         </FormControl>
-
-        <TextField
-          label="Title"
-          placeholder="Enter question title"
-          variant="outlined"
-          fullWidth
-          required
-          value={questionTitle}
-          onChange={(e) => setQuestionTitle(e.target.value)}
-        />
-
-        <TextField
-          label="Description"
-          placeholder="Enter question description"
-          variant="outlined"
-          fullWidth
-          value={questionDescription}
-          onChange={(e) => setQuestionDescription(e.target.value)}
-        />
-
-        {(questionType === "ranking" || questionType === "checkbox") && (
-          <div>
+  
+        {questionType === "html" ? (
+          <>
+            <Typography variant="subtitle1">HTML Content Block</Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Use this to display rich text, images, or custom formatting. Avoid including scripts.
+            </Typography>
             <TextField
-              label="Choices"
-              placeholder="Enter a choice"
-              variant="outlined"
-              value={newChoice}
-              onChange={(e) => setNewChoice(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              onClick={addChoice}
-              disabled={!newChoice?.trim()}
-              sx={{ mt: 2 }}
-            >
-              Add Choice
-            </Button>
-            <List>
-              {choices?.map((choice, index) => (
-                <ListItem
-                  key={index}
-                  secondaryAction={
-                    <IconButton edge="end" onClick={() => deleteChoice(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                >
-                  <Typography>{choice}</Typography>
-                </ListItem>
-              ))}
-            </List>
-          </div>
-        )}
-
-        {questionType === "rating" && (
-          <div>
-            <TextField
-              label="Max Rating"
-              placeholder="Enter max rating (e.g., 10)"
+              label="HTML Content"
+              placeholder="Enter valid HTML"
               variant="outlined"
               fullWidth
-              type="number"
-              slotProps={{
-                htmlInput: { 
-                  max: 10, 
-                  min: 0 
-                }
-              }}              
-              value={rateCount}
-              onChange={(e) => {
-                let value = Number(e.target.value);
-                if (value > 10) value = 10;
-                if (value < 0) value = 0;
-            
-                setRateCount(value);
-              }}              
-              sx={{ mt: 2 }}
+              multiline
+              rows={6}
+              value={htmlContent || ""}
+              onChange={handleHtmlChange}
+              error={htmlError}
+              helperText={htmlError ? "Invalid HTML: Script tags are not allowed." : ""}
             />
-            <FormControl fullWidth sx={{ mt: 2 }}>
-              <InputLabel id="rating-type-label">Rating Type</InputLabel>
-              <Select
-                labelId="rating-type-label"
-                value={rateType}
-                onChange={(e) => setRateType(e.target.value)}
-              >
-                <MenuItem value="numeric">Numeric</MenuItem>
-                <MenuItem value="stars">Stars</MenuItem>
-                <MenuItem value="smileys">Smileys</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-        )}
-
-        {questionType === "matrix" && (
-          <div>
-            {/* Rows */}
+            {htmlError && <Alert severity="error">Remove any script tags from your HTML.</Alert>}
+          </>
+        ) : (
+          <>
             <TextField
-              label="Row"
-              placeholder="Enter a row label"
+              label="Title"
+              placeholder="Enter question title"
               variant="outlined"
-              value={newRow}
-              onChange={(e) => setNewRow(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              onClick={addRow}
-              disabled={!newRow?.trim()}
+              fullWidth
+              required
+              value={questionTitle}
+              onChange={(e) => setQuestionTitle(e.target.value)}
               sx={{ mt: 2 }}
-            >
-              Add Row
-            </Button>
-            <List>
-              {rows?.map((row, index) => (
-                <ListItem
-                  key={index}
-                  secondaryAction={
-                    <IconButton edge="end" onClick={() => deleteRow(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                >
-                  <Typography>{row}</Typography>
-                </ListItem>
-              ))}
-            </List>
+            />
 
             <TextField
-              label="Column"
-              placeholder="Enter a column label"
+              label="Description"
+              placeholder="Enter question description"
               variant="outlined"
-              value={newColumn}
-              onChange={(e) => setNewColumn(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              onClick={addColumn}
-              disabled={!newColumn?.trim()}
+              fullWidth
+              value={questionDescription}
+              onChange={(e) => setQuestionDescription(e.target.value)}
               sx={{ mt: 2 }}
-            >
-              Add Column
-            </Button>
-            <List>
-              {columns?.map((column, index) => (
-                <ListItem
-                  key={index}
-                  secondaryAction={
-                    <IconButton edge="end" onClick={() => deleteColumn(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  }
+            />
+
+            {questionType === "ranking" || questionType === "checkbox" ? (
+              <>
+                <TextField
+                  label="Choices"
+                  placeholder="Enter a choice"
+                  variant="outlined"
+                  value={newChoice}
+                  onChange={(e) => setNewChoice(e.target.value)}
+                  fullWidth
+                  sx={{ mt: 2 }}
+                />
+                <Button
+                  variant="contained"
+                  onClick={addChoice}
+                  disabled={!newChoice.trim()}
+                  sx={{ mt: 2 }}
                 >
-                  <Typography>{column}</Typography>
-                </ListItem>
-              ))}
-            </List>
-          </div>
+                  Add Choice
+                </Button>
+                <List>
+                  {choices.map((choice, index) => (
+                    <ListItem
+                      key={index}
+                      secondaryAction={
+                        <IconButton edge="end" onClick={() => deleteChoice(index)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      }
+                    >
+                      <Typography>{choice}</Typography>
+                    </ListItem>
+                  ))}
+                </List>
+              </>
+            ) : null}
+
+            {questionType === "rating" && (
+              <>
+                <TextField
+                  label="Max Rating"
+                  type="number"
+                  variant="outlined"
+                  fullWidth
+                  value={rateCount}
+                  onChange={(e) => {
+                    let value = Number(e.target.value);
+                    if (value > 10) value = 10;
+                    if (value < 1) value = 1;
+                    setRateCount(value);
+                  }}
+                  sx={{ mt: 2 }}
+                  helperText="Enter a number between 1 and 10"
+                />
+                <FormControl fullWidth sx={{ mt: 2 }}>
+                  <InputLabel id="rating-type-label">Rating Type</InputLabel>
+                  <Select
+                    labelId="rating-type-label"
+                    value={rateType}
+                    onChange={(e) => setRateType(e.target.value)}
+                  >
+                    <MenuItem value="numeric">Numeric</MenuItem>
+                    <MenuItem value="stars">Stars</MenuItem>
+                    <MenuItem value="smileys">Smileys</MenuItem>
+                  </Select>
+                </FormControl>
+              </>
+            )}
+          </>
         )}
       </Stack>
     </Container>

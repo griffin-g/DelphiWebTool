@@ -12,6 +12,7 @@ function CreateSurvey() {
   const [questionType, setQuestionType] = useState("text");
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionDescription, setQuestionDescription] = useState("");
+  const [htmlContent, setHtmlContent] = useState(""); // New state for HTML content
   const [choices, setChoices] = useState([]);
   const [newChoice, setNewChoice] = useState("");
   const [rows, setRows] = useState([]);
@@ -53,6 +54,7 @@ function CreateSurvey() {
   const resetQuestionInputs = () => {
     setQuestionTitle("");
     setQuestionDescription("");
+    setHtmlContent(""); // Reset HTML content
     setChoices([]);
     setNewChoice("");
     setRows([]);
@@ -64,6 +66,19 @@ function CreateSurvey() {
   };
 
   const addQuestion = () => {
+    // Handle HTML content blocks differently
+    if (questionType === "html") {
+      const newQuestion = {
+        name: `htmlContent${Date.now()}`,
+        type: "html",
+        html: htmlContent, // Use the dedicated htmlContent state
+      };
+      handleAddQuestion(newQuestion);
+      resetQuestionInputs();
+      return;
+    }
+    
+    // Handle regular question types
     const newQuestion = {
       name: `question${Date.now()}`,
       type: questionType,
@@ -76,7 +91,7 @@ function CreateSurvey() {
     handleAddQuestion(newQuestion);
     resetQuestionInputs();
   };
-
+  
   const addChoice = () => {
     if (newChoice.trim()) {
       setChoices([...choices, newChoice.trim()]);
@@ -106,6 +121,15 @@ function CreateSurvey() {
     }
     await handleSaveSurvey();
   };
+
+  const isAddDisabled = () => {
+    if (!questionTitle.trim()) return true; 
+    if (questionType === "ranking" || questionType === "checkbox") return choices.length === 0; 
+    if (questionType === "rating") return rateCount < 1 || rateCount > 10; 
+    if (questionType === "html") return !htmlContent.trim();
+    return false;
+  };
+  
 
   return (
     <Box>
@@ -144,6 +168,8 @@ function CreateSurvey() {
           setQuestionTitle={setQuestionTitle}
           questionDescription={questionDescription}
           setQuestionDescription={setQuestionDescription}
+          htmlContent={htmlContent}
+          setHtmlContent={setHtmlContent}
           choices={choices}
           newChoice={newChoice}
           setNewChoice={setNewChoice}
@@ -165,14 +191,13 @@ function CreateSurvey() {
           setRateType={setRateType}
         />
         <Box sx={{ textAlign: "right", mt: 2 }}>
-          <Button variant="contained" onClick={addQuestion}>
+          <Button variant="contained" onClick={addQuestion} disabled={isAddDisabled()}>
             Add Question
           </Button>
         </Box>
 
         <Divider sx={{ my: 3 }} />
 
-        {/* Question List */}
         <QuestionList
           questions={questions}
           onEditQuestion={handleEditQuestion}
@@ -188,7 +213,6 @@ function CreateSurvey() {
           </Button>
         </Box>
 
-        {/* Invite Modal */}
         <Button variant="contained" onClick={() => setIsInviteModalOpen(true)}>
           Create Invite List
         </Button>
@@ -200,10 +224,8 @@ function CreateSurvey() {
           addInviteList={handleAddInviteList}
         />
 
-        {/* Survey Preview */}
         {showPreview && surveyData && (
           <Box sx={{ mt: 4 }}>
-            
             <SurveyDisplay surveyData={surveyData} />
           </Box>
         )}

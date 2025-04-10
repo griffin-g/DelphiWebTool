@@ -14,6 +14,9 @@ import PublishPage from "./pages/PublishSurvey";
 import ParticipatePage from "./pages/Participate";
 import ResultsSurvey from "./pages/ResultsSurvey";
 import DelphiMethodPage from "./pages/DelphiMethodPage";
+import ChangePassword from "./pages/ChangePassword";
+
+
 function App() {
   return (
     <AuthProvider>
@@ -46,6 +49,8 @@ function App() {
             element={<ResultsSurvey />}
           />
           <Route path="/delphi-method" element={<DelphiMethodPage />} />
+          <Route path="/change-password" element={<ChangePassword />} />
+
         </Routes>
       </div>
     </AuthProvider>
