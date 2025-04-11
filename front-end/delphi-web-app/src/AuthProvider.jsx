@@ -75,7 +75,7 @@ const AuthProvider = ({ children }) => {
   const changePasswordAction = async (oldPassword, newPassword) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/users/change-password",
+        "https://delphi-server-50037869121.us-west1.run.app/users/change-password",
         { oldPassword, newPassword },
         {
           headers: {
