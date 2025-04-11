@@ -44,13 +44,12 @@ function ParticipatePage() {
           }
         );
 
-        if (!response.status !== 200) {
+        if (response.status !== 200) {
           const errData = response;
           console.log("Error response:", errData);
 
           if (response.status === 401) {
             localStorage.removeItem("surveyToken");
-            navigate(`/login`);
             return;
           }
 
