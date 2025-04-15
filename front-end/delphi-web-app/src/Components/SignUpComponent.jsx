@@ -10,16 +10,7 @@ import {
 } from "@mui/material";
 import { useAuth } from "../AuthProvider";
 import { useNavigate } from "react-router-dom";
-
-const COLORS = {
-  primary: "#4a77e5", // Blue - primary actions, highlights
-  secondary: "#e5b44a", // Gold - secondary actions, accents
-  accent: "#e5664a", // Coral - attention-grabbing elements
-  background: "#f5f7fa",
-  white: "#ffffff",
-  gray: "#f0f0f0",
-  darkGray: "#555555",
-};
+import COLORS from "../pages/themes/colors";
 
 function SignUpComponent({ setOpen }) {
   const [formData, setFormData] = useState({

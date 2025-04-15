@@ -22,16 +22,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import LoopIcon from "@mui/icons-material/Loop";
 import InsightsIcon from "@mui/icons-material/Insights";
 import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
-
-const COLORS = {
-  primary: "#4a77e5", // Blue - primary actions, highlights
-  secondary: "#e5b44a", // Gold - secondary actions, accents
-  accent: "#e5664a", // Coral - attention-grabbing elements
-  background: "#f5f7fa",
-  white: "#ffffff",
-  gray: "#f0f0f0",
-  darkGray: "#555555",
-};
+import COLORS from "./themes/colors";
 
 function DelphiMethodPage() {
   return (

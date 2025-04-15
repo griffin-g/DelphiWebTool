@@ -15,17 +15,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-
-// Your color palette
-const COLORS = {
-  primary: "#4a77e5", // Blue - primary actions, highlights
-  secondary: "#e5b44a", // Gold - secondary actions, accents
-  accent: "#e5664a", // Coral - attention-grabbing elements
-  background: "#f5f7fa", // Light background
-  white: "#ffffff",
-  gray: "#f0f0f0",
-  darkGray: "#555555",
-};
+import COLORS from "./themes/colors";
 
 const SurveyManagement = () => {
   const [surveys, setSurveys] = useState([]);
