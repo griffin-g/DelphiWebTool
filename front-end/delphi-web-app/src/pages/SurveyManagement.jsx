@@ -15,7 +15,20 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+<<<<<<< HEAD
 import COLORS from "./themes/colors";
+=======
+
+const COLORS = {
+  primary: "#4a77e5", // Blue - primary actions, highlights
+  secondary: "#e5b44a", // Gold - secondary actions, accents
+  accent: "#e5664a", // Coral - attention-grabbing elements
+  background: "#f5f7fa", // Light background
+  white: "#ffffff",
+  gray: "#f0f0f0",
+  darkGray: "#555555",
+};
+>>>>>>> 994eb1747ebfc7f814d2391bc8e926c185bfcd98
 
 const SurveyManagement = () => {
   const [surveys, setSurveys] = useState([]);

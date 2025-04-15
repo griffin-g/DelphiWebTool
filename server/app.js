@@ -74,13 +74,13 @@ app.use(function (err, req, res, next) {
   res.json({ error: err.message });
 });
 
-// First start the server to meet Cloud Run requirements
+// Init server
 const PORT = process.env.PORT || 3001;
 const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// Then attempt database connection
+// DB connection
 const db = require("./models");
 (async () => {
   try {
@@ -91,7 +91,6 @@ const db = require("./models");
     console.log("Database synchronized successfully.");
   } catch (error) {
     console.error("Unable to connect to the database:", error);
-    // Don't exit - let the server keep running
     console.log("Server will continue running without database connection");
   }
 })();

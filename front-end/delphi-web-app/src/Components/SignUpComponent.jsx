@@ -50,7 +50,6 @@ function SignUpComponent({ setOpen }) {
         formData.last_name,
         formData.email,
         formData.password_hash
-        // formData
       );
       console.log("after getting res", res);
       if (res.status == 499) {

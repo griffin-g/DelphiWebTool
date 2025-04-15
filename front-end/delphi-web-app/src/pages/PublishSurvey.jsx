@@ -21,8 +21,8 @@ import InviteModal from "../Components/InviteModal";
 
 const PublishPage = () => {
   const { surveyID, delphiRound } = useParams();
-  const [tempToken, setTempToken] = useState(""); // Temporary token for input
-  const [accessToken, setAccessToken] = useState(""); // Token used for publishing
+  const [tempToken, setTempToken] = useState("");
+  const [accessToken, setAccessToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");

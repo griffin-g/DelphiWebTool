@@ -95,6 +95,7 @@ function CreateSurvey() {
       setNewChoice("");
     }
   };
+
   const deleteChoice = (index) =>
     setChoices(choices.filter((_, i) => i !== index));
   const addRow = () => {
@@ -103,13 +104,16 @@ function CreateSurvey() {
       setNewRow("");
     }
   };
+
   const deleteRow = (index) => setRows(rows.filter((_, i) => i !== index));
+  
   const addColumn = () => {
     if (newColumn.trim()) {
       setColumns([...columns, newColumn.trim()]);
       setNewColumn("");
     }
   };
+
   const deleteColumn = (index) =>
     setColumns(columns.filter((_, i) => i !== index));
 

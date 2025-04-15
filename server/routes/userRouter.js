@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const { verifyToken } = require("../middleware/verifyToken");
 
 const JWT_SECRET = "your-secret-key"; // Replace with a secure secret key
+
 /* GET users listing. */
 router.get("/", async (req, res, next) => {
   const allUsers = await Users.findAll();
@@ -24,7 +25,7 @@ router.post("/email", async (req, res, next) => {
   password = req.body.password;
   try {
     const user = await Users.findOne({
-      where: { email: email, password_hash: password }, // Condition to match email
+      where: { email: email, password_hash: password },
     });
 
     if (user) {
@@ -47,12 +48,10 @@ router.post("/login", async (req, res, next) => {
     const user = await Users.findOne({ where: { email } });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Compare the provided password with the hashed password
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid)
       return res.status(401).json({ message: "Invalid credentials" });
 
-    // Generate JWT token
     const token = jwt.sign(
       { id: user.user_id, email: user.email, first_name: user.first_name },
       JWT_SECRET,
@@ -115,7 +114,6 @@ router.post("/register", async (req, res) => {
       last_name,
     });
 
-    // Generate JWT token
     const token = jwt.sign(
       { id: user.user_id, email: user.email, first_name: user.first_name },
       JWT_SECRET,
