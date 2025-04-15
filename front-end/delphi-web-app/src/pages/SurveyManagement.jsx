@@ -16,7 +16,6 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 
-// Your color palette
 const COLORS = {
   primary: "#4a77e5", // Blue - primary actions, highlights
   secondary: "#e5b44a", // Gold - secondary actions, accents

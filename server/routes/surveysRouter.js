@@ -121,12 +121,7 @@ router.get("/user-surveys/:userID", async (req, res, next) => {
       attributes: ["survey_id", "title", "delphi_round", "elements", "uuid"],
     });
 
-    // Log surveys to check if the query is returning data
     console.log("Fetched surveys:", surveys);
-
-    // if (surveys.length === 0) {
-    //   return res.status(404).json({ message: "No surveys found for this user" });
-    // }
 
     res.status(200).json(surveys);
   } catch (error) {
@@ -135,6 +130,7 @@ router.get("/user-surveys/:userID", async (req, res, next) => {
   }
 });
 
+// Create new survey 
 router.post("/", async (req, res) => {
   try {
     const { user_id, title, elements, is_active, delphi_round } = req.body;
@@ -154,6 +150,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Save survey
 router.post("/save-survey", async (req, res) => {
   const { surveyID, surveyJSON, title, userID } = req.body;
   console.log("survey json", surveyJSON);
@@ -210,7 +207,6 @@ router.put("/edit-survey", async (req, res) => {
   const { surveyID, surveyJSON, title, userID, delphi_round } = req.body;
 
   try {
-    //let survey = await Surveys.findByPk(surveyID);
     const survey = await Surveys.findOne({
       where: {
         survey_id: surveyID,
@@ -290,8 +286,7 @@ router.post("/publish/:id/:round", async (req, res) => {
   }
 
   try {
-    //const uuid = uuidv4();
-    const hashedToken = hashToken(accessToken); // Hash the access token
+    const hashedToken = hashToken(accessToken);
 
     const existingSurvey = await Surveys.findOne({
       where: {
@@ -357,7 +352,6 @@ router.post("/validate-token", async (req, res) => {
       return res.status(401).json({ message: "Invalid access token" });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       {
         uuid,

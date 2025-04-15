@@ -11,7 +11,6 @@ function SignUpPage() {
       <Grid
         container
         sx={{
-          //width: "50vw",
           justifyContent: "center",
           alignContent: "center",
           height: "100%",
@@ -19,10 +18,6 @@ function SignUpPage() {
       >
         <SignUpComponent />
       </Grid>
-      {/* <Grid
-        container
-        sx={{ width: "50vw", backgroundColor: "#9DD6C8", height: "100%" }}
-      ></Grid> */}
     </Grid>
   );
 }

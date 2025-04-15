@@ -56,7 +56,7 @@ function QuestionList({ questions, onEditQuestion, onDeleteQuestion }) {
                   </Button>
                 </Stack>
               ) : (
-                // Handling for other question types
+
                 <Stack spacing={2} sx={{ width: "100%" }}>
                   <Typography variant="subtitle1">
                     Question Type: {question.type.charAt(0).toUpperCase() + question.type.slice(1)}

@@ -3,10 +3,7 @@ import Header from "../Components/Header";
 import { useAuth } from "../AuthProvider";
 import { Box, Typography, Button, Grid, Paper } from "@mui/material";
 function AboutUs() {
-  // if (localStorage.getItem("user")) {
-  //   const userData = localStorage.getItem("user");
-  //   console.log("User Data:", userData.user_id);
-  // }
+
   const auth = useAuth();
   console.log("Using this url for api calls:", import.meta.env.VTIE_API_URL);
   console.log("All environment variables:", import.meta.env);

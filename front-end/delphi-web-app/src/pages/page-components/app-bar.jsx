@@ -14,7 +14,6 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom'; 
 
-// Define the links and paths
 const pages = [
   { name: 'Create Survey', path: '/create-survey' },
   { name: 'About Us', path: '/about-us' },

@@ -53,7 +53,6 @@ export const TextWordCloud = ({ responses, minFontSize = 10, maxFontSize = 60 })
       }, {});
       
       // top 50 words
-      // can be adjusted as necessary
       return Object.entries(wordFreq)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 50)
