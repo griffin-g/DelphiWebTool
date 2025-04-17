@@ -20,6 +20,7 @@ function CreateSurvey() {
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionDescription, setQuestionDescription] = useState("");
   const [htmlContent, setHtmlContent] = useState("");
+  const [htmlError, setHtmlError] = useState(false);
   const [choices, setChoices] = useState([]);
   const [newChoice, setNewChoice] = useState("");
   const [rows, setRows] = useState([]);
@@ -126,11 +127,17 @@ function CreateSurvey() {
   };
 
   const isAddDisabled = () => {
-    if (!questionTitle.trim()) return true;
+    console.log('questionTitle:', questionTitle);
+    console.log('choices:', choices);
+    console.log('rateCount:', rateCount);
+    console.log('htmlContent:', htmlContent);
+    console.log('htmlError:', htmlError);
+
+    if (!questionTitle.trim() && questionType !== "html") return true;
     if (questionType === "ranking" || questionType === "checkbox")
       return choices.length === 0;
     if (questionType === "rating") return rateCount < 1 || rateCount > 10;
-    if (questionType === "html") return !htmlContent.trim();
+    if (questionType === "html") return !htmlContent.trim() || htmlError;
     return false;
   };
 
@@ -168,6 +175,8 @@ function CreateSurvey() {
           setQuestionDescription={setQuestionDescription}
           htmlContent={htmlContent}
           setHtmlContent={setHtmlContent}
+          htmlError={htmlError}
+          setHtmlError={setHtmlError}
           choices={choices}
           newChoice={newChoice}
           setNewChoice={setNewChoice}

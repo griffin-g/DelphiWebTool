@@ -25,6 +25,8 @@ function QuestionForm({
   setQuestionDescription,
   htmlContent,
   setHtmlContent,
+  htmlError,
+  setHtmlError,
   choices,
   newChoice,
   setNewChoice,
@@ -35,11 +37,10 @@ function QuestionForm({
   rateType,
   setRateType,
 }) {
-  const [htmlError, setHtmlError] = useState(false);
-
-  const validateHtml = (content) => {
-    const scriptTagPattern = /<script[\s\S]*?>[\s\S]*?<\/script>/gi;
-    return scriptTagPattern.test(content);
+  
+  const validateHtml = (html) => {
+    const hasScript = /<\s*script/gi.test(html);
+    return hasScript;
   };
 
   const handleHtmlChange = (e) => {
@@ -70,7 +71,7 @@ function QuestionForm({
           <>
             <Typography variant="subtitle1">HTML Content Block</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Use this to display rich text, images, or custom formatting. Avoid including scripts.
+            This content will be rendered as HTML in your survey. Avoid including scripts.
             </Typography>
             <TextField
               label="HTML Content"
