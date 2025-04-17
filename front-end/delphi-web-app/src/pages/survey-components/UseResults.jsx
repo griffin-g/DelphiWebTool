@@ -40,6 +40,8 @@ export const useResults = (surveyUUID, delphiRound) => {
       );
       const transformedResponses = transformResponses(response.data);
       setNumResponses(response.data.length);
+      console.log("Transformed responses:", transformedResponses);
+      console.log("response from data base:", response.data);
       setResponses(transformedResponses);
       fetchedSurveyRef.current = true;
     } catch (error) {
