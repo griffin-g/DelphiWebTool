@@ -12,11 +12,12 @@ import {
 import { useEffect, useState } from "react";
 export const ResponseBarChart = ({ labels, responses, type }) => {
   console.log("labels:", labels);
-  console.log("responses:", responses);
+
   console.log("type:", type);
   const [data, setData] = useState([]);
   const [dataKey, setDataKey] = useState("");
   useEffect(() => {
+    console.log("responses in bar char:", responses);
     if (responses && responses.length > 0 && type == "checkbox") {
       setDataKey("Checked");
       const data = labels.map((label, index) => {
