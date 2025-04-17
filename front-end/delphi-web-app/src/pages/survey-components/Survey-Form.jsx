@@ -25,15 +25,11 @@ const SurveyForm = ({ survey, anonymousIdentifier }) => {
     console.log("Submitting payload:", payload);
 
     try {
-      const response = await apiClient.post("/responses/", payload);
-
-      if (response.ok) {
-        alert("Survey submitted successfully!");
-      } else {
-        alert("There was a problem submitting your survey.");
-      }
+      await apiClient.post("/responses/", payload);
+      alert("Survey submitted successfully!");
     } catch (error) {
       console.error("Error submitting survey:", error);
+      alert("There was a problem submitting your survey.");
     }
   });
 

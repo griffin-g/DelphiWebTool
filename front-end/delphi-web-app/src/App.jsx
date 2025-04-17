@@ -22,6 +22,7 @@ function App() {
     <AuthProvider>
       <div>
         <Routes>
+          <Route path="/" element={<Navigate to="/delphi-method" />} />
           <Route
             path="/create-survey"
             element={<CreateSurvey></CreateSurvey>}
