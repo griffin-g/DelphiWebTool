@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import apiClient from "../../utils/apiClient";
 import { useAuth } from "../../AuthProvider";
 
-export const useResults = (surveyUUID, delphiRound) => {
+export const useResults = (surveyUUID, delphiRound, surveyId) => {
   const auth = useAuth();
   const [responses, setResponses] = useState([]);
   const [numResponses, setNumResponses] = useState(0);
@@ -35,8 +35,9 @@ export const useResults = (surveyUUID, delphiRound) => {
 
   const fetchSurveyResults = async () => {
     try {
+      const uuid = await getUUID();
       const response = await apiClient.get(
-        `/responses/${surveyUUID}/round/${delphiRound}`
+        `/responses/${uuid}/round/${delphiRound}`
       );
       const transformedResponses = transformResponses(response.data);
       setNumResponses(response.data.length);
@@ -44,6 +45,17 @@ export const useResults = (surveyUUID, delphiRound) => {
       console.log("response from data base:", response.data);
       setResponses(transformedResponses);
       fetchedSurveyRef.current = true;
+    } catch (error) {
+      console.error("Error fetching results:", error);
+    }
+  };
+
+  const getUUID = async () => {
+    try {
+      const response = await apiClient.get(
+        `/surveys/${surveyId}/round/${delphiRound}`
+      );
+      return response.data.uuid;
     } catch (error) {
       console.error("Error fetching results:", error);
     }

@@ -23,7 +23,8 @@ const ResultsSurvey = () => {
   console.log("selectedDelphiRound:", selectedDelphiRound);
   const { fetchSurveyResults, responses, numResponses } = useResults(
     surveyUUID,
-    selectedDelphiRound
+    selectedDelphiRound,
+    surveyID
   );
   const { maxRound } = useSurvey(surveyID, selectedDelphiRound);
 
@@ -32,6 +33,7 @@ const ResultsSurvey = () => {
     setSelectedDelphiRound(newRound);
     console.log("newRound:", newRound);
     setViewModes({});
+    //const newUUID = await getNewUUID(surveyID, newRound);
     navigate(`/results-survey/${surveyID}/${newRound}/${surveyUUID}`);
   };
 

@@ -45,7 +45,8 @@ router.get("/:uuid/round/:delphiRound", async (req, res, next) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { survey_uuid, delphi_round, response_data, hashedIdentifier } = req.body;
+    const { survey_uuid, delphi_round, response_data, hashedIdentifier } =
+      req.body;
 
     console.log("Received payload:", {
       survey_uuid,
@@ -67,7 +68,9 @@ router.post("/", async (req, res) => {
     });
 
     if (existingTracker) {
-      return res.status(400).json({ message: "You have already responded to this round." });
+      return res
+        .status(400)
+        .json({ message: "You have already responded to this round." });
     }
 
     const newResponse = await Responses.create({
