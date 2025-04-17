@@ -21,6 +21,7 @@ const ResultsSurvey = () => {
   const [selectedDelphiRound, setSelectedDelphiRound] = useState(delphiRound);
   const { questions, title } = useSurvey(surveyID, selectedDelphiRound);
   const [viewModes, setViewModes] = useState({});
+  const [barChartResponses, setBarChartResponses] = useState({});
   console.log("selectedDelphiRound:", selectedDelphiRound);
   const { fetchSurveyResults, responses, numResponses } = useResults(
     surveyUUID,
@@ -45,7 +46,10 @@ const ResultsSurvey = () => {
     }));
   };
 
-  useEffect(() => {}, [selectedDelphiRound]);
+  useEffect(() => {
+    console.log("responses in results survey", responses);
+    setBarChartResponses({ ...responses });
+  }, [selectedDelphiRound, responses]);
 
   return (
     <div>
@@ -153,7 +157,7 @@ const ResultsSurvey = () => {
                           <Grid2 sx={{ width: "50%", maxHeight: "100%" }}>
                             <ResponseBarChart
                               labels={question.choices}
-                              responses={responses[question.name]}
+                              responses={barChartResponses[question.name]}
                               type="checkbox"
                             />
                           </Grid2>
@@ -198,7 +202,7 @@ const ResultsSurvey = () => {
                           <Grid2 sx={{ width: "50%", maxHeight: "100%" }}>
                             <ResponseBarChart
                               labels={question.choices}
-                              responses={responses[question.name]}
+                              responses={barChartResponses[question.name]}
                               type="ranking"
                             />
                           </Grid2>

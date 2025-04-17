@@ -7,7 +7,7 @@ export const useResults = (surveyUUID, delphiRound, surveyId) => {
   const [responses, setResponses] = useState([]);
   const [numResponses, setNumResponses] = useState(0);
   const fetchedSurveyRef = useRef(false);
-
+  const [lastUpdate, setLastUpdate] = useState(Date.now());
   useEffect(() => {
     // if (!fetchedSurveyRef.current && surveyUUID && delphiRound) {
     //   fetchSurveyResults();
@@ -16,9 +16,9 @@ export const useResults = (surveyUUID, delphiRound, surveyId) => {
     //   fetchedSurveyRef.current = false;
     // };
     fetchSurveyResults();
-  }, [surveyUUID, delphiRound]);
+  }, [surveyUUID, delphiRound, surveyId]);
 
-  const transformResponses = (responseData) => {
+  const transformResponses = async (responseData) => {
     const transformedData = {};
 
     responseData.forEach((response) => {
@@ -39,11 +39,12 @@ export const useResults = (surveyUUID, delphiRound, surveyId) => {
       const response = await apiClient.get(
         `/responses/${uuid}/round/${delphiRound}`
       );
-      const transformedResponses = transformResponses(response.data);
+      const transformedResponses = await transformResponses(response.data);
       setNumResponses(response.data.length);
       console.log("Transformed responses:", transformedResponses);
       console.log("response from data base:", response.data);
-      setResponses(transformedResponses);
+      setResponses({ ...transformedResponses });
+      setLastUpdate(Date.now());
       fetchedSurveyRef.current = true;
     } catch (error) {
       console.error("Error fetching results:", error);
