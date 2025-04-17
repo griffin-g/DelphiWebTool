@@ -9,12 +9,13 @@ export const useResults = (surveyUUID, delphiRound) => {
   const fetchedSurveyRef = useRef(false);
 
   useEffect(() => {
-    if (!fetchedSurveyRef.current && surveyUUID && delphiRound) {
-      fetchSurveyResults();
-    }
-    return () => {
-      fetchedSurveyRef.current = false;
-    };
+    // if (!fetchedSurveyRef.current && surveyUUID && delphiRound) {
+    //   fetchSurveyResults();
+    // }
+    // return () => {
+    //   fetchedSurveyRef.current = false;
+    // };
+    fetchSurveyResults();
   }, [surveyUUID, delphiRound]);
 
   const transformResponses = (responseData) => {
