@@ -12,6 +12,7 @@ import { RankingStatSummary } from "../Components/RankingStatSummary";
 import ResultsToggleButton from "../Components/ResultsToggleButton";
 import { ResponseDonutChart } from "../Components/ResponseDonutChart";
 import RoundSelect from "../Components/RoundSelect";
+import { useEffect } from "react";
 
 const ResultsSurvey = () => {
   const { surveyID, delphiRound, surveyUUID } = useParams();
@@ -43,6 +44,8 @@ const ResultsSurvey = () => {
       [questionId]: nextView,
     }));
   };
+
+  useEffect(() => {}, [selectedDelphiRound]);
 
   return (
     <div>
