@@ -39,6 +39,10 @@ const ResultsSurvey = () => {
     navigate(`/results-survey/${surveyID}/${newRound}/${surveyUUID}`);
   };
 
+  const getQuestionId = (question, index) => {
+    return question.name || `question${index + 1}`;
+  };
+
   const handleChange = (questionId, event, nextView) => {
     setViewModes((prev) => ({
       ...prev,
@@ -91,9 +95,11 @@ const ResultsSurvey = () => {
           </Grid2>
 
           {questions.map((question, index) => {
-            const currentViewMode = viewModes[question.name] || "graphs";
+            const questionId = getQuestionId(question, index);
+            const currentViewMode = viewModes[questionId] || "graphs";
             return (
               <Grid2
+                key={questionId}
                 sx={{
                   display: "flex",
                   flexDirection: "row",
@@ -103,7 +109,6 @@ const ResultsSurvey = () => {
                 }}
               >
                 <Grid2
-                  key={index}
                   sx={{
                     border: "1px solid black",
                     boxShadow: 1,
@@ -118,8 +123,8 @@ const ResultsSurvey = () => {
                   {(question.type === "ranking" ||
                     question.type === "checkbox") && (
                     <ul>
-                      {question.choices.map((choice, index) => {
-                        return <li key={index}>{choice}</li>;
+                      {question.choices.map((choice, choiceIndex) => {
+                        return <li key={choiceIndex}>{choice}</li>;
                       })}
                     </ul>
                   )}
@@ -134,7 +139,7 @@ const ResultsSurvey = () => {
                   }}
                 >
                   {question.type === "text" && (
-                    <TextWordCloud responses={responses[question.name]} />
+                    <TextWordCloud responses={responses[questionId]} />
                   )}
                   {question.type === "checkbox" && (
                     <Grid2
@@ -148,7 +153,7 @@ const ResultsSurvey = () => {
                         <ResultsToggleButton
                           viewMode={currentViewMode}
                           handleChange={(event, nextView) =>
-                            handleChange(question.name, event, nextView)
+                            handleChange(questionId, event, nextView)
                           }
                         />
                       </Grid2>
@@ -157,13 +162,13 @@ const ResultsSurvey = () => {
                           <Grid2 sx={{ width: "50%", maxHeight: "100%" }}>
                             <ResponseBarChart
                               labels={question.choices}
-                              responses={barChartResponses[question.name]}
+                              responses={barChartResponses[questionId]}
                               type="checkbox"
                             />
                           </Grid2>
                           <Grid2 sx={{ width: "40%" }}>
                             <ResponseDonutChart
-                              responses={responses[question.name]}
+                              responses={responses[questionId]}
                               labels={question.choices}
                             />
                           </Grid2>
@@ -173,7 +178,7 @@ const ResultsSurvey = () => {
                           {question.type === "checkbox" && (
                             <RankingStatSummary
                               labels={question.choices}
-                              responses={responses[question.name]}
+                              responses={responses[questionId]}
                               type="checkbox"
                             />
                           )}
@@ -193,7 +198,7 @@ const ResultsSurvey = () => {
                         <ResultsToggleButton
                           viewMode={currentViewMode}
                           handleChange={(event, nextView) =>
-                            handleChange(question.name, event, nextView)
+                            handleChange(questionId, event, nextView)
                           }
                         />
                       </Grid2>
@@ -202,13 +207,13 @@ const ResultsSurvey = () => {
                           <Grid2 sx={{ width: "50%", maxHeight: "100%" }}>
                             <ResponseBarChart
                               labels={question.choices}
-                              responses={barChartResponses[question.name]}
+                              responses={barChartResponses[questionId]}
                               type="ranking"
                             />
                           </Grid2>
                           <Grid2 sx={{ width: "40%" }}>
                             <ResponsePieChart
-                              responses={responses[question.name]}
+                              responses={responses[questionId]}
                               labels={question.choices}
                             />
                           </Grid2>
@@ -218,7 +223,7 @@ const ResultsSurvey = () => {
                           {question.type === "checkbox" && (
                             <RankingStatSummary
                               labels={question.choices}
-                              responses={responses[question.name]}
+                              responses={responses[questionId]}
                               type="checkbox"
                             />
                           )}
@@ -226,7 +231,7 @@ const ResultsSurvey = () => {
                             <>
                               <RankingStatSummary
                                 labels={question.choices}
-                                responses={responses[question.name]}
+                                responses={responses[questionId]}
                                 type="ranking"
                               />
                             </>
