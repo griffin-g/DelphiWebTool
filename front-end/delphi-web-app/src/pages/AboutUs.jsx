@@ -2,8 +2,9 @@ import React from "react";
 import Header from "../Components/Header";
 import { useAuth } from "../AuthProvider";
 import { Box, Typography, Button, Grid, Paper } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 function AboutUs() {
-
+  const navigate = useNavigate();
   const auth = useAuth();
   console.log("Using this url for api calls:", import.meta.env.VTIE_API_URL);
   console.log("All environment variables:", import.meta.env);
@@ -34,6 +35,9 @@ function AboutUs() {
             </Typography>
             <Button
               variant="contained"
+              onClick={() => {
+                navigate("/delphi-method");
+              }}
               sx={{
                 backgroundColor: "#b1a16b",
                 color: "black",

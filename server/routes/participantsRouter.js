@@ -23,6 +23,7 @@ router.get("/survey-id/:id", async (req, res, next) => {
 });
 
 router.post("/", async (req, res) => {
+  console.log("Participant", req.body);
   const newParticipant = req.body;
   console.log("Participant", newParticipant);
   await Participants.create(newParticipant);

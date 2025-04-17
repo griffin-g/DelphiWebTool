@@ -87,20 +87,22 @@ export const useSurvey = (surveyID, delphiRound) => {
   const saveParticipants = async (inviteList, surveyId) => {
     try {
       for (const participant of inviteList) {
-        try {
-          const response = await apiClient.post("/participants/", {
-            participant_email: participant,
-            survey_id: surveyId,
-          });
+        if (typeof participant === "string") {
+          try {
+            const response = await apiClient.post("/participants/", {
+              participant_email: participant,
+              survey_id: surveyId,
+            });
 
-          if (response.status === 200) {
-            console.log(`Participant ${participant} invited successfully`);
-          } else {
-            alert(`Failed to invite participant: ${participant}`);
+            if (response.status === 200) {
+              console.log(`Participant ${participant} invited successfully`);
+            } else {
+              alert(`Failed to invite participant: ${participant}`);
+            }
+          } catch (error) {
+            console.error(`Error inviting participant ${participant}:`, error);
+            alert(`Error inviting participant: ${participant}`);
           }
-        } catch (error) {
-          console.error(`Error inviting participant ${participant}:`, error);
-          alert(`Error inviting participant: ${participant}`);
         }
       }
     } catch (error) {
@@ -133,7 +135,7 @@ export const useSurvey = (surveyID, delphiRound) => {
       //map through participants here
       console.log("save survey response", response);
       saveParticipants(inviteList, response.data.survey_id);
-      navigate("/manage-survey")
+      navigate("/manage-survey");
     } catch (error) {
       console.error("Error saving survey:", error);
       throw error;
@@ -242,6 +244,7 @@ export const useSurvey = (surveyID, delphiRound) => {
   const handleAddInviteList = async (newParticipant) => {
     setInviteList((prevInvites) => [...prevInvites, newParticipant]);
     var newList = [...inviteList, newParticipant];
+    console.log("new list", newList);
     await saveParticipants(newList, surveyID);
     await fetchParticipants();
   };
@@ -275,5 +278,6 @@ export const useSurvey = (surveyID, delphiRound) => {
     handleAddInviteList,
     handleAddRound,
     handleFindMaxRound,
+    handleDeleteInviteList,
   };
 };
